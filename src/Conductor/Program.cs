@@ -7,7 +7,6 @@
  * Updating the version of Cosmos Db in DEV to V2 (Platform Engineer)
  */
 
-using System.Globalization;
 using Conductor.Domain.Models;
 using Conductor.Domain.Models.Resource;
 using Conductor.Domain.Services;

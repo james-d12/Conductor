@@ -1,5 +1,4 @@
 using Conductor.Domain.Models;
-using Environment = Conductor.Domain.Models.Environment;
 using Models_Environment = Conductor.Domain.Models.Environment;
 
 namespace Conductor.Domain.Services;

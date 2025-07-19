@@ -5,11 +5,16 @@
         <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <RootNamespace>Conductor</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="Scriban" Version="6.2.1" />
       <PackageReference Include="YamlDotNet" Version="16.3.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Conductor.Domain\Conductor.Domain.csproj" />
     </ItemGroup>
 
 </Project>
