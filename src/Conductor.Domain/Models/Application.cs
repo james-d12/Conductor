@@ -47,4 +47,16 @@ public sealed record Application
         Resources.Add(applicationResource);
         UpdatedAt = DateTime.Now;
     }
+
+    public void Deploy(Deployment deployment)
+    {
+        Deployments.Add(deployment);
+        UpdatedAt = DateTime.Now;
+    }
+
+    public void Undeploy(Deployment deployment)
+    {
+        Deployments.Remove(deployment);
+        UpdatedAt = DateTime.Now;
+    }
 }

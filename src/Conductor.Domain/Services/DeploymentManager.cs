@@ -14,17 +14,15 @@ public sealed class DeploymentManager : IDeploymentManager
     public Deployment DeployAppToEnvironment(Application application, Environment environment)
     {
         var deployment = Deployment.Create(application.Id, environment.Id);
-
-        application.Deployments.Add(deployment);
-        environment.Deployments.Add(deployment);
-
+        application.Deploy(deployment);
+        environment.Deploy(deployment);
         return deployment;
     }
 
     public void UndeployAppFromEnvironment(Deployment deployment, Application application,
         Environment environment)
     {
-        application.Deployments.Remove(deployment);
-        environment.Deployments.Remove(deployment);
+        application.Undeploy(deployment);
+        environment.Undeploy(deployment);
     }
 }

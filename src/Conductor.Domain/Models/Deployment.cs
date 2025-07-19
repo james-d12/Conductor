@@ -15,9 +15,9 @@ public sealed record Deployment
     public required DeploymentId Id { get; init; }
     public required ApplicationId ApplicationId { get; init; }
     public required EnvironmentId EnvironmentId { get; init; }
-    public required DeploymentStatus Status { get; init; }
-    public DateTime CreatedAt { get; init; } = DateTime.Now;
-    public DateTime UpdatedAt { get; init; } = DateTime.Now;
+    public required DeploymentStatus Status { get; set; }
+    public required DateTime CreatedAt { get; set; }
+    public required DateTime UpdatedAt { get; set; }
 
     private Deployment()
     {
@@ -30,7 +30,15 @@ public sealed record Deployment
             Id = new DeploymentId(),
             ApplicationId = applicationId,
             EnvironmentId = environmentId,
-            Status = DeploymentStatus.Pending
+            Status = DeploymentStatus.Pending,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
         };
+    }
+
+    public void MarkAsFailed()
+    {
+        Status = DeploymentStatus.Failed;
+        UpdatedAt = DateTime.UtcNow;
     }
 }

@@ -21,6 +21,9 @@ public sealed record Environment
     public required List<Deployment> Deployments { get; init; }
     public required List<EnvironmentResource> Resources { get; init; }
 
+    public required DateTime CreatedAt { get; set; }
+    public required DateTime UpdatedAt { get; set; }
+
     private Environment()
     {
     }
@@ -36,18 +39,27 @@ public sealed record Environment
             Name = name,
             Description = description,
             Deployments = [],
-            Resources = []
+            Resources = [],
+            CreatedAt = DateTime.Now,
+            UpdatedAt = DateTime.Now
         };
-    }
-
-    public void AddResource(string name, ResourceTemplateVersion templateVersion, Dictionary<string, string> inputs)
-    {
-        var environmentResourceInstance = EnvironmentResource.Create(name, templateVersion, this, inputs);
-        Resources.Add(environmentResourceInstance);
     }
 
     public void AddResource(EnvironmentResource environmentResource)
     {
         Resources.Add(environmentResource);
+        UpdatedAt = DateTime.Now;
+    }
+
+    public void Deploy(Deployment deployment)
+    {
+        Deployments.Add(deployment);
+        CreatedAt = DateTime.Now;
+    }
+
+    public void Undeploy(Deployment deployment)
+    {
+        Deployments.Remove(deployment);
+        CreatedAt = DateTime.Now;
     }
 }
