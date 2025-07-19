@@ -20,7 +20,7 @@ public sealed record ApplicationResource : Resource
 
         return new ApplicationResource
         {
-            Id = ResourceId.NewId(),
+            Id = new ResourceId(),
             Name = name,
             TemplateVersion = templateVersion,
             Application = application,

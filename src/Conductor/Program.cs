@@ -14,7 +14,7 @@ using Environment = Conductor.Domain.Models.Environment;
 
 var cosmosResourceTemplate = new ResourceTemplate
 {
-    Id = new ResourceTemplateId(Guid.NewGuid()),
+    Id = new ResourceTemplateId(),
     Name = "Cosmos Db",
     Description = "The Cosmos Db Terraform Resource Template",
     Provider = ResourceTemplateProvider.Terraform,
@@ -23,7 +23,7 @@ var cosmosResourceTemplate = new ResourceTemplate
 
 var blobStorageTemplate = new ResourceTemplate
 {
-    Id = new ResourceTemplateId(Guid.NewGuid()),
+    Id = new ResourceTemplateId(),
     Name = "Cosmos Db",
     Description = "The Azure Blob Storage Terraform Resource Template",
     Provider = ResourceTemplateProvider.Terraform,

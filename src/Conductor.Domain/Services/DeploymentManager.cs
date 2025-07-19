@@ -13,12 +13,7 @@ public sealed class DeploymentManager : IDeploymentManager
 {
     public Deployment DeployAppToEnvironment(Application application, Environment environment)
     {
-        var deployment = new Deployment
-        {
-            Id = Guid.NewGuid(),
-            ApplicationId = application.Id,
-            EnvironmentId = environment.Id
-        };
+        var deployment = Deployment.Create(application.Id, environment.Id);
 
         application.Deployments.Add(deployment);
         environment.Deployments.Add(deployment);

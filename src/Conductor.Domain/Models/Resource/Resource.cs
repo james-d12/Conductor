@@ -2,7 +2,9 @@ namespace Conductor.Domain.Models.Resource;
 
 public readonly record struct ResourceId(Guid Id)
 {
-    public static ResourceId NewId() => new(Guid.NewGuid());
+    public ResourceId() : this(Guid.NewGuid())
+    {
+    }
 }
 
 public abstract record Resource

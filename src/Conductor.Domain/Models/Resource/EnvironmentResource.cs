@@ -20,7 +20,7 @@ public sealed record EnvironmentResource : Resource
 
         return new EnvironmentResource
         {
-            Id = ResourceId.NewId(),
+            Id = new ResourceId(),
             Name = name,
             TemplateVersion = templateVersion,
             Environment = environment,

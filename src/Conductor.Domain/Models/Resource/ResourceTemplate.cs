@@ -1,6 +1,11 @@
 namespace Conductor.Domain.Models.Resource;
 
-public readonly record struct ResourceTemplateId(Guid Id);
+public readonly record struct ResourceTemplateId(Guid Id)
+{
+    public ResourceTemplateId() : this(Guid.NewGuid())
+    {
+    }
+}
 
 /// <summary>
 /// Represents an external requirement that an application needs (e.g. A Cosmos Db with a Container)
