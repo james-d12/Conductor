@@ -19,7 +19,6 @@ public sealed record Application
     public required string Name { get; init; }
     public required List<Deployment> Deployments { get; init; }
     public required List<ApplicationResource> Resources { get; init; }
-    public required List<Owner> Owners { get; init; }
 
     public required DateTime CreatedAt { get; set; }
     public required DateTime UpdatedAt { get; set; }
@@ -38,22 +37,14 @@ public sealed record Application
             Name = name,
             Deployments = [],
             Resources = [],
-            Owners = [],
             CreatedAt = DateTime.Now,
             UpdatedAt = DateTime.Now
         };
     }
 
-    public void AddResource(string name, ResourceTemplateVersion templateVersion, Dictionary<string, string> inputs)
+    public void AddResource(ApplicationResource applicationResource)
     {
-        var resourceInstance = ApplicationResource.Create(name, templateVersion, this, inputs);
-        Resources.Add(resourceInstance);
-        UpdatedAt = DateTime.Now;
-    }
-
-    public void AddOwner(Owner owner)
-    {
-        Owners.Add(owner);
+        Resources.Add(applicationResource);
         UpdatedAt = DateTime.Now;
     }
 }

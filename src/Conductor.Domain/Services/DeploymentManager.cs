@@ -1,17 +1,17 @@
 using Conductor.Domain.Models;
-using Models_Environment = Conductor.Domain.Models.Environment;
+using Environment = Conductor.Domain.Models.Environment;
 
 namespace Conductor.Domain.Services;
 
 public interface IDeploymentManager
 {
-    Deployment DeployAppToEnvironment(Application application, Models_Environment environment);
-    void UndeployAppFromEnvironment(Deployment deployment, Application application, Models_Environment environment);
+    Deployment DeployAppToEnvironment(Application application, Environment environment);
+    void UndeployAppFromEnvironment(Deployment deployment, Application application, Environment environment);
 }
 
 public sealed class DeploymentManager : IDeploymentManager
 {
-    public Deployment DeployAppToEnvironment(Application application, Models_Environment environment)
+    public Deployment DeployAppToEnvironment(Application application, Environment environment)
     {
         var deployment = new Deployment
         {
@@ -26,7 +26,8 @@ public sealed class DeploymentManager : IDeploymentManager
         return deployment;
     }
 
-    public void UndeployAppFromEnvironment(Deployment deployment, Application application, Models_Environment environment)
+    public void UndeployAppFromEnvironment(Deployment deployment, Application application,
+        Environment environment)
     {
         application.Deployments.Remove(deployment);
         environment.Deployments.Remove(deployment);

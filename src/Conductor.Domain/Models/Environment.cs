@@ -13,7 +13,7 @@ public readonly record struct EnvironmentId(Guid Id)
 /// Represents a deployment environment. E.g. a Kubernetes Cluster, an ArgoCD Environment, etc.
 /// E.g DEV, UAT, PROD
 /// </summary>
-public record Environment
+public sealed record Environment
 {
     public required EnvironmentId Id { get; init; }
     public required string Name { get; init; }
@@ -44,5 +44,10 @@ public record Environment
     {
         var environmentResourceInstance = EnvironmentResource.Create(name, templateVersion, this, inputs);
         Resources.Add(environmentResourceInstance);
+    }
+
+    public void AddResource(EnvironmentResource environmentResource)
+    {
+        Resources.Add(environmentResource);
     }
 }

@@ -12,20 +12,22 @@ using Conductor.Domain.Models.Resource;
 using Conductor.Domain.Services;
 using Environment = Conductor.Domain.Models.Environment;
 
-var me = new Owner
-{
-    Id = Guid.NewGuid(),
-    Name = "James",
-    EmailAddress = "jamestest@gmail.com"
-};
-
 var cosmosResourceTemplate = new ResourceTemplate
 {
     Id = new ResourceTemplateId(Guid.NewGuid()),
     Name = "Cosmos Db",
     Description = "The Cosmos Db Terraform Resource Template",
-    Provider = ResourceTemplate.ResourceTemplateProvider.Terraform,
-    Type = ResourceTemplate.ResourceTemplateType.Database
+    Provider = ResourceTemplateProvider.Terraform,
+    Type = ResourceTemplateType.Database
+};
+
+var blobStorageTemplate = new ResourceTemplate
+{
+    Id = new ResourceTemplateId(Guid.NewGuid()),
+    Name = "Cosmos Db",
+    Description = "The Azure Blob Storage Terraform Resource Template",
+    Provider = ResourceTemplateProvider.Terraform,
+    Type = ResourceTemplateType.Storage
 };
 
 var cosmosV1Template = new ResourceTemplateVersion
@@ -37,12 +39,23 @@ var cosmosV1Template = new ResourceTemplateVersion
     Notes = "Version 1 of our Cosmos Db Module"
 };
 
+var blobStorageTemplateV1 = new ResourceTemplateVersion
+{
+    TemplateId = blobStorageTemplate.Id,
+    Version = "v1.0",
+    Source = new Uri("https://github.com/test"),
+    CreatedAt = default,
+    Notes = "Version 1 of our Blob Storage Module"
+};
+
+// Create Dev Environment and Add Cosmos Db Dev Environment Resources
 var devEnvironment = Environment.Create("Dev", "The Dev Environment");
-devEnvironment.AddResource("Cosmos Db Dev", cosmosV1Template, []);
+var devCosmosDbResource = EnvironmentResource.Create("Cosmos Db Dev", cosmosV1Template, devEnvironment, []);
+devEnvironment.AddResource(devCosmosDbResource);
 
 var app = Application.Create("Shopping Api");
-app.AddResource("Blob Storage Container", cosmosV1Template, []);
-app.AddOwner(me);
+var shoppingApiBlobStorage = ApplicationResource.Create("Blob Storage Shopping Api", blobStorageTemplateV1, app, []);
+app.AddResource(shoppingApiBlobStorage);
 
 var deploymentManager = new DeploymentManager();
 var deployment = deploymentManager.DeployAppToEnvironment(app, devEnvironment);
