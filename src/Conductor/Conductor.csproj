@@ -17,4 +17,10 @@
       <ProjectReference Include="..\Conductor.Domain\Conductor.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="developer-config.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>

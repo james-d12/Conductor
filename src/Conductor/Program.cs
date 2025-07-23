@@ -7,10 +7,11 @@
  * Updating the version of Cosmos Db in DEV to V2 (Platform Engineer)
  */
 
-using Conductor.Domain.Models;
-using Conductor.Domain.Models.Resource;
+using Conductor.Domain.Models.Application;
+using Conductor.Domain.Models.Environment;
+using Conductor.Domain.Models.ResourceTemplate;
 using Conductor.Domain.Services;
-using Environment = Conductor.Domain.Models.Environment;
+using Environment = Conductor.Domain.Models.Environment.Environment;
 
 var cosmosResourceTemplate = new ResourceTemplate
 {
@@ -18,8 +19,9 @@ var cosmosResourceTemplate = new ResourceTemplate
     Name = "Cosmos Db",
     Description = "The Cosmos Db Terraform Resource Template",
     Provider = ResourceTemplateProvider.Terraform,
-    Type = ResourceTemplateType.Database
+    Type = ResourceTemplateType.AzureCosmosDb
 };
+cosmosResourceTemplate.AddVersion("v1.0", new Uri("https://github.com/test"), "Version 1 of our Cosmos Db Module");
 
 var blobStorageTemplate = new ResourceTemplate
 {
@@ -27,34 +29,25 @@ var blobStorageTemplate = new ResourceTemplate
     Name = "Cosmos Db",
     Description = "The Azure Blob Storage Terraform Resource Template",
     Provider = ResourceTemplateProvider.Terraform,
-    Type = ResourceTemplateType.Storage
+    Type = ResourceTemplateType.AzureBlobStorage
 };
+blobStorageTemplate.AddVersion("v1.0", new Uri("https://github.com/test"), "Version 1 of our Blob Storage Module");
 
-var cosmosV1Template = new ResourceTemplateVersion
-{
-    TemplateId = cosmosResourceTemplate.Id,
-    Version = "v1.0",
-    Source = new Uri("https://github.com/test"),
-    CreatedAt = default,
-    Notes = "Version 1 of our Cosmos Db Module"
-};
+var cosmosDbV1 = cosmosResourceTemplate.LatestVersion;
+var blobStorageTemplateV1 = blobStorageTemplate.LatestVersion;
 
-var blobStorageTemplateV1 = new ResourceTemplateVersion
+if (cosmosDbV1 == null || blobStorageTemplateV1 == null)
 {
-    TemplateId = blobStorageTemplate.Id,
-    Version = "v1.0",
-    Source = new Uri("https://github.com/test"),
-    CreatedAt = default,
-    Notes = "Version 1 of our Blob Storage Module"
-};
+    return;
+}
 
 // Create Dev Environment and Add Cosmos Db Dev Environment Resources
 var devEnvironment = Environment.Create("Dev", "The Dev Environment");
-var devCosmosDbResource = EnvironmentResource.Create("Cosmos Db Dev", cosmosV1Template, devEnvironment, []);
+var devCosmosDbResource = EnvironmentResource.Create("Cosmos Db Dev", cosmosDbV1, devEnvironment.Id, []);
 devEnvironment.AddResource(devCosmosDbResource);
 
 var app = Application.Create("Shopping Api");
-var shoppingApiBlobStorage = ApplicationResource.Create("Blob Storage Shopping Api", blobStorageTemplateV1, app, []);
+var shoppingApiBlobStorage = ApplicationResource.Create("Blob Storage Shopping Api", blobStorageTemplateV1, app.Id, []);
 app.AddResource(shoppingApiBlobStorage);
 
 var deploymentManager = new DeploymentManager();

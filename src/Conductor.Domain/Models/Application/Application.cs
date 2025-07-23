@@ -1,6 +1,4 @@
-using Conductor.Domain.Models.Resource;
-
-namespace Conductor.Domain.Models;
+namespace Conductor.Domain.Models.Application;
 
 public readonly record struct ApplicationId(Guid Id)
 {
@@ -17,7 +15,7 @@ public sealed record Application
 {
     public required ApplicationId Id { get; init; }
     public required string Name { get; init; }
-    public required List<Deployment> Deployments { get; init; }
+    public required List<Deployment.Deployment> Deployments { get; init; }
     public required List<ApplicationResource> Resources { get; init; }
 
     public required DateTime CreatedAt { get; set; }
@@ -48,13 +46,13 @@ public sealed record Application
         UpdatedAt = DateTime.Now;
     }
 
-    public void Deploy(Deployment deployment)
+    public void Deploy(Deployment.Deployment deployment)
     {
         Deployments.Add(deployment);
         UpdatedAt = DateTime.Now;
     }
 
-    public void Undeploy(Deployment deployment)
+    public void Undeploy(Deployment.Deployment deployment)
     {
         Deployments.Remove(deployment);
         UpdatedAt = DateTime.Now;

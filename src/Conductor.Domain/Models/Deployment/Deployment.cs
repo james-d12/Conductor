@@ -1,4 +1,7 @@
-namespace Conductor.Domain.Models;
+using Conductor.Domain.Models.Environment;
+using ApplicationId = Conductor.Domain.Models.Application.ApplicationId;
+
+namespace Conductor.Domain.Models.Deployment;
 
 public readonly record struct DeploymentId(Guid Id)
 {

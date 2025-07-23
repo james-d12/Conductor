@@ -1,8 +1,11 @@
-namespace Conductor.Domain.Models.Resource;
+using Conductor.Domain.Models.Resource;
+using Conductor.Domain.Models.ResourceTemplate;
 
-public sealed record EnvironmentResource : Resource
+namespace Conductor.Domain.Models.Environment;
+
+public sealed record EnvironmentResource : Resource.Resource
 {
-    public required Environment Environment { get; init; }
+    public required EnvironmentId EnvironmentId { get; init; }
 
     private EnvironmentResource()
     {
@@ -11,11 +14,10 @@ public sealed record EnvironmentResource : Resource
     public static EnvironmentResource Create(
         string name,
         ResourceTemplateVersion templateVersion,
-        Environment environment,
+        EnvironmentId environmentId,
         Dictionary<string, string> inputs)
     {
         ArgumentException.ThrowIfNullOrEmpty(name);
-        ArgumentNullException.ThrowIfNull(environment);
         ArgumentNullException.ThrowIfNull(templateVersion);
 
         return new EnvironmentResource
@@ -23,7 +25,7 @@ public sealed record EnvironmentResource : Resource
             Id = new ResourceId(),
             Name = name,
             TemplateVersion = templateVersion,
-            Environment = environment,
+            EnvironmentId = environmentId,
             Inputs = inputs
         };
     }

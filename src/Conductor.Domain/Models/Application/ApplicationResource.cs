@@ -1,8 +1,11 @@
-namespace Conductor.Domain.Models.Resource;
+using Conductor.Domain.Models.Resource;
+using Conductor.Domain.Models.ResourceTemplate;
 
-public sealed record ApplicationResource : Resource
+namespace Conductor.Domain.Models.Application;
+
+public sealed record ApplicationResource : Resource.Resource
 {
-    public required Application Application { get; init; }
+    public required ApplicationId ApplicationId { get; init; }
 
     private ApplicationResource()
     {
@@ -11,11 +14,10 @@ public sealed record ApplicationResource : Resource
     public static ApplicationResource Create(
         string name,
         ResourceTemplateVersion templateVersion,
-        Application application,
+        ApplicationId applicationId,
         Dictionary<string, string> inputs)
     {
         ArgumentException.ThrowIfNullOrEmpty(name);
-        ArgumentNullException.ThrowIfNull(application);
         ArgumentNullException.ThrowIfNull(templateVersion);
 
         return new ApplicationResource
@@ -23,7 +25,7 @@ public sealed record ApplicationResource : Resource
             Id = new ResourceId(),
             Name = name,
             TemplateVersion = templateVersion,
-            Application = application,
+            ApplicationId = applicationId,
             Inputs = inputs
         };
     }

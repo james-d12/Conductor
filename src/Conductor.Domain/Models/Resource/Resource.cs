@@ -1,3 +1,5 @@
+using Conductor.Domain.Models.ResourceTemplate;
+
 namespace Conductor.Domain.Models.Resource;
 
 public readonly record struct ResourceId(Guid Id)

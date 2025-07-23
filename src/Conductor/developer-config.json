@@ -1,0 +1,11 @@
+{
+  "name": "Shopping API",
+  "resources": [
+    {
+      "db": {
+        "type": "cosmos",
+        "id": "cosmos_shared"
+      }
+    }
+  ]
+}
