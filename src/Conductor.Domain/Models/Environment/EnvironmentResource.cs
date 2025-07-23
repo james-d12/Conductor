@@ -14,8 +14,7 @@ public sealed record EnvironmentResource : Resource.Resource
     public static EnvironmentResource Create(
         string name,
         ResourceTemplateVersion templateVersion,
-        EnvironmentId environmentId,
-        Dictionary<string, string> inputs)
+        EnvironmentId environmentId)
     {
         ArgumentException.ThrowIfNullOrEmpty(name);
         ArgumentNullException.ThrowIfNull(templateVersion);
@@ -25,8 +24,7 @@ public sealed record EnvironmentResource : Resource.Resource
             Id = new ResourceId(),
             Name = name,
             TemplateVersion = templateVersion,
-            EnvironmentId = environmentId,
-            Inputs = inputs
+            EnvironmentId = environmentId
         };
     }
 }

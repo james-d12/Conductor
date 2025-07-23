@@ -1,3 +1,5 @@
+using Conductor.Domain.Models.ResourceTemplate.Requests;
+
 namespace Conductor.Domain.Models.ResourceTemplate;
 
 public readonly record struct ResourceTemplateId(Guid Id)
@@ -7,42 +9,85 @@ public readonly record struct ResourceTemplateId(Guid Id)
     }
 }
 
-/// <summary>
-/// Represents an external requirement that an application needs (e.g. A Cosmos Db with a Container)
-/// </summary>
 public sealed record ResourceTemplate
 {
-    public required ResourceTemplateId Id { get; init; }
-    public required string Name { get; init; }
-    public required string Description { get; init; }
-    public required ResourceTemplateProvider Provider { get; init; }
-    public required ResourceTemplateType Type { get; init; }
-    private readonly List<ResourceTemplateVersion> _versions = [];
+    public ResourceTemplateId Id { get; private init; }
+    public string Name { get; private set; }
+    public string Description { get; private set; }
+    public ResourceTemplateProvider Provider { get; private set; }
+    public ResourceTemplateType Type { get; private set; }
+    public DateTime CreatedAt { get; private init; }
+    public DateTime UpdatedAt { get; private set; }
 
-    public void AddVersion(string version, Uri source, string notes)
+    private readonly List<ResourceTemplateVersion> _versions = [];
+    public IReadOnlyList<ResourceTemplateVersion> Versions => _versions.AsReadOnly();
+    public ResourceTemplateVersion? LatestVersion => _versions.LastOrDefault();
+
+    private ResourceTemplate()
     {
-        if (_versions.Any(v => v.Version == version))
+    }
+
+    public static ResourceTemplate Create(CreateResourceTemplateRequest request)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(request.Name);
+        ArgumentException.ThrowIfNullOrEmpty(request.Description);
+
+        return new ResourceTemplate
         {
-            throw new InvalidOperationException("Version already exists.");
+            Id = new ResourceTemplateId(),
+            Name = request.Name,
+            Description = request.Description,
+            Provider = request.Provider,
+            Type = request.Type,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
+        };
+    }
+
+    public static ResourceTemplate CreateWithVersion(CreateResourceTemplateWithVersionRequest request)
+    {
+        var resourceTemplate = Create(new CreateResourceTemplateRequest
+        {
+            Name = request.Name,
+            Description = request.Description,
+            Provider = request.Provider,
+            Type = request.Type
+        });
+        resourceTemplate.AddVersion(new CreateNewResourceTemplateVersionRequest
+        {
+            Version = request.Version,
+            Source = request.Source,
+            Notes = request.Notes,
+            Inputs = request.Inputs,
+            Outputs = request.Outputs
+        });
+        return resourceTemplate;
+    }
+
+    public void AddVersion(CreateNewResourceTemplateVersionRequest versionRequest)
+    {
+        if (_versions.Any(v => v.Version == versionRequest.Version))
+        {
+            throw new InvalidOperationException($"Version '{versionRequest.Version}' already exists.");
         }
 
-        _versions.Insert(0, new ResourceTemplateVersion
+        if (_versions.Any(v => v.Source == versionRequest.Source))
+        {
+            throw new InvalidOperationException($"Source '{versionRequest.Source}' already exists.");
+        }
+
+        var newVersion = ResourceTemplateVersion.Create(new CreateResourceTemplateVersionRequest
         {
             TemplateId = Id,
-            Version = version,
-            Source = source,
+            Version = versionRequest.Version,
+            Source = versionRequest.Source,
             CreatedAt = DateTime.UtcNow,
-            Notes = notes
+            Notes = versionRequest.Notes,
+            Inputs = versionRequest.Inputs,
+            Outputs = versionRequest.Outputs
         });
+
+        _versions.Add(newVersion);
+        UpdatedAt = DateTime.UtcNow;
     }
-
-    public void RemoveVersion(string version)
-    {
-        _versions.RemoveAll(v => v.Version == version);
-    }
-
-    public ResourceTemplateVersion? LatestVersion => _versions.FirstOrDefault();
-
-    public ResourceTemplateVersion? GetVersion(string version) =>
-        _versions.FirstOrDefault(v => v.Version == version);
 }

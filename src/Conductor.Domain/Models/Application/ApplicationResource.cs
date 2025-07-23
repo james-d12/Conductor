@@ -14,8 +14,7 @@ public sealed record ApplicationResource : Resource.Resource
     public static ApplicationResource Create(
         string name,
         ResourceTemplateVersion templateVersion,
-        ApplicationId applicationId,
-        Dictionary<string, string> inputs)
+        ApplicationId applicationId)
     {
         ArgumentException.ThrowIfNullOrEmpty(name);
         ArgumentNullException.ThrowIfNull(templateVersion);
@@ -25,8 +24,7 @@ public sealed record ApplicationResource : Resource.Resource
             Id = new ResourceId(),
             Name = name,
             TemplateVersion = templateVersion,
-            ApplicationId = applicationId,
-            Inputs = inputs
+            ApplicationId = applicationId
         };
     }
 }

@@ -1,4 +1,3 @@
-using Conductor.Domain.Models.Resource;
 using Conductor.Domain.Models.ResourceTemplate;
 
 namespace Conductor.Domain.Services;

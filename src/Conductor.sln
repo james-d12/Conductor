@@ -4,6 +4,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Conductor", "Conductor\Cond
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Conductor.Domain", "Conductor.Domain\Conductor.Domain.csproj", "{62ADF367-D93B-4928-8711-7BF58D2BFA4E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Conductor.Domain.Tests", "Conductor.Domain.Tests\Conductor.Domain.Tests.csproj", "{5284C700-03FA-4447-963C-1CE391592C7F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Conductor.Infrastructure", "Conductor.Infrastructure\Conductor.Infrastructure.csproj", "{2AA583FB-8B4F-4871-A106-82EA58F3552C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Root", "Root", "{197AC97F-893D-40D8-ABEE-5C722375AFB7}"
+	ProjectSection(SolutionItems) = preProject
+		..\.gitignore = ..\.gitignore
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +27,13 @@ Global
 		{62ADF367-D93B-4928-8711-7BF58D2BFA4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{62ADF367-D93B-4928-8711-7BF58D2BFA4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{62ADF367-D93B-4928-8711-7BF58D2BFA4E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5284C700-03FA-4447-963C-1CE391592C7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5284C700-03FA-4447-963C-1CE391592C7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5284C700-03FA-4447-963C-1CE391592C7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5284C700-03FA-4447-963C-1CE391592C7F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2AA583FB-8B4F-4871-A106-82EA58F3552C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2AA583FB-8B4F-4871-A106-82EA58F3552C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2AA583FB-8B4F-4871-A106-82EA58F3552C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2AA583FB-8B4F-4871-A106-82EA58F3552C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
