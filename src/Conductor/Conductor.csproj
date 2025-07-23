@@ -9,18 +9,19 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Scriban" Version="6.2.1" />
-      <PackageReference Include="YamlDotNet" Version="16.3.0" />
+        <FrameworkReference Include="Microsoft.AspNetCore.App"/>
+        <PackageReference Include="Scriban" Version="6.2.1"/>
+        <PackageReference Include="YamlDotNet" Version="16.3.0"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Conductor.Domain\Conductor.Domain.csproj" />
+        <ProjectReference Include="..\Conductor.Infrastructure\Conductor.Infrastructure.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="developer-config.json">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
+        <None Update="developer-config.json">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 
 </Project>

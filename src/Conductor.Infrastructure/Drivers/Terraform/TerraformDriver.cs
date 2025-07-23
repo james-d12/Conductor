@@ -10,9 +10,9 @@ public sealed class TerraformDriver : IResourceDriver
     public string Name => "Terraform";
 
     private readonly ILogger<TerraformDriver> _logger;
-    private readonly TerraformRenderer _renderer;
+    private readonly ITerraformRenderer _renderer;
 
-    public TerraformDriver(ILogger<TerraformDriver> logger, TerraformRenderer renderer)
+    public TerraformDriver(ILogger<TerraformDriver> logger, ITerraformRenderer renderer)
     {
         _logger = logger;
         _renderer = renderer;
@@ -21,24 +21,20 @@ public sealed class TerraformDriver : IResourceDriver
     public async Task ValidateAsync(ResourceTemplate template, Dictionary<string, string> inputs)
     {
         _logger.LogInformation("Validating Template: {Template} using the Terraform Driver.", template.Name);
-        var tempDir = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+        var tempDir = Path.Combine(Path.GetTempPath(), "conductor-test");
         Directory.CreateDirectory(tempDir);
 
         try
         {
             // 1. Write module block
-            var mainTf = _renderer.Render(template);
+            var mainTf = _renderer.Render(template, inputs);
             await File.WriteAllTextAsync(Path.Combine(tempDir, "main.tf"), mainTf);
 
-            // 2. Run terraform init
-            await RunTerraformCommand("init", tempDir);
-
-            // 3. Run terraform validate
-            await RunTerraformCommand("validate", tempDir);
+            _logger.LogInformation("Written contents to: {FilePath}", tempDir + "/main.tf");
         }
         finally
         {
-            Directory.Delete(tempDir, true);
+            //Directory.Delete(tempDir, true);
         }
     }
 
@@ -59,7 +55,6 @@ public sealed class TerraformDriver : IResourceDriver
         // run `terraform destroy`
         throw new NotImplementedException();
     }
-
 
     private static async Task RunTerraformCommand(string command, string workingDirectory)
     {

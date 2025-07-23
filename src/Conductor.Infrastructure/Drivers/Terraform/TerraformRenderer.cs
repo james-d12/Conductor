@@ -3,9 +3,14 @@ using Conductor.Domain.Models.ResourceTemplate;
 
 namespace Conductor.Infrastructure.Drivers.Terraform;
 
-public sealed class TerraformRenderer
+public interface ITerraformRenderer
 {
-    public string Render(ResourceTemplate template)
+    string Render(ResourceTemplate template, Dictionary<string, string> actualInputs);
+}
+
+public sealed class TerraformRenderer : ITerraformRenderer
+{
+    public string Render(ResourceTemplate template, Dictionary<string, string> actualInputs)
     {
         var moduleName = template.Name.Replace(" ", "_").ToLowerInvariant();
         var version = template.LatestVersion;
@@ -15,23 +20,26 @@ public sealed class TerraformRenderer
             return string.Empty;
         }
 
-        var source = version.Source.ToString();
-        var inputs = version.Inputs ?? new Dictionary<string, string>();
-
-        var sb = new StringBuilder();
-
-        sb.AppendLine($"module \"{moduleName}\" {{");
-        sb.AppendLine($"  source = \"{source}\"");
-
-        foreach (var kvp in inputs)
+        foreach (var requiredInputKey in version.Inputs.Keys)
         {
-            var value = QuoteIfNeeded(kvp.Value);
-            sb.AppendLine($"  {kvp.Key} = {value}");
+            if (!actualInputs.ContainsKey(requiredInputKey))
+            {
+                throw new InvalidOperationException(
+                    $"Missing required input '{requiredInputKey}' for template '{template.Name}'.");
+            }
         }
 
-        sb.AppendLine("}");
+        var sb = new StringBuilder();
+        sb.AppendLine($"module \"{moduleName}\" {{");
+        sb.AppendLine($"  source = \"{version.Source.ToString()}\"");
 
-        return sb.ToString();
+        foreach (var inputKey in version.Inputs.Keys)
+        {
+            var value = QuoteIfNeeded(actualInputs[inputKey]);
+            sb.AppendLine($"  {inputKey} = {value}");
+        }
+
+        return sb.AppendLine("}").ToString();
     }
 
     private static string QuoteIfNeeded(string value)
