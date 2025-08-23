@@ -2,8 +2,6 @@
 using Conductor.Domain.Models.ResourceTemplate.Requests;
 using Conductor.Domain.Services;
 using Conductor.Infrastructure;
-using Conductor.Infrastructure.Drivers.Terraform;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -30,18 +28,14 @@ var cosmosDbResourceTemplate = ResourceTemplate.CreateWithVersion(new CreateReso
     Type = ResourceTemplateType.AzureCosmosDb,
     Version = "1.0.0",
     Source = new Uri("https://github.com/terraform/cosmosdb?tag=v1.0.0"),
-    Notes = "",
-    Inputs = [],
-    Outputs = []
+    Notes = ""
 });
 
 cosmosDbResourceTemplate.AddVersion(new CreateNewResourceTemplateVersionRequest
 {
     Version = "1.1.0",
     Source = new Uri("https://github.com/terraform/cosmosdb?tag=v1.1.0"),
-    Notes = "",
-    Inputs = new Dictionary<string, string> { { "Name", "The Name of the Cosmos Db instance" } },
-    Outputs = []
+    Notes = ""
 });
 
 var terraformDriver = host.Services.GetRequiredService<IResourceDriver>();

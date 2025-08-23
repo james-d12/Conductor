@@ -1,5 +1,5 @@
 using Conductor.Domain.Services;
-using Conductor.Infrastructure.Drivers.Terraform;
+using Conductor.Infrastructure.Terraform;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Conductor.Infrastructure;

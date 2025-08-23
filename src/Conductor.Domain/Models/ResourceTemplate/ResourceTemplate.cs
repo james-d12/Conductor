@@ -57,9 +57,7 @@ public sealed record ResourceTemplate
         {
             Version = request.Version,
             Source = request.Source,
-            Notes = request.Notes,
-            Inputs = request.Inputs,
-            Outputs = request.Outputs
+            Notes = request.Notes
         });
         return resourceTemplate;
     }
@@ -82,9 +80,7 @@ public sealed record ResourceTemplate
             Version = versionRequest.Version,
             Source = versionRequest.Source,
             CreatedAt = DateTime.UtcNow,
-            Notes = versionRequest.Notes,
-            Inputs = versionRequest.Inputs,
-            Outputs = versionRequest.Outputs
+            Notes = versionRequest.Notes
         });
 
         _versions.Add(newVersion);

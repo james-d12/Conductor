@@ -1,4 +1,3 @@
-using Conductor.Domain.Models;
 using Conductor.Domain.Models.Application;
 using Conductor.Domain.Models.Deployment;
 using Environment = Conductor.Domain.Models.Environment.Environment;

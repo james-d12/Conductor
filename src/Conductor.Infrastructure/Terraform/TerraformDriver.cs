@@ -3,7 +3,7 @@ using Conductor.Domain.Models.ResourceTemplate;
 using Conductor.Domain.Services;
 using Microsoft.Extensions.Logging;
 
-namespace Conductor.Infrastructure.Drivers.Terraform;
+namespace Conductor.Infrastructure.Terraform;
 
 public sealed class TerraformDriver : IResourceDriver
 {
@@ -34,7 +34,7 @@ public sealed class TerraformDriver : IResourceDriver
         }
         finally
         {
-            //Directory.Delete(tempDir, true);
+            Directory.Delete(tempDir, true);
         }
     }
 

@@ -1,7 +1,7 @@
 using System.Text;
 using Conductor.Domain.Models.ResourceTemplate;
 
-namespace Conductor.Infrastructure.Drivers.Terraform;
+namespace Conductor.Infrastructure.Terraform;
 
 public interface ITerraformRenderer
 {
@@ -20,26 +20,18 @@ public sealed class TerraformRenderer : ITerraformRenderer
             return string.Empty;
         }
 
-        foreach (var requiredInputKey in version.Inputs.Keys)
-        {
-            if (!actualInputs.ContainsKey(requiredInputKey))
-            {
-                throw new InvalidOperationException(
-                    $"Missing required input '{requiredInputKey}' for template '{template.Name}'.");
-            }
-        }
-
         var sb = new StringBuilder();
         sb.AppendLine($"module \"{moduleName}\" {{");
         sb.AppendLine($"  source = \"{version.Source.ToString()}\"");
 
-        foreach (var inputKey in version.Inputs.Keys)
+        foreach (var kvp in actualInputs)
         {
-            var value = QuoteIfNeeded(actualInputs[inputKey]);
-            sb.AppendLine($"  {inputKey} = {value}");
+            var value = QuoteIfNeeded(kvp.Value);
+            sb.AppendLine($"  {kvp.Key} = {value}");
         }
 
-        return sb.AppendLine("}").ToString();
+        sb.AppendLine("}");
+        return sb.ToString();
     }
 
     private static string QuoteIfNeeded(string value)

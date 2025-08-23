@@ -56,9 +56,7 @@ public sealed class ResourceTemplateTests
         {
             Version = "1.0.0",
             Source = new Uri("https://example.com/v1"),
-            Notes = _fixture.Create<string>(),
-            Inputs = _fixture.Create<Dictionary<string, string>>(),
-            Outputs = _fixture.Create<Dictionary<string, string>>()
+            Notes = _fixture.Create<string>()
         };
 
         template.AddVersion(versionRequest);
@@ -85,18 +83,14 @@ public sealed class ResourceTemplateTests
         {
             Version = version,
             Source = source1,
-            Notes = _fixture.Create<string>(),
-            Inputs = _fixture.Create<Dictionary<string, string>>(),
-            Outputs = _fixture.Create<Dictionary<string, string>>()
+            Notes = _fixture.Create<string>()
         });
 
         var duplicate = new CreateNewResourceTemplateVersionRequest
         {
             Version = version,
             Source = source2,
-            Notes = _fixture.Create<string>(),
-            Inputs = _fixture.Create<Dictionary<string, string>>(),
-            Outputs = _fixture.Create<Dictionary<string, string>>()
+            Notes = _fixture.Create<string>()
         };
 
         var ex = Assert.Throws<InvalidOperationException>(() => template.AddVersion(duplicate));
@@ -118,18 +112,14 @@ public sealed class ResourceTemplateTests
         {
             Version = "1.0.0",
             Source = source,
-            Notes = _fixture.Create<string>(),
-            Inputs = _fixture.Create<Dictionary<string, string>>(),
-            Outputs = _fixture.Create<Dictionary<string, string>>()
+            Notes = _fixture.Create<string>()
         });
 
         var duplicate = new CreateNewResourceTemplateVersionRequest
         {
             Version = "2.0.0",
             Source = source,
-            Notes = _fixture.Create<string>(),
-            Inputs = _fixture.Create<Dictionary<string, string>>(),
-            Outputs = _fixture.Create<Dictionary<string, string>>()
+            Notes = _fixture.Create<string>()
         };
 
         var ex = Assert.Throws<InvalidOperationException>(() => template.AddVersion(duplicate));
