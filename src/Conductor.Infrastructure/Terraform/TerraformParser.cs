@@ -34,7 +34,8 @@ public sealed class TerraformParser : ITerraformParser
         }
 
         var inputJsonPath = Path.Combine(_options.TemporaryDirectory, $"{Guid.NewGuid().ToString()}-inputs.json");
-        var createdJsonFile = await TerraformCommandLine.GenerateOutputJsonAsync(inputFile.Directory, inputJsonPath);
+        var createdJsonFile =
+            await TerraformCommandLine.GenerateOutputJsonAsync(inputFile.Directory, inputJsonPath, _logger);
 
         if (!createdJsonFile)
         {
@@ -57,7 +58,8 @@ public sealed class TerraformParser : ITerraformParser
         }
 
         var outputJsonPath = Path.Combine(_options.TemporaryDirectory, $"{Guid.NewGuid().ToString()}-outputs.json");
-        var createdJsonFile = await TerraformCommandLine.GenerateOutputJsonAsync(outputFile.Directory, outputJsonPath);
+        var createdJsonFile =
+            await TerraformCommandLine.GenerateOutputJsonAsync(outputFile.Directory, outputJsonPath, _logger);
 
         if (!createdJsonFile)
         {

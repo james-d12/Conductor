@@ -1,5 +1,5 @@
 using System.Text;
-using Conductor.Domain.Models.ResourceTemplate;
+using Conductor.Domain.Models;
 
 namespace Conductor.Infrastructure.Terraform;
 

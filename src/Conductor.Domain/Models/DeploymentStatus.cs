@@ -1,4 +1,4 @@
-namespace Conductor.Domain.Models.Deployment;
+namespace Conductor.Domain.Models;
 
 public enum DeploymentStatus
 {

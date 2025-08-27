@@ -1,6 +1,6 @@
 ﻿using AutoFixture;
-using Conductor.Domain.Models.ResourceTemplate;
-using Conductor.Domain.Models.ResourceTemplate.Requests;
+using Conductor.Domain.Models;
+using Conductor.Domain.Models.Requests;
 
 namespace Conductor.Domain.Tests.Models.ResourceTemplate;
 
@@ -16,7 +16,7 @@ public sealed class ResourceTemplateTests
             .With(x => x.Type, ResourceTemplateType.AzureCosmosDb)
             .Create();
 
-        var template = Domain.Models.ResourceTemplate.ResourceTemplate.Create(request);
+        var template = Domain.Models.ResourceTemplate.Create(request);
 
         Assert.Equal(request.Name, template.Name);
         Assert.Equal(request.Description, template.Description);
@@ -36,7 +36,7 @@ public sealed class ResourceTemplateTests
             .With(x => x.Source, new Uri("https://example.com/v1"))
             .Create();
 
-        var template = Domain.Models.ResourceTemplate.ResourceTemplate.CreateWithVersion(request);
+        var template = Domain.Models.ResourceTemplate.CreateWithVersion(request);
 
         Assert.Single(template.Versions);
         Assert.Equal(request.Version, template.LatestVersion?.Version);
@@ -50,7 +50,7 @@ public sealed class ResourceTemplateTests
             .With(x => x.Type, ResourceTemplateType.AzureCosmosDb)
             .Create();
 
-        var template = Domain.Models.ResourceTemplate.ResourceTemplate.Create(templateRequest);
+        var template = Domain.Models.ResourceTemplate.Create(templateRequest);
 
         var versionRequest = new CreateNewResourceTemplateVersionRequest
         {
@@ -68,7 +68,7 @@ public sealed class ResourceTemplateTests
     [Fact]
     public void AddVersion_ShouldThrow_WhenVersionExists()
     {
-        var template = Domain.Models.ResourceTemplate.ResourceTemplate.Create(_fixture
+        var template = Domain.Models.ResourceTemplate.Create(_fixture
             .Build<CreateResourceTemplateRequest>()
             .With(x => x.Provider, ResourceTemplateProvider.Terraform)
             .With(x => x.Type, ResourceTemplateType.AzureCosmosDb)
@@ -100,7 +100,7 @@ public sealed class ResourceTemplateTests
     [Fact]
     public void AddVersion_ShouldThrow_WhenSourceExists()
     {
-        var template = Domain.Models.ResourceTemplate.ResourceTemplate.Create(_fixture
+        var template = Domain.Models.ResourceTemplate.Create(_fixture
             .Build<CreateResourceTemplateRequest>()
             .With(x => x.Provider, ResourceTemplateProvider.Terraform)
             .With(x => x.Type, ResourceTemplateType.AzureCosmosDb)
@@ -133,7 +133,7 @@ public sealed class ResourceTemplateTests
     {
         var valid = _fixture.Create<string>();
 
-        Assert.Throws<ArgumentException>(() => Domain.Models.ResourceTemplate.ResourceTemplate.Create(
+        Assert.Throws<ArgumentException>(() => Domain.Models.ResourceTemplate.Create(
             new CreateResourceTemplateRequest
             {
                 Name = invalid!,
@@ -142,7 +142,7 @@ public sealed class ResourceTemplateTests
                 Type = ResourceTemplateType.AzureCosmosDb
             }));
 
-        Assert.Throws<ArgumentException>(() => Domain.Models.ResourceTemplate.ResourceTemplate.Create(
+        Assert.Throws<ArgumentException>(() => Domain.Models.ResourceTemplate.Create(
             new CreateResourceTemplateRequest
             {
                 Name = valid,

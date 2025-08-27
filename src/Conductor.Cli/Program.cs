@@ -1,5 +1,5 @@
-﻿using Conductor.Domain.Models.ResourceTemplate;
-using Conductor.Domain.Models.ResourceTemplate.Requests;
+﻿using Conductor.Domain.Models;
+using Conductor.Domain.Models.Requests;
 using Conductor.Domain.Services;
 using Conductor.Infrastructure;
 using Microsoft.Extensions.Configuration;
@@ -14,7 +14,7 @@ builder.Configuration.AddUserSecrets<Program>();
 builder.Logging.ClearProviders();
 builder.Logging.AddJsonConsole();
 builder.Logging.AddConfiguration(builder.Configuration.GetSection("Logging"));
-builder.Services.AddInfrastructureServices();
+builder.Services.AddInfrastructureServices(builder.Configuration);
 
 builder.Services.AddLogging();
 
@@ -27,14 +27,14 @@ var cosmosDbResourceTemplate = ResourceTemplate.CreateWithVersion(new CreateReso
     Provider = ResourceTemplateProvider.Terraform,
     Type = ResourceTemplateType.AzureCosmosDb,
     Version = "1.0.0",
-    Source = new Uri("https://github.com/terraform/cosmosdb?tag=v1.0.0"),
+    Source = new Uri("https://github.com/cloudposse/terraform-example-module.git?tag=v1.0.0"),
     Notes = ""
 });
 
 cosmosDbResourceTemplate.AddVersion(new CreateNewResourceTemplateVersionRequest
 {
     Version = "1.1.0",
-    Source = new Uri("https://github.com/terraform/cosmosdb?tag=v1.1.0"),
+    Source = new Uri("https://github.com/cloudposse/terraform-example-module.git"),
     Notes = ""
 });
 

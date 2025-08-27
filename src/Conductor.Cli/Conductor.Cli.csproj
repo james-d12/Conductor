@@ -5,7 +5,6 @@
         <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <RootNamespace>Conductor</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -20,6 +19,9 @@
 
     <ItemGroup>
         <None Update="developer-config.json">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="appsettings.json">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
     </ItemGroup>

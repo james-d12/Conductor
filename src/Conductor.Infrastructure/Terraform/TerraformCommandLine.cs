@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Microsoft.Extensions.Logging;
 
 namespace Conductor.Infrastructure.Terraform;
 
@@ -24,7 +25,7 @@ public static class TerraformCommandLine
         return File.Exists(outputJsonPath);
     }
 
-    public static async Task<bool> GenerateOutputJsonAsync(string executeDirectory, string outputJsonPath)
+    public static async Task<bool> GenerateOutputJsonAsync(string executeDirectory, string outputJsonPath, ILogger logger)
     {
         var startInfo = new ProcessStartInfo
         {
@@ -40,7 +41,22 @@ public static class TerraformCommandLine
         using var process = new Process();
         process.StartInfo = startInfo;
         process.Start();
+        
+        var stdOutTask = process.StandardOutput.ReadToEndAsync();
+        var stdErrTask = process.StandardError.ReadToEndAsync();
+        
         await process.WaitForExitAsync();
+        
+        var stdOut = await stdOutTask;
+        var stdErr = await stdErrTask;
+
+        logger.LogDebug("Terraform Generate Output for {Source}:\n{StdOut}", outputJsonPath, stdOut);
+
+        if (process.ExitCode != 0)
+        {
+            logger.LogWarning("Could not Generate Output {Source} Due to {Error}", outputJsonPath, stdErr);
+        }
+        
         return File.Exists(outputJsonPath);
     }
 }

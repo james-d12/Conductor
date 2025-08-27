@@ -1,6 +1,6 @@
-using Conductor.Domain.Models.ResourceTemplate.Requests;
+using Conductor.Domain.Models.Requests;
 
-namespace Conductor.Domain.Models.ResourceTemplate;
+namespace Conductor.Domain.Models;
 
 public readonly record struct ResourceTemplateId(Guid Id)
 {

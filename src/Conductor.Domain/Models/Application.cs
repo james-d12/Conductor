@@ -1,4 +1,4 @@
-namespace Conductor.Domain.Models.Application;
+namespace Conductor.Domain.Models;
 
 public readonly record struct ApplicationId(Guid Id)
 {
@@ -15,8 +15,8 @@ public sealed record Application
 {
     public required ApplicationId Id { get; init; }
     public required string Name { get; init; }
-    public required List<Deployment.Deployment> Deployments { get; init; }
-    public required List<ApplicationResource> Resources { get; init; }
+    public required Repository Repository { get; init; }
+    public required List<Deployment> Deployments { get; init; }
 
     public required DateTime CreatedAt { get; set; }
     public required DateTime UpdatedAt { get; set; }
@@ -25,7 +25,7 @@ public sealed record Application
     {
     }
 
-    public static Application Create(string name)
+    public static Application Create(string name, Repository repository)
     {
         ArgumentException.ThrowIfNullOrEmpty(name);
 
@@ -33,26 +33,20 @@ public sealed record Application
         {
             Id = new ApplicationId(),
             Name = name,
+            Repository = repository,
             Deployments = [],
-            Resources = [],
             CreatedAt = DateTime.Now,
             UpdatedAt = DateTime.Now
         };
     }
 
-    public void AddResource(ApplicationResource applicationResource)
-    {
-        Resources.Add(applicationResource);
-        UpdatedAt = DateTime.Now;
-    }
-
-    public void Deploy(Deployment.Deployment deployment)
+    public void Deploy(Deployment deployment)
     {
         Deployments.Add(deployment);
         UpdatedAt = DateTime.Now;
     }
 
-    public void Undeploy(Deployment.Deployment deployment)
+    public void Undeploy(Deployment deployment)
     {
         Deployments.Remove(deployment);
         UpdatedAt = DateTime.Now;

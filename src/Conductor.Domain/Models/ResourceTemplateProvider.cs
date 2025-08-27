@@ -1,4 +1,4 @@
-namespace Conductor.Domain.Models.ResourceTemplate;
+namespace Conductor.Domain.Models;
 
 public enum ResourceTemplateProvider
 {

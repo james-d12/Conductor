@@ -1,4 +1,4 @@
-namespace Conductor.Domain.Models.ResourceTemplate.Requests;
+namespace Conductor.Domain.Models.Requests;
 
 public sealed record CreateResourceTemplateVersionRequest
 {
