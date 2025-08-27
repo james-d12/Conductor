@@ -1,5 +1,5 @@
 using System.Text.Json;
-using Conductor.Infrastructure.Models;
+using Conductor.Infrastructure.Shared;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 

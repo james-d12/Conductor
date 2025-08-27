@@ -8,12 +8,20 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Conductor.Domain.Tests", "C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Conductor.Infrastructure", "Conductor.Infrastructure\Conductor.Infrastructure.csproj", "{2AA583FB-8B4F-4871-A106-82EA58F3552C}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Root", "Root", "{197AC97F-893D-40D8-ABEE-5C722375AFB7}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{197AC97F-893D-40D8-ABEE-5C722375AFB7}"
 	ProjectSection(SolutionItems) = preProject
 		..\.gitignore = ..\.gitignore
+		..\.editorconfig = ..\.editorconfig
+		..\README.md = ..\README.md
+		..\LICENSE.md = ..\LICENSE.md
+		..\Directory.Build.props = ..\Directory.Build.props
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Conductor.Api", "Conductor.Api\Conductor.Api.csproj", "{3C75C9FD-D6EE-4699-A840-2970E0AAD5BB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Conductor.Persistence", "Conductor.Persistence\Conductor.Persistence.csproj", "{01C8AE02-9673-461B-956A-60DF6133EB24}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{DF637FB7-4F36-4602-9E63-DD55A552E7D8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,5 +49,12 @@ Global
 		{3C75C9FD-D6EE-4699-A840-2970E0AAD5BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3C75C9FD-D6EE-4699-A840-2970E0AAD5BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3C75C9FD-D6EE-4699-A840-2970E0AAD5BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{01C8AE02-9673-461B-956A-60DF6133EB24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{01C8AE02-9673-461B-956A-60DF6133EB24}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01C8AE02-9673-461B-956A-60DF6133EB24}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{01C8AE02-9673-461B-956A-60DF6133EB24}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5284C700-03FA-4447-963C-1CE391592C7F} = {DF637FB7-4F36-4602-9E63-DD55A552E7D8}
 	EndGlobalSection
 EndGlobal

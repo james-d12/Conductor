@@ -41,12 +41,12 @@ public static class TerraformCommandLine
         using var process = new Process();
         process.StartInfo = startInfo;
         process.Start();
-        
+
         var stdOutTask = process.StandardOutput.ReadToEndAsync();
         var stdErrTask = process.StandardError.ReadToEndAsync();
-        
+
         await process.WaitForExitAsync();
-        
+
         var stdOut = await stdOutTask;
         var stdErr = await stdErrTask;
 
@@ -56,7 +56,7 @@ public static class TerraformCommandLine
         {
             logger.LogWarning("Could not Generate Output {Source} Due to {Error}", outputJsonPath, stdErr);
         }
-        
+
         return File.Exists(outputJsonPath);
     }
 }

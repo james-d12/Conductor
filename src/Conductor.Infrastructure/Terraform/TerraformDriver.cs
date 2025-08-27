@@ -1,7 +1,6 @@
 using Conductor.Domain.Models;
 using Conductor.Domain.Services;
-using Conductor.Infrastructure.Models;
-using Conductor.Infrastructure.Utilities;
+using Conductor.Infrastructure.Shared;
 using Microsoft.Extensions.Logging;
 using YamlDotNet.Serialization;
 
@@ -34,7 +33,7 @@ public sealed class TerraformDriver : IResourceDriver
             return;
         }
 
-        var templateDir = Path.Combine(Path.GetTempPath(), "conductor");    
+        var templateDir = Path.Combine(Path.GetTempPath(), "conductor");
         var cloneResult = await GitCommandLine.CloneAsync(latestVersion.Source, templateDir, _logger, CancellationToken.None);
 
         if (!cloneResult)
@@ -70,7 +69,7 @@ public sealed class TerraformDriver : IResourceDriver
 
         var tempDir = Path.Combine("/home/james/Documents/Conductor.Cli");
         Directory.CreateDirectory(tempDir);
-        
+
 
         try
         {

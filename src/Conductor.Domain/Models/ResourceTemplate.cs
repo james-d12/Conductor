@@ -12,8 +12,8 @@ public readonly record struct ResourceTemplateId(Guid Id)
 public sealed record ResourceTemplate
 {
     public ResourceTemplateId Id { get; private init; }
-    public string Name { get; private set; }
-    public string Description { get; private set; }
+    public string Name { get; private set; } = string.Empty;
+    public string Description { get; private set; } = string.Empty;
     public ResourceTemplateProvider Provider { get; private set; }
     public ResourceTemplateType Type { get; private set; }
     public DateTime CreatedAt { get; private init; }

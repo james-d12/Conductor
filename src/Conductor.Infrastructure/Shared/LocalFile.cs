@@ -1,4 +1,4 @@
-namespace Conductor.Infrastructure.Models;
+namespace Conductor.Infrastructure.Shared;
 
 public sealed record LocalFile
 {

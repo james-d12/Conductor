@@ -133,7 +133,7 @@ public sealed class ResourceTemplateTests
     {
         var valid = _fixture.Create<string>();
 
-        Assert.Throws<ArgumentException>(() => Domain.Models.ResourceTemplate.Create(
+        Assert.Throws<ArgumentNullException>(() => Domain.Models.ResourceTemplate.Create(
             new CreateResourceTemplateRequest
             {
                 Name = invalid!,
@@ -142,7 +142,7 @@ public sealed class ResourceTemplateTests
                 Type = ResourceTemplateType.AzureCosmosDb
             }));
 
-        Assert.Throws<ArgumentException>(() => Domain.Models.ResourceTemplate.Create(
+        Assert.Throws<ArgumentNullException>(() => Domain.Models.ResourceTemplate.Create(
             new CreateResourceTemplateRequest
             {
                 Name = valid,

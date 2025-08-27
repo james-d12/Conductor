@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using Microsoft.Extensions.Logging;
 
-namespace Conductor.Infrastructure.Utilities;
+namespace Conductor.Infrastructure.Shared;
 
 public sealed class GitCommandLine
 {
@@ -21,12 +21,12 @@ public sealed class GitCommandLine
         using var process = new Process();
         process.StartInfo = startInfo;
         process.Start();
-        
+
         var stdOutTask = process.StandardOutput.ReadToEndAsync(cancellationToken);
         var stdErrTask = process.StandardError.ReadToEndAsync(cancellationToken);
-        
+
         await process.WaitForExitAsync(cancellationToken);
-        
+
         var stdOut = await stdOutTask;
         var stdErr = await stdErrTask;
 
@@ -36,7 +36,7 @@ public sealed class GitCommandLine
         {
             logger.LogWarning("Could not Clone {Source} Due to {Error}", source, stdErr);
         }
-        
+
         return Directory.Exists(destination);
     }
 }

@@ -1,5 +1,5 @@
 using Conductor.Domain.Services;
-using Conductor.Infrastructure.Models;
+using Conductor.Infrastructure.Shared;
 using Conductor.Infrastructure.Terraform;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
