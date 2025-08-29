@@ -9,7 +9,7 @@ on:
       - master
 
 env:
-  SOLUTION_FILE: src/Conductor.sln
+  SOLUTION_FILE: Conductor.sln
 
 jobs:
   build:
@@ -51,7 +51,7 @@ jobs:
         run: dotnet test ${{ env.SOLUTION_FILE }} --configuration Release --no-build --collect:"XPlat Code Coverage"
 
       - name: Run Mutation Tests
-        run: dotnet stryker 
+        run: dotnet stryker --solution ${{ env.SOLUTION_FILE }}
 
       - name: Build Docker
         run: docker compose build
