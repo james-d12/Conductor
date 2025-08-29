@@ -5,7 +5,7 @@ namespace Conductor.Persistence;
 
 public sealed class ConductorDbContext : DbContext
 {
-    public DbSet<ResourceTemplate> ResourceTemplates { get; init; }
+    public DbSet<ResourceTemplate>? ResourceTemplates { get; init; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
