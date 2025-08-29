@@ -51,7 +51,7 @@ jobs:
         run: dotnet test ${{ env.SOLUTION_FILE }} --configuration Release --no-build --collect:"XPlat Code Coverage"
 
       - name: Run Mutation Tests
-        run: dotnet stryker --solution ${{ env.SOLUTION_FILE }}
+        run: dotnet stryker 
 
       - name: Build Docker
         run: docker compose build
