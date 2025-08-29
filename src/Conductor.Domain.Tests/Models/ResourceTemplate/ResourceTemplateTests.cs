@@ -126,17 +126,15 @@ public sealed class ResourceTemplateTests
         Assert.Contains("Source 'https://example.com/shared' already exists", ex.Message);
     }
 
-    [Theory]
-    [InlineData(null)]
-    [InlineData("")]
-    public void Create_ShouldThrow_WhenNameOrDescriptionIsInvalid(string? invalid)
+    [Fact]
+    public void Create_ShouldThrow_WhenNameOrDescriptionIsNull()
     {
         var valid = _fixture.Create<string>();
 
         Assert.Throws<ArgumentNullException>(() => Domain.Models.ResourceTemplate.Create(
             new CreateResourceTemplateRequest
             {
-                Name = invalid!,
+                Name = null!,
                 Description = valid,
                 Provider = ResourceTemplateProvider.Terraform,
                 Type = ResourceTemplateType.AzureCosmosDb
@@ -145,8 +143,32 @@ public sealed class ResourceTemplateTests
         Assert.Throws<ArgumentNullException>(() => Domain.Models.ResourceTemplate.Create(
             new CreateResourceTemplateRequest
             {
-                Name = valid,
-                Description = invalid!,
+                Name = null!,
+                Description = null!,
+                Provider = ResourceTemplateProvider.Terraform,
+                Type = ResourceTemplateType.AzureCosmosDb
+            }));
+    }
+    
+    [Fact]
+    public void Create_ShouldThrow_WhenNameOrDescriptionIsEmptyString()
+    {
+        var valid = _fixture.Create<string>();
+
+        Assert.Throws<ArgumentException>(() => Domain.Models.ResourceTemplate.Create(
+            new CreateResourceTemplateRequest
+            {
+                Name = string.Empty,
+                Description = valid,
+                Provider = ResourceTemplateProvider.Terraform,
+                Type = ResourceTemplateType.AzureCosmosDb
+            }));
+
+        Assert.Throws<ArgumentException>(() => Domain.Models.ResourceTemplate.Create(
+            new CreateResourceTemplateRequest
+            {
+                Name = string.Empty!,
+                Description = string.Empty!,
                 Provider = ResourceTemplateProvider.Terraform,
                 Type = ResourceTemplateType.AzureCosmosDb
             }));

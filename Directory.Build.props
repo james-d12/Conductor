@@ -13,7 +13,6 @@
         <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
         <EnableRoslynAnalyzers>true</EnableRoslynAnalyzers>
         <CodeAnalysisTreatWarningsAsErrors>true</CodeAnalysisTreatWarningsAsErrors>
-        <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
         <RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
         <RunAnalyzersDuringBuildOnly>true</RunAnalyzersDuringBuildOnly>
     </PropertyGroup>
