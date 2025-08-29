@@ -1,5 +1,5 @@
-using Conductor.Domain.Models;
-using Conductor.Domain.Services;
+using Conductor.Core.Common.Services;
+using Conductor.Core.Modules.ResourceTemplate.Domain;
 using Conductor.Infrastructure.Shared;
 using Microsoft.Extensions.Logging;
 

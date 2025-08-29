@@ -1,6 +1,6 @@
-﻿using Conductor.Domain.Models;
-using Conductor.Domain.Models.Requests;
-using Conductor.Domain.Services;
+﻿using Conductor.Core.Common.Services;
+using Conductor.Core.Modules.ResourceTemplate.Domain;
+using Conductor.Core.Modules.ResourceTemplate.Requests;
 using Conductor.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

@@ -1,4 +1,4 @@
-using Conductor.Domain.Services;
+using Conductor.Core.Common.Services;
 using Conductor.Infrastructure.Shared;
 using Conductor.Infrastructure.Terraform;
 using Microsoft.Extensions.Configuration;

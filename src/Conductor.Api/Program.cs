@@ -1,10 +1,15 @@
 using Conductor.Api;
+using Conductor.Core;
+using Conductor.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
+builder.Services.AddCoreServices();
+builder.Services.AddPersistenceServices();
+
+await builder.Services.ApplyMigrations();
 
 var app = builder.Build();
 
