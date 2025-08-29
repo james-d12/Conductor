@@ -15,6 +15,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\README.md = ..\README.md
 		..\LICENSE.md = ..\LICENSE.md
 		..\Directory.Build.props = ..\Directory.Build.props
+		..\Dockerfile = ..\Dockerfile
+		..\docker-compose.yaml = ..\docker-compose.yaml
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Conductor.Api", "Conductor.Api\Conductor.Api.csproj", "{3C75C9FD-D6EE-4699-A840-2970E0AAD5BB}"
@@ -22,6 +24,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Conductor.Persistence", "Conductor.Persistence\Conductor.Persistence.csproj", "{01C8AE02-9673-461B-956A-60DF6133EB24}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{DF637FB7-4F36-4602-9E63-DD55A552E7D8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Pipelines", "Pipelines", "{E7D2822A-AC18-4D30-A1AF-297E9375D8A6}"
+	ProjectSection(SolutionItems) = preProject
+		..\.github\workflows\ci.yml = ..\.github\workflows\ci.yml
+		..\.github\dependabot.yml = ..\.github\dependabot.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -56,5 +64,6 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{5284C700-03FA-4447-963C-1CE391592C7F} = {DF637FB7-4F36-4602-9E63-DD55A552E7D8}
+		{E7D2822A-AC18-4D30-A1AF-297E9375D8A6} = {197AC97F-893D-40D8-ABEE-5C722375AFB7}
 	EndGlobalSection
 EndGlobal

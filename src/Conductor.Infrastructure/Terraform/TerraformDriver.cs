@@ -2,7 +2,6 @@ using Conductor.Domain.Models;
 using Conductor.Domain.Services;
 using Conductor.Infrastructure.Shared;
 using Microsoft.Extensions.Logging;
-using YamlDotNet.Serialization;
 
 namespace Conductor.Infrastructure.Terraform;
 

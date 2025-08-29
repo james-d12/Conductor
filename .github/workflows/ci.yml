@@ -1,0 +1,57 @@
+name: CI Workflow
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+env:
+  SOLUTION_FILE: src/Conductor.sln
+
+jobs:
+  build:
+    name: "Build and Check"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        env:
+          cache-name: nuget-package-cache
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-${{ env.cache-name }}
+
+      - name: Install Stryker.NET
+        run: dotnet tool install -g dotnet-stryker
+
+      - name: Restore dependencies
+        run: dotnet restore ${{ env.SOLUTION_FILE }}
+
+      - name: Build API
+        run: dotnet build ${{ env.SOLUTION_FILE }} --configuration Release --no-restore
+
+      - name: Check For Vulnerabilities
+        run: dotnet list ${{ env.SOLUTION_FILE }} package --vulnerable
+
+      - name: Format Check
+        run: dotnet format --verify-no-changes --verbosity diagnostic
+
+      - name: Run Tests
+        run: dotnet test ${{ env.SOLUTION_FILE }} --configuration Release --no-build --collect:"XPlat Code Coverage"
+
+      - name: Run Mutation Tests
+        run: dotnet stryker --solution ${{ env.SOLUTION_FILE }}
+
+      - name: Build Docker
+        run: docker compose build

@@ -1,0 +1,9 @@
+version: 2
+updates:
+  - package-ecosystem: "nuget"
+    groups:
+      production-dependencies:
+        dependency-type: "production"
+    directory: "/"
+    schedule:
+      interval: "daily"
