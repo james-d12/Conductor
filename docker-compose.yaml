@@ -1,11 +1,20 @@
 name: conductor
 services:
-  conductor-api:
+  api:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: src/Conductor.Api/Dockerfile
     ports:
       - "8080:8080"
+    develop:
+      watch:
+        - action: sync+restart
+          path: .src/Conductor.Api
+          target: .src/Conductor.Api
+  cli:
+    build:
+      context: .
+      dockerfile: src/Conductor.Cli/Dockerfile
     develop:
       watch:
         - action: sync+restart

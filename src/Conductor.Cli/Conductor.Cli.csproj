@@ -12,6 +12,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Conductor.Infrastructure\Conductor.Infrastructure.csproj"/>
+        <ProjectReference Include="..\Conductor.Persistence\Conductor.Persistence.csproj" />
     </ItemGroup>
 
     <ItemGroup>

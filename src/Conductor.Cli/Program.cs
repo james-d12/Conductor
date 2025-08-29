@@ -1,13 +1,20 @@
-﻿using Conductor.Core.Common.Services;
+﻿using Conductor.Core;
+using Conductor.Core.Common.Services;
 using Conductor.Core.Modules.ResourceTemplate.Domain;
 using Conductor.Core.Modules.ResourceTemplate.Requests;
 using Conductor.Infrastructure;
+using Conductor.Persistence;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 var builder = Host.CreateApplicationBuilder();
+
+builder.Services.AddCoreServices();
+builder.Services.AddPersistenceServices();
+
+await builder.Services.ApplyMigrations();
 
 builder.Configuration.AddUserSecrets<Program>();
 
