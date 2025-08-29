@@ -149,7 +149,7 @@ public sealed class ResourceTemplateTests
                 Type = ResourceTemplateType.AzureCosmosDb
             }));
     }
-    
+
     [Fact]
     public void Create_ShouldThrow_WhenNameOrDescriptionIsEmptyString()
     {
