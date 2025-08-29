@@ -18,5 +18,5 @@ services:
     develop:
       watch:
         - action: sync+restart
-          path: .
-          target: .
+          path: .src/Conductor.Cli
+          target: .src/Conductor.Cli
