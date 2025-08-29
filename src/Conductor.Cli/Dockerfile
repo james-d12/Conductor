@@ -17,6 +17,11 @@ FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
 
 WORKDIR /app
 
+# Install Git and Go with the Terraform Config Inspect Tool
+RUN apt update && apt install golang git -y 
+RUN go install github.com/hashicorp/terraform-config-inspect@latest
+ENV PATH="/usr/local/go/bin:${PATH}"
+
 COPY --from=build "/app/out/Conductor.Cli" ./
 
 ENTRYPOINT ["./Conductor.Cli"]
