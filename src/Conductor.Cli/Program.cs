@@ -27,25 +27,32 @@ builder.Services.AddLogging();
 
 using var host = builder.Build();
 
-var cosmosDbResourceTemplate = ResourceTemplate.CreateWithVersion(new CreateResourceTemplateWithVersionRequest
+var azureStorageAccount = ResourceTemplate.CreateWithVersion(new CreateResourceTemplateWithVersionRequest
 {
-    Name = "Cosmos Db",
-    Description = "The Cosmos Db Terraform Resource Template",
+    Name = "Azure Storage Account",
+    Description = "Azure Storage Account Terraform Module",
     Provider = ResourceTemplateProvider.Terraform,
-    Type = ResourceTemplateType.AzureCosmosDb,
+    Type = ResourceTemplateType.AzureStorageAccount,
     Version = "1.0.0",
-    Source = new Uri("https://github.com/cloudposse/terraform-example-module.git?tag=v1.0.0"),
+    Source = new Uri("https://github.com/aztfm/terraform-azurerm-storage-account.git"),
     Notes = ""
 });
 
-cosmosDbResourceTemplate.AddVersion(new CreateNewResourceTemplateVersionRequest
+var azureVirtualNetwork = ResourceTemplate.CreateWithVersion(new CreateResourceTemplateWithVersionRequest
 {
-    Version = "1.1.0",
-    Source = new Uri("https://github.com/aztfm/terraform-azurerm-storage-account"),
+    Name = "Azure Virtual Network",
+    Description = "Azure Virtual Network Terraform Module",
+    Provider = ResourceTemplateProvider.Terraform,
+    Type = ResourceTemplateType.AzureStorageAccount,
+    Version = "1.0.0",
+    Source = new Uri("https://github.com/aztfm/terraform-azurerm-virtual-network.git"),
     Notes = ""
 });
 
 var terraformDriver = host.Services.GetRequiredService<IResourceDriver>();
 
-await terraformDriver.ValidateAsync(cosmosDbResourceTemplate,
+await terraformDriver.ValidateAsync(azureStorageAccount,
+    new Dictionary<string, string>() { { "Name", "TestCosmos" } });
+
+await terraformDriver.ValidateAsync(azureVirtualNetwork,
     new Dictionary<string, string>() { { "Name", "TestCosmos" } });

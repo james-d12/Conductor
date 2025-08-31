@@ -34,12 +34,12 @@ public static class TerraformCommandLine
         var stdOut = await stdOutTask;
         var stdErr = await stdErrTask;
 
-        logger.LogInformation("Terraform Generate Output for {Source}:\n{StdOut}", outputJsonPath, stdOut);
+        logger.LogDebug("Terraform Generate Output for {Source}:\n{StdOut}", outputJsonPath, stdOut);
 
         if (process.ExitCode == 0)
         {
             await File.WriteAllTextAsync(outputJsonPath, stdOut);
-            logger.LogDebug("Created JSON Output file from Terraform Config Inspect: {File}", outputJsonPath);
+            logger.LogInformation("Created JSON Output file from Terraform Config Inspect: {File}", outputJsonPath);
             return File.Exists(outputJsonPath);
         }
         else

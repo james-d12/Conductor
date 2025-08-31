@@ -46,24 +46,7 @@ public sealed class TerraformDriver : IResourceDriver
 
         _logger.LogInformation("Successfully cloned Repository: {Url} to {Output}", latestVersion.Source, templateDir);
 
-        var variablesFile = Directory
-            .GetFiles(templateDir, "variables.tf", SearchOption.AllDirectories)
-            .FirstOrDefault();
-
-        if (variablesFile is null)
-        {
-            _logger.LogWarning("Could not find variables.tf in template: {Template} found.", template.Name);
-            return;
-        }
-
-        var localFile = new LocalFile
-        {
-            Name = "File",
-            FullPath = variablesFile,
-            Directory = Path.GetDirectoryName(variablesFile) ?? string.Empty
-        };
-
-        TerraformConfig? terraformConfig = await _parser.ParseTerraformModuleAsync(localFile);
+        TerraformConfig? terraformConfig = await _parser.ParseTerraformModuleAsync(templateDir);
 
         foreach (var variable in terraformConfig?.Variables ?? [])
         {
