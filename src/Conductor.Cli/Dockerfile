@@ -20,7 +20,7 @@ WORKDIR /app
 # Install Git and Go with the Terraform Config Inspect Tool
 RUN apt update && apt install golang git -y 
 RUN go install github.com/hashicorp/terraform-config-inspect@latest
-ENV PATH="/usr/local/go/bin:${PATH}"
+ENV PATH="/usr/local/go/bin:/root/go/bin:${PATH}"
 
 COPY --from=build "/app/out/Conductor.Cli" ./
 

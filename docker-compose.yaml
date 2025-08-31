@@ -4,6 +4,8 @@ services:
     build:
       context: .
       dockerfile: src/Conductor.Api/Dockerfile
+    volumes:
+      - /home/james/Documents/Conductor:/tmp/conductor
     ports:
       - "8080:8080"
     develop:
@@ -15,8 +17,11 @@ services:
     build:
       context: .
       dockerfile: src/Conductor.Cli/Dockerfile
+    volumes:
+      - /home/james/Documents/Conductor:/tmp/conductor
     develop:
       watch:
         - action: sync+restart
           path: .src/Conductor.Cli
           target: .src/Conductor.Cli
+                 

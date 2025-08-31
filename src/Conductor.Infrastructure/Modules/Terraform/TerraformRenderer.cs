@@ -1,7 +1,7 @@
 using System.Text;
 using Conductor.Core.Modules.ResourceTemplate.Domain;
 
-namespace Conductor.Infrastructure.Terraform;
+namespace Conductor.Infrastructure.Modules.Terraform;
 
 public interface ITerraformRenderer
 {

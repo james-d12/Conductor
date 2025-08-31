@@ -1,4 +1,4 @@
-namespace Conductor.Infrastructure.Shared;
+namespace Conductor.Infrastructure.Common;
 
 public record TerraformOptions
 {

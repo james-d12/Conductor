@@ -41,7 +41,7 @@ var cosmosDbResourceTemplate = ResourceTemplate.CreateWithVersion(new CreateReso
 cosmosDbResourceTemplate.AddVersion(new CreateNewResourceTemplateVersionRequest
 {
     Version = "1.1.0",
-    Source = new Uri("https://github.com/cloudposse/terraform-example-module.git"),
+    Source = new Uri("https://github.com/aztfm/terraform-azurerm-storage-account"),
     Notes = ""
 });
 

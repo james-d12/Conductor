@@ -1,4 +1,4 @@
-namespace Conductor.Infrastructure.Helmchart;
+namespace Conductor.Infrastructure.Modules.Helmchart;
 
 public interface IHelmchartDriver
 {

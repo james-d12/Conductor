@@ -1,6 +1,6 @@
 using Conductor.Core.Common.Services;
-using Conductor.Infrastructure.Shared;
-using Conductor.Infrastructure.Terraform;
+using Conductor.Infrastructure.Common;
+using Conductor.Infrastructure.Modules.Terraform;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 

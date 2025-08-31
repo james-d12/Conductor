@@ -1,9 +1,10 @@
 using Conductor.Core.Common.Services;
 using Conductor.Core.Modules.ResourceTemplate.Domain;
-using Conductor.Infrastructure.Shared;
+using Conductor.Infrastructure.Common;
+using Conductor.Infrastructure.Modules.Terraform.Models;
 using Microsoft.Extensions.Logging;
 
-namespace Conductor.Infrastructure.Terraform;
+namespace Conductor.Infrastructure.Modules.Terraform;
 
 public sealed class TerraformDriver : IResourceDriver
 {
@@ -33,7 +34,8 @@ public sealed class TerraformDriver : IResourceDriver
         }
 
         var templateDir = Path.Combine(Path.GetTempPath(), "conductor");
-        var cloneResult = await GitCommandLine.CloneAsync(latestVersion.Source, templateDir, _logger, CancellationToken.None);
+        var cloneResult =
+            await GitCommandLine.CloneAsync(latestVersion.Source, templateDir, _logger, CancellationToken.None);
 
         if (!cloneResult)
         {
@@ -41,6 +43,8 @@ public sealed class TerraformDriver : IResourceDriver
                 latestVersion.Source.ToString());
             return;
         }
+
+        _logger.LogInformation("Successfully cloned Repository: {Url} to {Output}", latestVersion.Source, templateDir);
 
         var variablesFile = Directory
             .GetFiles(templateDir, "variables.tf", SearchOption.AllDirectories)
@@ -59,24 +63,19 @@ public sealed class TerraformDriver : IResourceDriver
             Directory = Path.GetDirectoryName(variablesFile) ?? string.Empty
         };
 
-        var templateInputs = await _parser.ParseInputsAsync(localFile);
+        TerraformConfig? terraformConfig = await _parser.ParseTerraformModuleAsync(localFile);
 
-        foreach (var templateInput in templateInputs)
+        foreach (var variable in terraformConfig?.Variables ?? [])
         {
-            _logger.LogInformation("Template Input: {Name}:{Value}", templateInput.Key, templateInput.Value);
+            _logger.LogInformation("Terraform Variable: {Variable}", variable.Key);
         }
-
-        var tempDir = Path.Combine("/home/james/Documents/Conductor.Cli");
-        Directory.CreateDirectory(tempDir);
-
 
         try
         {
-            // 1. Write module block
             var mainTf = _renderer.Render(template, inputs);
-            await File.WriteAllTextAsync(Path.Combine(tempDir, "main.tf"), mainTf);
-
-            _logger.LogInformation("Written contents to: {FilePath}", tempDir + "/main.tf");
+            var outputPath = Path.Combine(templateDir, "conductor_main.tf");
+            await File.WriteAllTextAsync(outputPath, mainTf);
+            _logger.LogInformation("Written contents to: {FilePath}", outputPath);
         }
         finally
         {
