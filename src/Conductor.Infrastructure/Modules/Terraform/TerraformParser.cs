@@ -41,7 +41,7 @@ public sealed class TerraformParser : ITerraformParser
         }
 
         var fileContents = await File.ReadAllTextAsync(inputJsonPath);
-        File.Delete(inputJsonPath);
+        //File.Delete(inputJsonPath);
         return JsonSerializer.Deserialize<TerraformConfig>(fileContents);
     }
 

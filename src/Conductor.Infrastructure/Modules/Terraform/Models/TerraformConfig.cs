@@ -8,10 +8,10 @@ public record TerraformConfig
     public string Path { get; set; } = string.Empty;
 
     [JsonPropertyName("variables")]
-    public Dictionary<string, Variable> Variables { get; set; } = new();
+    public Dictionary<string, Variable> Variables { get; set; } = new(StringComparer.OrdinalIgnoreCase);
 
     [JsonPropertyName("outputs")]
-    public Dictionary<string, Output> Outputs { get; set; } = new();
+    public Dictionary<string, Output> Outputs { get; set; } = new(StringComparer.OrdinalIgnoreCase);
 
     [JsonPropertyName("required_core")]
     public List<string> RequiredCore { get; set; } = new();

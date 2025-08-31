@@ -33,7 +33,7 @@ public sealed class TerraformDriver : IResourceDriver
             return;
         }
 
-        var templateDir = Path.Combine(Path.GetTempPath(), "conductor");
+        var templateDir = Path.Combine(Path.GetTempPath(), "conductor", template.Name, latestVersion.Version);
         var cloneResult =
             await GitCommandLine.CloneAsync(latestVersion.Source, templateDir, _logger, CancellationToken.None);
 
@@ -48,22 +48,35 @@ public sealed class TerraformDriver : IResourceDriver
 
         TerraformConfig? terraformConfig = await _parser.ParseTerraformModuleAsync(templateDir);
 
-        foreach (var variable in terraformConfig?.Variables ?? [])
+        if (terraformConfig is null)
+        {
+            return;
+        }
+
+        var invalidInputs = inputs
+            .Where(i => !terraformConfig.Variables.ContainsKey(i.Key))
+            .Select(i => i.Key)
+            .ToList();
+
+        if (invalidInputs.Count > 0)
+        {
+            foreach (var input in invalidInputs)
+            {
+                _logger.LogWarning("Input: {input} was not a valid input for this terraform module {Module}.", input, template.Name);
+            }
+
+            return;
+        }
+
+        foreach (var variable in terraformConfig.Variables)
         {
             _logger.LogInformation("Terraform Variable: {Variable}", variable.Key);
         }
 
-        try
-        {
-            var mainTf = _renderer.Render(template, inputs);
-            var outputPath = Path.Combine(templateDir, "conductor_main.tf");
-            await File.WriteAllTextAsync(outputPath, mainTf);
-            _logger.LogInformation("Written contents to: {FilePath}", outputPath);
-        }
-        finally
-        {
-            //Directory.Delete(tempDir, true);
-        }
+        var mainTf = _renderer.Render(template, inputs);
+        var outputPath = Path.Combine(templateDir, "conductor_main.tf");
+        await File.WriteAllTextAsync(outputPath, mainTf);
+        _logger.LogInformation("Written contents to: {FilePath}", outputPath);
     }
 
     public Task PlanAsync(ResourceTemplate template, Dictionary<string, string> inputs)

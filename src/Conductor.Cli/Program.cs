@@ -52,7 +52,7 @@ var azureVirtualNetwork = ResourceTemplate.CreateWithVersion(new CreateResourceT
 var terraformDriver = host.Services.GetRequiredService<IResourceDriver>();
 
 await terraformDriver.ValidateAsync(azureStorageAccount,
-    new Dictionary<string, string>() { { "Name", "TestCosmos" } });
+    new Dictionary<string, string>() { { "name", "Payments" } });
 
 await terraformDriver.ValidateAsync(azureVirtualNetwork,
-    new Dictionary<string, string>() { { "Name", "TestCosmos" } });
+    new Dictionary<string, string>() { { "Name", "PaymentsNetwork" } });
