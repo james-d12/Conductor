@@ -3,13 +3,19 @@ namespace Conductor.Infrastructure.Modules.Terraform.Models;
 public record TerraformValidationResult
 {
     public TerraformConfig? Config { get; init; }
-    public string Message { get; init; } = string.Empty;
-    public required TerraformValidationResultState State { get; set; }
+    public string Message { get; private init; } = string.Empty;
+    public required TerraformValidationResultState State { get; init; }
 
     public static TerraformValidationResult Valid(TerraformConfig config) => new()
     {
         Config = config,
         State = TerraformValidationResultState.Valid
+    };
+
+    public static TerraformValidationResult WrongProvider(string message) => new()
+    {
+        Message = message,
+        State = TerraformValidationResultState.WrongProvider
     };
 
     public static TerraformValidationResult TemplateNotFound(string message) => new()
@@ -41,14 +47,4 @@ public record TerraformValidationResult
         Message = message,
         State = TerraformValidationResultState.RequiredInputNotProvided
     };
-}
-
-public enum TerraformValidationResultState
-{
-    TemplateNotFound,
-    ModuleNotFound,
-    ModuleNotParsable,
-    InputNotPresent,
-    RequiredInputNotProvided,
-    Valid
 }

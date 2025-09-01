@@ -29,10 +29,21 @@ internal sealed class ResourceTemplateConfiguration : IEntityTypeConfiguration<R
             v.HasKey("TemplateId", "Version");
 
             v.Property(x => x.Version).IsRequired();
-            v.Property(x => x.Source).IsRequired();
             v.Property(x => x.Notes).IsRequired();
             v.Property(x => x.State).IsRequired().HasConversion<int>();
             v.Property(x => x.CreatedAt).IsRequired().HasDefaultValueSql("now()");
+
+            v.OwnsOne(r => r.Source, s =>
+            {
+                s.Property(p => p.BaseUrl)
+                    .IsRequired()
+                    .HasConversion(
+                        uri => uri.ToString(),
+                        str => new Uri(str)
+                    );
+
+                s.Property(p => p.FolderPath).IsRequired();
+            });
         });
     }
 }

@@ -1,4 +1,4 @@
-namespace Conductor.Infrastructure.Common;
+namespace Conductor.Infrastructure.Modules.Terraform.Models;
 
 public record TerraformOptions
 {

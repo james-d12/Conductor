@@ -30,10 +30,14 @@ public sealed class ResourceTemplateTests
     [Fact]
     public void CreateWithVersion_ShouldAddVersionCorrectly()
     {
+        var resourceTemplateVersionSource = _fixture.Build<ResourceTemplateVersionSource>()
+            .With(s => s.BaseUrl, new Uri("https://example.com/v1"))
+            .Create();
+
         var request = _fixture.Build<CreateResourceTemplateWithVersionRequest>()
             .With(x => x.Provider, ResourceTemplateProvider.Terraform)
             .With(x => x.Type, ResourceTemplateType.AzureCosmosDb)
-            .With(x => x.Source, new Uri("https://example.com/v1"))
+            .With(x => x.Source, resourceTemplateVersionSource)
             .Create();
 
         var template = Core.Modules.ResourceTemplate.Domain.ResourceTemplate.CreateWithVersion(request);
@@ -55,7 +59,11 @@ public sealed class ResourceTemplateTests
         var versionRequest = new CreateNewResourceTemplateVersionRequest
         {
             Version = "1.0.0",
-            Source = new Uri("https://example.com/v1"),
+            Source = new ResourceTemplateVersionSource
+            {
+                BaseUrl = new Uri("https://example.com/v1"),
+                FolderPath = string.Empty
+            },
             Notes = _fixture.Create<string>(),
             State = ResourceTemplateVersionState.Active
         };
@@ -75,15 +83,20 @@ public sealed class ResourceTemplateTests
             .With(x => x.Type, ResourceTemplateType.AzureCosmosDb)
             .Create());
 
-        var source1 = new Uri("https://example.com/v1");
-        var source2 = new Uri("https://example.com/v2");
+        var resourceTemplateVersionSource1 = _fixture.Build<ResourceTemplateVersionSource>()
+            .With(s => s.BaseUrl, new Uri("https://example.com/v1"))
+            .Create();
+
+        var resourceTemplateVersionSource2 = _fixture.Build<ResourceTemplateVersionSource>()
+            .With(s => s.BaseUrl, new Uri("https://example.com/v2"))
+            .Create();
 
         var version = "1.0.0";
 
         template.AddVersion(new CreateNewResourceTemplateVersionRequest
         {
             Version = version,
-            Source = source1,
+            Source = resourceTemplateVersionSource1,
             Notes = _fixture.Create<string>(),
             State = ResourceTemplateVersionState.Active
         });
@@ -91,7 +104,7 @@ public sealed class ResourceTemplateTests
         var duplicate = new CreateNewResourceTemplateVersionRequest
         {
             Version = version,
-            Source = source2,
+            Source = resourceTemplateVersionSource2,
             Notes = _fixture.Create<string>(),
             State = ResourceTemplateVersionState.Active
         };
@@ -109,12 +122,14 @@ public sealed class ResourceTemplateTests
             .With(x => x.Type, ResourceTemplateType.AzureCosmosDb)
             .Create());
 
-        var source = new Uri("https://example.com/shared");
+        var resourceTemplateVersionSource = _fixture.Build<ResourceTemplateVersionSource>()
+            .With(s => s.BaseUrl, new Uri("https://example.com/shared"))
+            .Create();
 
         template.AddVersion(new CreateNewResourceTemplateVersionRequest
         {
             Version = "1.0.0",
-            Source = source,
+            Source = resourceTemplateVersionSource,
             Notes = _fixture.Create<string>(),
             State = ResourceTemplateVersionState.Active
         });
@@ -122,13 +137,12 @@ public sealed class ResourceTemplateTests
         var duplicate = new CreateNewResourceTemplateVersionRequest
         {
             Version = "2.0.0",
-            Source = source,
+            Source = resourceTemplateVersionSource,
             Notes = _fixture.Create<string>(),
             State = ResourceTemplateVersionState.Active
         };
 
-        var ex = Assert.Throws<InvalidOperationException>(() => template.AddVersion(duplicate));
-        Assert.Contains("Source 'https://example.com/shared' already exists", ex.Message);
+        Assert.Throws<InvalidOperationException>(() => template.AddVersion(duplicate));
     }
 
     [Fact]

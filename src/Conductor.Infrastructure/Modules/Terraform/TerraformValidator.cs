@@ -29,8 +29,13 @@ public sealed class TerraformValidator : ITerraformValidator
     {
         _logger.LogInformation("Validating Template: {Template} using the Terraform Driver.", template.Name);
 
-        ResourceTemplateVersion? latestVersion = template.LatestVersion;
+        if (template.Provider != ResourceTemplateProvider.Terraform)
+        {
+            var message = $"The template: {template.Name} is configured to use {template.Provider}";
+            return TerraformValidationResult.WrongProvider(message);
+        }
 
+        ResourceTemplateVersion? latestVersion = template.LatestVersion;
         if (latestVersion is null)
         {
             var message = $"No Version could be found for {template.Name} found.";
@@ -39,7 +44,7 @@ public sealed class TerraformValidator : ITerraformValidator
 
         var templateDir = Path.Combine(Path.GetTempPath(), "conductor", template.Name, latestVersion.Version);
         var cloneResult =
-            await GitCommandLine.CloneAsync(latestVersion.Source, templateDir, _logger, CancellationToken.None);
+            await GitCommandLine.CloneAsync(latestVersion.Source.BaseUrl, templateDir, _logger, CancellationToken.None);
 
         if (!cloneResult)
         {

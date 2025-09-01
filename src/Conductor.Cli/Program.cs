@@ -26,7 +26,11 @@ var azureStorageAccount = ResourceTemplate.CreateWithVersion(new CreateResourceT
     Provider = ResourceTemplateProvider.Terraform,
     Type = ResourceTemplateType.AzureStorageAccount,
     Version = "1.0.0",
-    Source = new Uri("https://github.com/aztfm/terraform-azurerm-storage-account.git"),
+    Source = new ResourceTemplateVersionSource
+    {
+        BaseUrl = new Uri("https://github.com/aztfm/terraform-azurerm-storage-account.git"),
+        FolderPath = string.Empty
+    },
     Notes = "",
     State = ResourceTemplateVersionState.Active
 });
@@ -38,12 +42,35 @@ var azureVirtualNetwork = ResourceTemplate.CreateWithVersion(new CreateResourceT
     Provider = ResourceTemplateProvider.Terraform,
     Type = ResourceTemplateType.AzureStorageAccount,
     Version = "1.0.0",
-    Source = new Uri("https://github.com/aztfm/terraform-azurerm-virtual-network.git"),
+    Source = new ResourceTemplateVersionSource
+    {
+        BaseUrl = new Uri("https://github.com/aztfm/terraform-azurerm-virtual-network.git"),
+        FolderPath = string.Empty
+    },
     Notes = "",
     State = ResourceTemplateVersionState.Active
 });
 
-var terraformDriver = host.Services.GetRequiredService<IResourceDriver>();
+var argoCdTemplate = ResourceTemplate.CreateWithVersion(new CreateResourceTemplateWithVersionRequest
+{
+    Name = "ArgoCD Helm Chart",
+    Description = "An ArgoCD Helm Chart",
+    Provider = ResourceTemplateProvider.Helm,
+    Type = ResourceTemplateType.HelmChart,
+    Version = "1.0",
+    Source = new ResourceTemplateVersionSource
+    {
+        BaseUrl = new Uri("https://github.com/bitnami/charts/tree/main/bitnami/argo-cd"),
+        FolderPath = string.Empty
+    },
+    Notes = string.Empty,
+    State = ResourceTemplateVersionState.Active
+});
+
+var resourceDriverFactory = host.Services.GetRequiredService<IResourceDriverFactory>();
+
+var terraformDriver = resourceDriverFactory.GetDriver(azureStorageAccount.Provider);
+var helmDriver = resourceDriverFactory.GetDriver(argoCdTemplate.Provider);
 
 await terraformDriver.PlanAsync(azureStorageAccount,
     new Dictionary<string, string>() { { "name", "Payments" } });

@@ -3,6 +3,7 @@ using System;
 using Conductor.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Conductor.Persistence.Migrations
 {
     [DbContext(typeof(ConductorDbContext))]
-    partial class ConductorDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250901182227_ResourceTemplateVersionState")]
+    partial class ResourceTemplateVersionState
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.8");
@@ -72,6 +75,10 @@ namespace Conductor.Persistence.Migrations
                                 .IsRequired()
                                 .HasColumnType("TEXT");
 
+                            b1.Property<string>("Source")
+                                .IsRequired()
+                                .HasColumnType("TEXT");
+
                             b1.Property<int>("State")
                                 .HasColumnType("INTEGER");
 
@@ -81,33 +88,6 @@ namespace Conductor.Persistence.Migrations
 
                             b1.WithOwner()
                                 .HasForeignKey("TemplateId");
-
-                            b1.OwnsOne("Conductor.Core.Modules.ResourceTemplate.Domain.ResourceTemplateVersionSource", "Source", b2 =>
-                                {
-                                    b2.Property<Guid>("ResourceTemplateVersionTemplateId")
-                                        .HasColumnType("TEXT");
-
-                                    b2.Property<string>("ResourceTemplateVersionVersion")
-                                        .HasColumnType("TEXT");
-
-                                    b2.Property<string>("BaseUrl")
-                                        .IsRequired()
-                                        .HasColumnType("TEXT");
-
-                                    b2.Property<string>("FolderPath")
-                                        .IsRequired()
-                                        .HasColumnType("TEXT");
-
-                                    b2.HasKey("ResourceTemplateVersionTemplateId", "ResourceTemplateVersionVersion");
-
-                                    b2.ToTable("ResourceTemplateVersion");
-
-                                    b2.WithOwner()
-                                        .HasForeignKey("ResourceTemplateVersionTemplateId", "ResourceTemplateVersionVersion");
-                                });
-
-                            b1.Navigation("Source")
-                                .IsRequired();
                         });
 
                     b.Navigation("Versions");

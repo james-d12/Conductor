@@ -4,5 +4,6 @@ public enum ResourceTemplateType
 {
     AzureCosmosDb,
     AzureBlobStorage,
-    AzureStorageAccount
+    AzureStorageAccount,
+    HelmChart
 }

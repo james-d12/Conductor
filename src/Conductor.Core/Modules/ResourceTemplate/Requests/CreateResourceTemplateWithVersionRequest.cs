@@ -9,7 +9,7 @@ public sealed record CreateResourceTemplateWithVersionRequest
     public required ResourceTemplateProvider Provider { get; init; }
     public required ResourceTemplateType Type { get; init; }
     public required string Version { get; init; }
-    public required Uri Source { get; init; }
+    public required ResourceTemplateVersionSource Source { get; init; }
     public required string Notes { get; init; }
     public required ResourceTemplateVersionState State { get; init; }
 }
