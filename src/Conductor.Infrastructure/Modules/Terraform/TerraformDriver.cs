@@ -54,17 +54,38 @@ public sealed class TerraformDriver : IResourceDriver
         }
 
         var invalidInputs = inputs
-            .Where(i => !terraformConfig.Variables.Keys.Any(key => key.Equals(i.Key, StringComparison.OrdinalIgnoreCase)))
+            .Where(i =>
+                !terraformConfig.Variables.Keys.Any(key => key.Equals(i.Key, StringComparison.OrdinalIgnoreCase)))
             .Select(i => i.Key)
             .ToList();
 
-        _logger.LogInformation("Terraform variable keys: {keys}", string.Join(",", terraformConfig.Variables.Keys.ToList()));
+        _logger.LogInformation("Terraform variable keys: {keys}",
+            string.Join(",", terraformConfig.Variables.Keys.ToList()));
 
         if (invalidInputs.Count > 0)
         {
             foreach (var input in invalidInputs)
             {
-                _logger.LogWarning("Input: {input} was not a valid input for this terraform module {Module}.", input, template.Name);
+                _logger.LogWarning("Input: {input} was not a valid input for this terraform module {Module}.", input,
+                    template.Name);
+            }
+
+            return;
+        }
+
+        var requiredInputs = terraformConfig.Variables.Values.Where(v => v.Required).ToList();
+        var requiredInputsNotSatisfied = requiredInputs
+            .Where(variable =>
+                !inputs.Any(input => input.Key.Equals(variable.Name, StringComparison.OrdinalIgnoreCase)))
+            .ToList();
+
+        if (requiredInputsNotSatisfied.Count > 0)
+        {
+            foreach (var requiredInput in requiredInputsNotSatisfied)
+            {
+                _logger.LogWarning("Required Input: {input} was not provided for this terraform module: {Module}.",
+                    requiredInput.Name,
+                    template.Name);
             }
 
             return;
