@@ -1,8 +1,6 @@
 using System.Text.Json;
-using Conductor.Infrastructure.Common;
 using Conductor.Infrastructure.Modules.Terraform.Models;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
 namespace Conductor.Infrastructure.Modules.Terraform;
 
@@ -13,14 +11,13 @@ public interface ITerraformParser
 
 public sealed class TerraformParser : ITerraformParser
 {
-    private readonly TerraformOptions _options;
-
     private readonly ILogger<TerraformParser> _logger;
+    private readonly ITerraformCommandLine _terraformCommandLine;
 
-    public TerraformParser(ILogger<TerraformParser> logger, IOptions<TerraformOptions> options)
+    public TerraformParser(ILogger<TerraformParser> logger, ITerraformCommandLine terraformCommandLine)
     {
         _logger = logger;
-        _options = options.Value;
+        _terraformCommandLine = terraformCommandLine;
     }
 
     public async Task<TerraformConfig?> ParseTerraformModuleAsync(string moduleDirectory)
@@ -31,8 +28,7 @@ public sealed class TerraformParser : ITerraformParser
         }
 
         var inputJsonPath = Path.Combine(moduleDirectory, "inputs-outputs.json");
-        var createdJsonFile =
-            await TerraformCommandLine.GenerateOutputJsonAsync(moduleDirectory, inputJsonPath, _logger);
+        var createdJsonFile = await _terraformCommandLine.GenerateOutputJsonAsync(moduleDirectory, inputJsonPath);
 
         if (!createdJsonFile)
         {
@@ -41,7 +37,7 @@ public sealed class TerraformParser : ITerraformParser
         }
 
         var fileContents = await File.ReadAllTextAsync(inputJsonPath);
-        //File.Delete(inputJsonPath);
+        File.Delete(inputJsonPath);
         return JsonSerializer.Deserialize<TerraformConfig>(fileContents);
     }
 

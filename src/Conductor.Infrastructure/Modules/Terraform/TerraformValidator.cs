@@ -46,6 +46,11 @@ public sealed class TerraformValidator : ITerraformValidator
         var cloneResult =
             await GitCommandLine.CloneAsync(latestVersion.Source.BaseUrl, templateDir, _logger, CancellationToken.None);
 
+        if (!string.IsNullOrEmpty(latestVersion.Source.FolderPath))
+        {
+            templateDir = Path.Combine(templateDir, latestVersion.Source.FolderPath);
+        }
+
         if (!cloneResult)
         {
             var message = $"Could not clone template: {template.Name} from {latestVersion.Source}";
