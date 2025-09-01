@@ -7,8 +7,9 @@ public sealed record ResourceTemplateVersion
     public required ResourceTemplateId TemplateId { get; init; }
     public required string Version { get; init; }
     public required Uri Source { get; init; }
-    public required DateTime CreatedAt { get; init; }
     public required string Notes { get; init; }
+    public required ResourceTemplateVersionState State { get; init; }
+    public required DateTime CreatedAt { get; init; }
 
     public static ResourceTemplateVersion Create(CreateResourceTemplateVersionRequest request)
     {
@@ -17,8 +18,9 @@ public sealed record ResourceTemplateVersion
             TemplateId = request.TemplateId,
             Version = request.Version,
             Source = request.Source,
+            Notes = request.Notes,
+            State = request.State,
             CreatedAt = request.CreatedAt,
-            Notes = request.Notes
         };
     }
 }

@@ -27,7 +27,8 @@ var azureStorageAccount = ResourceTemplate.CreateWithVersion(new CreateResourceT
     Type = ResourceTemplateType.AzureStorageAccount,
     Version = "1.0.0",
     Source = new Uri("https://github.com/aztfm/terraform-azurerm-storage-account.git"),
-    Notes = ""
+    Notes = "",
+    State = ResourceTemplateVersionState.Active
 });
 
 var azureVirtualNetwork = ResourceTemplate.CreateWithVersion(new CreateResourceTemplateWithVersionRequest
@@ -38,7 +39,8 @@ var azureVirtualNetwork = ResourceTemplate.CreateWithVersion(new CreateResourceT
     Type = ResourceTemplateType.AzureStorageAccount,
     Version = "1.0.0",
     Source = new Uri("https://github.com/aztfm/terraform-azurerm-virtual-network.git"),
-    Notes = ""
+    Notes = "",
+    State = ResourceTemplateVersionState.Active
 });
 
 var terraformDriver = host.Services.GetRequiredService<IResourceDriver>();

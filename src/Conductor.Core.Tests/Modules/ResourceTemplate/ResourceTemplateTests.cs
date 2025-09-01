@@ -56,7 +56,8 @@ public sealed class ResourceTemplateTests
         {
             Version = "1.0.0",
             Source = new Uri("https://example.com/v1"),
-            Notes = _fixture.Create<string>()
+            Notes = _fixture.Create<string>(),
+            State = ResourceTemplateVersionState.Active
         };
 
         template.AddVersion(versionRequest);
@@ -83,14 +84,16 @@ public sealed class ResourceTemplateTests
         {
             Version = version,
             Source = source1,
-            Notes = _fixture.Create<string>()
+            Notes = _fixture.Create<string>(),
+            State = ResourceTemplateVersionState.Active
         });
 
         var duplicate = new CreateNewResourceTemplateVersionRequest
         {
             Version = version,
             Source = source2,
-            Notes = _fixture.Create<string>()
+            Notes = _fixture.Create<string>(),
+            State = ResourceTemplateVersionState.Active
         };
 
         var ex = Assert.Throws<InvalidOperationException>(() => template.AddVersion(duplicate));
@@ -112,14 +115,16 @@ public sealed class ResourceTemplateTests
         {
             Version = "1.0.0",
             Source = source,
-            Notes = _fixture.Create<string>()
+            Notes = _fixture.Create<string>(),
+            State = ResourceTemplateVersionState.Active
         });
 
         var duplicate = new CreateNewResourceTemplateVersionRequest
         {
             Version = "2.0.0",
             Source = source,
-            Notes = _fixture.Create<string>()
+            Notes = _fixture.Create<string>(),
+            State = ResourceTemplateVersionState.Active
         };
 
         var ex = Assert.Throws<InvalidOperationException>(() => template.AddVersion(duplicate));

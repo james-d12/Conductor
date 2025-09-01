@@ -21,7 +21,9 @@ public sealed record ResourceTemplate
 
     private readonly List<ResourceTemplateVersion> _versions = [];
     public IReadOnlyList<ResourceTemplateVersion> Versions => _versions.AsReadOnly();
-    public ResourceTemplateVersion? LatestVersion => _versions.LastOrDefault();
+
+    public ResourceTemplateVersion? LatestVersion =>
+        _versions.LastOrDefault(v => v.State == ResourceTemplateVersionState.Active);
 
     private ResourceTemplate()
     {
@@ -57,7 +59,8 @@ public sealed record ResourceTemplate
         {
             Version = request.Version,
             Source = request.Source,
-            Notes = request.Notes
+            Notes = request.Notes,
+            State = request.State
         });
         return resourceTemplate;
     }
@@ -79,8 +82,9 @@ public sealed record ResourceTemplate
             TemplateId = Id,
             Version = versionRequest.Version,
             Source = versionRequest.Source,
-            CreatedAt = DateTime.UtcNow,
-            Notes = versionRequest.Notes
+            Notes = versionRequest.Notes,
+            State = versionRequest.State,
+            CreatedAt = DateTime.UtcNow
         });
 
         _versions.Add(newVersion);
