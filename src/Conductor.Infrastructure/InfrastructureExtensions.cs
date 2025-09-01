@@ -3,6 +3,7 @@ using Conductor.Infrastructure.Common;
 using Conductor.Infrastructure.Modules.Terraform;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Conductor.Infrastructure;
 
@@ -12,8 +13,8 @@ public static class InfrastructureExtensions
     {
         services.AddOptions<TerraformOptions>()
             .Bind(configuration.GetSection("TerraformOptions"));
-        services.AddScoped<IResourceDriver, TerraformDriver>();
-        services.AddScoped<ITerraformRenderer, TerraformRenderer>();
-        services.AddScoped<ITerraformParser, TerraformParser>();
+        services.TryAddSingleton<IResourceDriver, TerraformDriver>();
+        services.TryAddSingleton<ITerraformRenderer, TerraformRenderer>();
+        services.TryAddSingleton<ITerraformParser, TerraformParser>();
     }
 }

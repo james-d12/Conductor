@@ -59,7 +59,7 @@ public sealed class TerraformDriver : IResourceDriver
             .ToList();
 
         _logger.LogInformation("Terraform variable keys: {keys}", string.Join(",", terraformConfig.Variables.Keys.ToList()));
-        
+
         if (invalidInputs.Count > 0)
         {
             foreach (var input in invalidInputs)
