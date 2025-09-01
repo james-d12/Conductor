@@ -22,6 +22,12 @@ RUN apt update && apt install golang git -y
 RUN go install github.com/hashicorp/terraform-config-inspect@latest
 ENV PATH="/usr/local/go/bin:/root/go/bin:${PATH}"
 
+# Install Helmchart
+RUN apt install curl -y
+RUN curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+RUN chmod 700 get_helm.sh
+RUN ./get_helm.sh
+
 COPY --from=build "/app/out/Conductor.Cli" ./
 
 ENTRYPOINT ["./Conductor.Cli"]
