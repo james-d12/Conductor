@@ -43,8 +43,14 @@ var azureVirtualNetwork = ResourceTemplate.CreateWithVersion(new CreateResourceT
 
 var terraformDriver = host.Services.GetRequiredService<IResourceDriver>();
 
-await terraformDriver.ValidateAsync(azureStorageAccount,
+await terraformDriver.PlanAsync(azureStorageAccount,
     new Dictionary<string, string>() { { "name", "Payments" } });
 
-await terraformDriver.ValidateAsync(azureVirtualNetwork,
-    new Dictionary<string, string>() { { "name", "PaymentsNetwork" } });
+await terraformDriver.PlanAsync(azureVirtualNetwork,
+    new Dictionary<string, string>()
+    {
+        { "name", "PaymentsNetwork" },
+        { "address_space", "thing" },
+        { "location", "uk south" },
+        { "resource_group_name", "dev" }
+    });

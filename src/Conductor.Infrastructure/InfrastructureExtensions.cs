@@ -16,5 +16,6 @@ public static class InfrastructureExtensions
         services.TryAddSingleton<IResourceDriver, TerraformDriver>();
         services.TryAddSingleton<ITerraformRenderer, TerraformRenderer>();
         services.TryAddSingleton<ITerraformParser, TerraformParser>();
+        services.TryAddSingleton<ITerraformValidator, TerraformValidator>();
     }
 }
