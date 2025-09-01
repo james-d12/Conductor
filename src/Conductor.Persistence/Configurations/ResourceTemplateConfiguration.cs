@@ -30,8 +30,9 @@ internal sealed class ResourceTemplateConfiguration : IEntityTypeConfiguration<R
 
             v.Property(x => x.Version).IsRequired();
             v.Property(x => x.Source).IsRequired();
-            v.Property(x => x.CreatedAt).IsRequired().HasDefaultValueSql("now()");
             v.Property(x => x.Notes).IsRequired();
+            v.Property(x => x.State).IsRequired().HasConversion<int>();
+            v.Property(x => x.CreatedAt).IsRequired().HasDefaultValueSql("now()");
         });
     }
 }
