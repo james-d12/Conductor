@@ -30,7 +30,7 @@ public sealed class TerraformParser : ITerraformParser
             return null;
         }
 
-        var inputJsonPath = Path.Combine(_options.TemporaryDirectory, $"{Guid.NewGuid()}-inputs.json");
+        var inputJsonPath = Path.Combine(moduleDirectory, "inputs-outputs.json");
         var createdJsonFile =
             await TerraformCommandLine.GenerateOutputJsonAsync(moduleDirectory, inputJsonPath, _logger);
 

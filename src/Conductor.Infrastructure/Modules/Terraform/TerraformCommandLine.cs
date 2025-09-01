@@ -36,17 +36,15 @@ public static class TerraformCommandLine
 
         logger.LogDebug("Terraform Generate Output for {Source}:\n{StdOut}", outputJsonPath, stdOut);
 
-        if (process.ExitCode == 0)
-        {
-            await File.WriteAllTextAsync(outputJsonPath, stdOut);
-            logger.LogInformation("Created JSON Output file from Terraform Config Inspect: {File}", outputJsonPath);
-            return File.Exists(outputJsonPath);
-        }
-        else
+        if (process.ExitCode != 0)
         {
             var errorOutput = !string.IsNullOrEmpty(stdErr) ? stdErr : stdOut;
             logger.LogWarning("Could not Generate Output {Source} Due to {Error}", outputJsonPath, errorOutput);
             return false;
         }
+
+        await File.WriteAllTextAsync(outputJsonPath, stdOut);
+        logger.LogInformation("Created JSON Output file from Terraform Config Inspect: {File}", outputJsonPath);
+        return File.Exists(outputJsonPath);
     }
 }
