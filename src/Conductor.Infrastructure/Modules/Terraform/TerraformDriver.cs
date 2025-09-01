@@ -54,7 +54,7 @@ public sealed class TerraformDriver : IResourceDriver
         }
 
         var invalidInputs = inputs
-            .Where(i => !terraformConfig.Variables.ContainsKey(i.Key))
+            .Where(i => !terraformConfig.Variables.Keys.Any(key => key.Equals(i.Key, StringComparison.OrdinalIgnoreCase)))
             .Select(i => i.Key)
             .ToList();
 

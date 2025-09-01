@@ -7,23 +7,15 @@ using Conductor.Persistence;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 var builder = Host.CreateApplicationBuilder();
 
 builder.Services.AddCoreServices();
 builder.Services.AddPersistenceServices();
-
-await builder.Services.ApplyMigrations();
-
+builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Configuration.AddUserSecrets<Program>();
 
-builder.Logging.ClearProviders();
-builder.Logging.AddJsonConsole();
-builder.Logging.AddConfiguration(builder.Configuration.GetSection("Logging"));
-builder.Services.AddInfrastructureServices(builder.Configuration);
-
-builder.Services.AddLogging();
+await builder.Services.ApplyMigrations();
 
 using var host = builder.Build();
 
@@ -55,4 +47,4 @@ await terraformDriver.ValidateAsync(azureStorageAccount,
     new Dictionary<string, string>() { { "name", "Payments" } });
 
 await terraformDriver.ValidateAsync(azureVirtualNetwork,
-    new Dictionary<string, string>() { { "Name", "PaymentsNetwork" } });
+    new Dictionary<string, string>() { { "name", "PaymentsNetwork" } });
