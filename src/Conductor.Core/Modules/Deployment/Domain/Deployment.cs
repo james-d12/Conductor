@@ -1,6 +1,5 @@
 using Conductor.Core.Modules.Environment.Domain;
 using ApplicationId = Conductor.Core.Modules.Application.Domain.ApplicationId;
-using Domain_ApplicationId = Conductor.Core.Modules.Application.Domain.ApplicationId;
 
 namespace Conductor.Core.Modules.Deployment.Domain;
 
@@ -17,7 +16,7 @@ public readonly record struct DeploymentId(Guid Id)
 public sealed record Deployment
 {
     public required DeploymentId Id { get; init; }
-    public required Domain_ApplicationId ApplicationId { get; init; }
+    public required ApplicationId ApplicationId { get; init; }
     public required EnvironmentId EnvironmentId { get; init; }
     public required CommitId CommitId { get; init; }
     public required DeploymentStatus Status { get; set; }
@@ -28,7 +27,7 @@ public sealed record Deployment
     {
     }
 
-    public static Deployment Create(Domain_ApplicationId applicationId, EnvironmentId environmentId, CommitId commitId)
+    public static Deployment Create(ApplicationId applicationId, EnvironmentId environmentId, CommitId commitId)
     {
         return new Deployment
         {
