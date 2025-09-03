@@ -1,4 +1,5 @@
 using Conductor.Core.Common.Services;
+using Conductor.Infrastructure.Common;
 using Conductor.Infrastructure.Modules.Helm;
 using Conductor.Infrastructure.Modules.Terraform;
 using Conductor.Infrastructure.Modules.Terraform.Models;
@@ -18,6 +19,7 @@ public static class InfrastructureExtensions
         services.AddSingleton<IResourceDriver, TerraformDriver>();
         services.AddSingleton<IResourceDriver, HelmDriver>();
 
+        services.TryAddSingleton<IGitCommandLine, GitCommandLine>();
         services.TryAddSingleton<ITerraformRenderer, TerraformRenderer>();
         services.TryAddSingleton<ITerraformParser, TerraformParser>();
         services.TryAddSingleton<ITerraformCommandLine, TerraformCommandLine>();

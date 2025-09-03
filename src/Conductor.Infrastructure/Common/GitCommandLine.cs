@@ -3,9 +3,21 @@ using Microsoft.Extensions.Logging;
 
 namespace Conductor.Infrastructure.Common;
 
-public sealed class GitCommandLine
+public interface IGitCommandLine
 {
-    public static async Task<bool> CloneAsync(Uri source, string destination, ILogger logger, CancellationToken cancellationToken)
+    Task<bool> CloneAsync(Uri source, string destination, CancellationToken cancellationToken);
+}
+
+public sealed class GitCommandLine : IGitCommandLine
+{
+    private readonly ILogger<GitCommandLine> _logger;
+
+    public GitCommandLine(ILogger<GitCommandLine> logger)
+    {
+        _logger = logger;
+    }
+
+    public async Task<bool> CloneAsync(Uri source, string destination, CancellationToken cancellationToken)
     {
         var startInfo = new ProcessStartInfo
         {
@@ -30,11 +42,11 @@ public sealed class GitCommandLine
         var stdOut = await stdOutTask;
         var stdErr = await stdErrTask;
 
-        logger.LogDebug("Git clone output for {Source}:\n{StdOut}", source, stdOut);
+        _logger.LogDebug("Git clone output for {Source}:\n{StdOut}", source, stdOut);
 
         if (process.ExitCode != 0)
         {
-            logger.LogWarning("Could not Clone {Source} Due to {Error}", source, stdErr);
+            _logger.LogWarning("Could not Clone {Source} Due to {Error}", source, stdErr);
         }
 
         return Directory.Exists(destination);

@@ -14,14 +14,17 @@ public interface ITerraformValidator
 public sealed class TerraformValidator : ITerraformValidator
 {
     private readonly ILogger<TerraformValidator> _logger;
+    private readonly IGitCommandLine _gitCommandLine;
     private readonly ITerraformRenderer _renderer;
     private readonly ITerraformParser _parser;
 
-    public TerraformValidator(ILogger<TerraformValidator> logger, ITerraformRenderer renderer, ITerraformParser parser)
+    public TerraformValidator(ILogger<TerraformValidator> logger, ITerraformRenderer renderer, ITerraformParser parser,
+        IGitCommandLine gitCommandLine)
     {
         _logger = logger;
         _renderer = renderer;
         _parser = parser;
+        _gitCommandLine = gitCommandLine;
     }
 
     public async Task<TerraformValidationResult> ValidateAsync(ResourceTemplate template,
@@ -44,7 +47,7 @@ public sealed class TerraformValidator : ITerraformValidator
 
         var templateDir = Path.Combine(Path.GetTempPath(), "conductor", template.Name, latestVersion.Version);
         var cloneResult =
-            await GitCommandLine.CloneAsync(latestVersion.Source.BaseUrl, templateDir, _logger, CancellationToken.None);
+            await _gitCommandLine.CloneAsync(latestVersion.Source.BaseUrl, templateDir, CancellationToken.None);
 
         if (!string.IsNullOrEmpty(latestVersion.Source.FolderPath))
         {
