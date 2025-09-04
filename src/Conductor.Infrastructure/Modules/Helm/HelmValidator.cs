@@ -1,29 +1,64 @@
 using Conductor.Core.Modules.ResourceTemplate.Domain;
+using Conductor.Infrastructure.Common;
+using Conductor.Infrastructure.Modules.Helm.Models;
 using Microsoft.Extensions.Logging;
 
 namespace Conductor.Infrastructure.Modules.Helm;
 
-public interface IHelmchartValidator
+public interface IHelmValidator
 {
-    Task ValidateAsync(ResourceTemplate template, Dictionary<string, string> inputs);
+    Task<HelmValidationResult> ValidateAsync(ResourceTemplate template, Dictionary<string, string> inputs);
 }
 
-public sealed class HelmValidator : IHelmchartValidator
+public sealed class HelmValidator : IHelmValidator
 {
     private readonly ILogger<HelmValidator> _logger;
+    private readonly IGitCommandLine _gitCommandLine;
+    private readonly IHelmParser _parser;
 
-    public HelmValidator(ILogger<HelmValidator> logger)
+    public HelmValidator(ILogger<HelmValidator> logger, IGitCommandLine gitCommandLine, IHelmParser parser)
     {
         _logger = logger;
+        _gitCommandLine = gitCommandLine;
+        _parser = parser;
     }
 
-    public Task ValidateAsync(ResourceTemplate template, Dictionary<string, string> inputs)
+    public async Task<HelmValidationResult> ValidateAsync(ResourceTemplate template, Dictionary<string, string> inputs)
     {
         _logger.LogInformation("Validating Template: {Template} using the Helmchart Driver.", template.Name);
 
+        if (template.Provider != ResourceTemplateProvider.Helm)
+        {
+            var message = $"The template: {template.Name} is configured to use {template.Provider}";
+            return HelmValidationResult.WrongProvider(message);
+        }
 
+        ResourceTemplateVersion? latestVersion = template.LatestVersion;
+        if (latestVersion is null)
+        {
+            var message = $"No Version could be found for {template.Name} found.";
+            return HelmValidationResult.TemplateNotFound(message);
+        }
 
+        var templateDir = Path.Combine(Path.GetTempPath(), "conductor", "helm", template.Name, latestVersion.Version);
+        var cloneResult =
+            await _gitCommandLine.CloneAsync(latestVersion.Source.BaseUrl, templateDir, CancellationToken.None);
 
-        return Task.CompletedTask;
+        if (!string.IsNullOrEmpty(latestVersion.Source.FolderPath))
+        {
+            templateDir = Path.Combine(templateDir, latestVersion.Source.FolderPath);
+        }
+
+        if (!cloneResult)
+        {
+            var message = $"Could not clone template: {template.Name} from {latestVersion.Source}";
+            return HelmValidationResult.ModuleNotFound(message);
+        }
+
+        _logger.LogInformation("Successfully cloned Repository: {Url} to {Output}", latestVersion.Source, templateDir);
+
+        var config = await _parser.ParseHelmConfigAsync(templateDir);
+
+        return HelmValidationResult.Valid();
     }
 }

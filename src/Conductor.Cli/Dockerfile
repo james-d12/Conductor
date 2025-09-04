@@ -28,6 +28,9 @@ RUN curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/s
 RUN chmod 700 get_helm.sh
 RUN ./get_helm.sh
 
+# Install yq utility for yaml / json conversion
+RUN apt install yq -y
+
 COPY --from=build "/app/out/Conductor.Cli" ./
 
 ENTRYPOINT ["./Conductor.Cli"]

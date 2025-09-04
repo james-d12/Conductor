@@ -45,7 +45,8 @@ public sealed class TerraformValidator : ITerraformValidator
             return TerraformValidationResult.TemplateNotFound(message);
         }
 
-        var templateDir = Path.Combine(Path.GetTempPath(), "conductor", template.Name, latestVersion.Version);
+        var templateDir = Path.Combine(Path.GetTempPath(), "conductor", "terraform", template.Name,
+            latestVersion.Version);
         var cloneResult =
             await _gitCommandLine.CloneAsync(latestVersion.Source.BaseUrl, templateDir, CancellationToken.None);
 

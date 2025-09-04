@@ -60,8 +60,8 @@ var argoCdTemplate = ResourceTemplate.CreateWithVersion(new CreateResourceTempla
     Version = "1.0",
     Source = new ResourceTemplateVersionSource
     {
-        BaseUrl = new Uri("https://github.com/bitnami/charts/tree/main/bitnami/argo-cd"),
-        FolderPath = string.Empty
+        BaseUrl = new Uri("https://github.com/bitnami/charts.git"),
+        FolderPath = "bitnami/argo-cd"
     },
     Notes = string.Empty,
     State = ResourceTemplateVersionState.Active
@@ -83,3 +83,5 @@ await terraformDriver.PlanAsync(azureVirtualNetwork,
         { "location", "uk south" },
         { "resource_group_name", "dev" }
     });
+
+await helmDriver.PlanAsync(argoCdTemplate, new Dictionary<string, string>() { });
