@@ -23,7 +23,6 @@ public static class InfrastructureExtensions
     {
         services.AddSingleton<IResourceDriver, HelmDriver>();
         services.TryAddSingleton<IHelmValidator, HelmValidator>();
-        services.TryAddSingleton<IHelmCommandLine, HelmCommandLine>();
         services.TryAddSingleton<IHelmParser, HelmParser>();
     }
 

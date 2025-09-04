@@ -7,6 +7,5 @@ public enum HelmValidationResultState
     ModuleNotFound,
     ModuleNotParsable,
     InputNotPresent,
-    RequiredInputNotProvided,
     Valid
 }

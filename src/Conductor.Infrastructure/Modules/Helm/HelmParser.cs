@@ -1,58 +1,75 @@
-using System.Text.Json;
+using Conductor.Infrastructure.Modules.Helm.Models;
 using Microsoft.Extensions.Logging;
+using YamlDotNet.Serialization;
+using YamlDotNet.Serialization.NamingConventions;
 
 namespace Conductor.Infrastructure.Modules.Helm;
 
 public interface IHelmParser
 {
-    Task<object?> ParseHelmConfigAsync(string helmChartDirectory);
+    Task<List<HelmInput>> ParseHelmConfigAsync(string helmChartDirectory);
 }
 
 public sealed class HelmParser : IHelmParser
 {
     private readonly ILogger<HelmParser> _logger;
-    private readonly IHelmCommandLine _helmCommandLine;
 
-    public HelmParser(ILogger<HelmParser> logger, IHelmCommandLine helmCommandLine)
+    public HelmParser(ILogger<HelmParser> logger)
     {
         _logger = logger;
-        _helmCommandLine = helmCommandLine;
     }
 
-    public async Task<object?> ParseHelmConfigAsync(string helmChartDirectory)
-    {
-        if (!IsValidModule(helmChartDirectory))
-        {
-            return null;
-        }
-
-        var inputJsonPath = Path.Combine(helmChartDirectory, "inputs-outputs.yaml");
-        var createdJsonFile = await _helmCommandLine.GenerateOutputJsonAsync(helmChartDirectory, inputJsonPath);
-
-        if (!createdJsonFile)
-        {
-            _logger.LogWarning("Could not create Input Json File: {File}", inputJsonPath);
-            return null;
-        }
-
-        var fileContents = await File.ReadAllTextAsync(inputJsonPath);
-        //File.Delete(inputJsonPath);
-        return JsonSerializer.Deserialize<object>(fileContents);
-    }
-
-    private bool IsValidModule(string moduleDirectory)
+    public async Task<List<HelmInput>> ParseHelmConfigAsync(string helmChartDirectory)
     {
         var valuesFile = Directory
-            .GetFiles(moduleDirectory, "values.yaml", SearchOption.AllDirectories)
+            .GetFiles(helmChartDirectory, "values.yaml", SearchOption.AllDirectories)
             .FirstOrDefault();
 
         if (valuesFile is null)
         {
-            _logger.LogWarning("Could not find values.yaml in template directory: {Directory} found.",
-                moduleDirectory);
-            return false;
+            _logger.LogWarning("Could not find values.yaml in template directory: {Directory}", helmChartDirectory);
+            return [];
         }
 
-        return true;
+        var fileContents = await File.ReadAllTextAsync(valuesFile);
+
+        var yamlObject = new DeserializerBuilder()
+            .WithNamingConvention(CamelCaseNamingConvention.Instance)
+            .Build()
+            .Deserialize<object>(fileContents);
+
+        var inputs = new List<HelmInput>();
+        Traverse(yamlObject, string.Empty, inputs);
+
+        return inputs;
+    }
+
+    private static void Traverse(object? node, string prefix, IList<HelmInput> inputs)
+    {
+        switch (node)
+        {
+            case IDictionary<object, object> map:
+                foreach (var kvp in map)
+                {
+                    var key = kvp.Key.ToString() ?? string.Empty;
+                    var fullKey = string.IsNullOrEmpty(prefix) ? key : $"{prefix}.{key}";
+                    Traverse(kvp.Value, fullKey, inputs);
+                }
+
+                break;
+
+            case IList<object> list:
+                for (var i = 0; i < list.Count; i++)
+                {
+                    var fullKey = $"{prefix}[{i}]";
+                    Traverse(list[i], fullKey, inputs);
+                }
+
+                break;
+
+            default:
+                inputs.Add(new HelmInput(prefix, node));
+                break;
+        }
     }
 }

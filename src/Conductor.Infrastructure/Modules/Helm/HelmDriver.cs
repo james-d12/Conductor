@@ -29,12 +29,12 @@ public sealed class HelmDriver : IResourceDriver
             case HelmValidationResultState.ModuleNotFound:
             case HelmValidationResultState.ModuleNotParsable:
             case HelmValidationResultState.InputNotPresent:
-            case HelmValidationResultState.RequiredInputNotProvided:
                 _logger.LogError("Helm Validation for {Template} Failed due to: {State} with Message: {Message}",
                     template.Name, result.State,
                     result.Message);
                 break;
             case HelmValidationResultState.Valid:
+                _logger.LogInformation("Helm Validation for {Template} Passed.", template.Name);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();

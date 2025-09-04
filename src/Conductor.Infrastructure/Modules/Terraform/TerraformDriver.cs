@@ -34,6 +34,7 @@ public sealed class TerraformDriver : IResourceDriver
                     result.Message);
                 break;
             case TerraformValidationResultState.Valid:
+                _logger.LogInformation("Terraform Validation for {Template} Passed.", template.Name);
                 break;
         }
     }

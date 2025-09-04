@@ -4,45 +4,46 @@ public record HelmValidationResult
 {
     public string Message { get; private init; } = string.Empty;
     public required HelmValidationResultState State { get; init; }
+    public required List<HelmInput>? Config { get; init; }
 
-    public static HelmValidationResult Valid() => new()
+    public static HelmValidationResult Valid(List<HelmInput> config) => new()
     {
-        State = HelmValidationResultState.Valid
+        State = HelmValidationResultState.Valid,
+        Config = config
     };
 
     public static HelmValidationResult WrongProvider(string message) => new()
     {
         Message = message,
-        State = HelmValidationResultState.WrongProvider
+        State = HelmValidationResultState.WrongProvider,
+        Config = null
     };
 
     public static HelmValidationResult TemplateNotFound(string message) => new()
     {
         Message = message,
-        State = HelmValidationResultState.TemplateNotFound
+        State = HelmValidationResultState.TemplateNotFound,
+        Config = null
     };
 
     public static HelmValidationResult ModuleNotFound(string message) => new()
     {
         Message = message,
-        State = HelmValidationResultState.ModuleNotFound
+        State = HelmValidationResultState.ModuleNotFound,
+        Config = null
     };
 
     public static HelmValidationResult ModuleNotParsable(string message) => new()
     {
         Message = message,
-        State = HelmValidationResultState.ModuleNotParsable
+        State = HelmValidationResultState.ModuleNotParsable,
+        Config = null
     };
 
     public static HelmValidationResult InputNotPresent(string message) => new()
     {
         Message = message,
-        State = HelmValidationResultState.InputNotPresent
-    };
-
-    public static HelmValidationResult RequiredInputNotProvided(string message) => new()
-    {
-        Message = message,
-        State = HelmValidationResultState.RequiredInputNotProvided
+        State = HelmValidationResultState.InputNotPresent,
+        Config = null
     };
 }

@@ -77,9 +77,6 @@ public sealed class TerraformValidator : ITerraformValidator
             .Select(i => i.Key)
             .ToList();
 
-        _logger.LogInformation("Terraform variable keys: {keys}",
-            string.Join(",", terraformConfig.Variables.Keys.ToList()));
-
         if (invalidInputs.Count > 0)
         {
             var message = $"These inputs were not present in the terraform module: {string.Join(",", invalidInputs)}";

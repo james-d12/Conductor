@@ -59,6 +59,18 @@ public sealed class HelmValidator : IHelmValidator
 
         var config = await _parser.ParseHelmConfigAsync(templateDir);
 
-        return HelmValidationResult.Valid();
+        var invalidInputs = inputs
+            .Where(i =>
+                !config.Any(input => input.Key.Equals(i.Key, StringComparison.OrdinalIgnoreCase)))
+            .Select(i => i.Key)
+            .ToList();
+
+        if (invalidInputs.Count > 0)
+        {
+            var message = $"These inputs were not present in the helm chart: {string.Join(",", invalidInputs)}";
+            return HelmValidationResult.InputNotPresent(message);
+        }
+
+        return HelmValidationResult.Valid(config);
     }
 }
