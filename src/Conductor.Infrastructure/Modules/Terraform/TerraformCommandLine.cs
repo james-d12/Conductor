@@ -1,4 +1,4 @@
-using System.Diagnostics;
+using Conductor.Infrastructure.Common;
 using Microsoft.Extensions.Logging;
 
 namespace Conductor.Infrastructure.Modules.Terraform;
@@ -6,6 +6,7 @@ namespace Conductor.Infrastructure.Modules.Terraform;
 public interface ITerraformCommandLine
 {
     Task<bool> GenerateOutputJsonAsync(string executeDirectory, string outputJsonPath);
+    Task<bool> RunInitAsync(string executeDirectory);
 }
 
 public sealed class TerraformCommandLine : ITerraformCommandLine
@@ -22,40 +23,33 @@ public sealed class TerraformCommandLine : ITerraformCommandLine
         _logger.LogInformation("Generating Output using Terraform Config Inspect for {Directory} to {OutputPath}",
             executeDirectory, outputJsonPath);
 
-        var startInfo = new ProcessStartInfo
+        CommandLineResult cliResult =
+            await new CommandLineBuilder("terraform-config-inspect")
+                .WithArguments("--json .")
+                .WithWorkingDirectory(executeDirectory)
+                .ExecuteAsync();
+
+        _logger.LogDebug("Terraform Generate Output for {Source}:\n{StdOut}", outputJsonPath, cliResult.StdOut);
+
+        if (cliResult.ExitCode != 0)
         {
-            FileName = "terraform-config-inspect",
-            Arguments = "--json .",
-            WorkingDirectory = executeDirectory,
-            RedirectStandardOutput = true,
-            RedirectStandardError = true,
-            UseShellExecute = false,
-            CreateNoWindow = true
-        };
-
-        using var process = new Process();
-        process.StartInfo = startInfo;
-        process.Start();
-
-        var stdOutTask = process.StandardOutput.ReadToEndAsync();
-        var stdErrTask = process.StandardError.ReadToEndAsync();
-
-        await process.WaitForExitAsync();
-
-        var stdOut = await stdOutTask;
-        var stdErr = await stdErrTask;
-
-        _logger.LogDebug("Terraform Generate Output for {Source}:\n{StdOut}", outputJsonPath, stdOut);
-
-        if (process.ExitCode != 0)
-        {
-            var errorOutput = !string.IsNullOrEmpty(stdErr) ? stdErr : stdOut;
+            var errorOutput = !string.IsNullOrEmpty(cliResult.StdErr) ? cliResult.StdErr : cliResult.StdOut;
             _logger.LogWarning("Could not Generate Output {Source} Due to {Error}", outputJsonPath, errorOutput);
             return false;
         }
 
-        await File.WriteAllTextAsync(outputJsonPath, stdOut);
+        await File.WriteAllTextAsync(outputJsonPath, cliResult.StdOut);
         _logger.LogInformation("Created JSON Output file from Terraform Config Inspect: {File}", outputJsonPath);
         return File.Exists(outputJsonPath);
+    }
+
+    public async Task<bool> RunInitAsync(string executeDirectory)
+    {
+        CommandLineResult cliResult =
+            await new CommandLineBuilder("terraform init")
+                .WithWorkingDirectory(executeDirectory)
+                .ExecuteAsync();
+
+        return true;
     }
 }

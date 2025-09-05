@@ -1,7 +1,6 @@
 using Conductor.Core.Modules.Application.Domain;
 using Conductor.Core.Modules.Deployment.Domain;
 using Domain_Environment = Conductor.Core.Modules.Environment.Domain.Environment;
-using Environment = Conductor.Core.Modules.Environment.Domain.Environment;
 
 namespace Conductor.Core.Common.Services;
 

@@ -84,4 +84,4 @@ await terraformDriver.PlanAsync(azureVirtualNetwork,
         { "resource_group_name", "dev" }
     });
 
-await helmDriver.PlanAsync(argoCdTemplate, new Dictionary<string, string>() { });
+// await helmDriver.PlanAsync(argoCdTemplate, new Dictionary<string, string>() { });

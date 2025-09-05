@@ -42,7 +42,7 @@ public sealed class HelmValidator : IHelmValidator
 
         var templateDir = Path.Combine(Path.GetTempPath(), "conductor", "helm", template.Name, latestVersion.Version);
         var cloneResult =
-            await _gitCommandLine.CloneAsync(latestVersion.Source.BaseUrl, templateDir, CancellationToken.None);
+            await _gitCommandLine.CloneAsync(latestVersion.Source.BaseUrl, templateDir);
 
         if (!string.IsNullOrEmpty(latestVersion.Source.FolderPath))
         {
