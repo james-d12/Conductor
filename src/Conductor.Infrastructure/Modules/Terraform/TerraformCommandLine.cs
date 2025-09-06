@@ -8,6 +8,8 @@ public interface ITerraformCommandLine
     Task<CommandLineResult> RunInitAsync(string executeDirectory);
     Task<CommandLineResult> RunValidateAsync(string executeDirectory);
     Task<CommandLineResult> RunPlanAsync(string executeDirectory);
+    Task<CommandLineResult> RunApplyAsync(string executeDirectory);
+    Task<CommandLineResult> RunDeleteAsync(string executeDirectory);
 }
 
 public sealed class TerraformCommandLine : ITerraformCommandLine
@@ -35,4 +37,14 @@ public sealed class TerraformCommandLine : ITerraformCommandLine
             .WithArguments("plan -input=false -out=plan.tfplan")
             .WithWorkingDirectory(executeDirectory)
             .ExecuteAsync();
+
+    public Task<CommandLineResult> RunApplyAsync(string executeDirectory)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<CommandLineResult> RunDeleteAsync(string executeDirectory)
+    {
+        throw new NotImplementedException();
+    }
 }
