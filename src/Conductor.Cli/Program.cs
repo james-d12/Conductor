@@ -73,8 +73,16 @@ var terraformDriver = resourceDriverFactory.GetDriver(azureStorageAccount.Provid
 var helmDriver = resourceDriverFactory.GetDriver(argoCdTemplate.Provider);
 
 await terraformDriver.PlanAsync(azureStorageAccount,
-    new Dictionary<string, string>() { { "name", "Payments" } });
+    new Dictionary<string, string>()
+    {
+        { "name", "payments" },
+        { "account_replication_type", "LRS" },
+        { "account_tier", "Standard" },
+        { "location", "uksouth" },
+        { "resource_group_name", "dev-rg" }
+    });
 
+/*
 await terraformDriver.PlanAsync(azureVirtualNetwork,
     new Dictionary<string, string>()
     {
@@ -82,6 +90,4 @@ await terraformDriver.PlanAsync(azureVirtualNetwork,
         { "address_space", "['10.0.0.0/16', '10.0.0.0/16']"},
         { "location", "uk south" },
         { "resource_group_name", "dev" }
-    });
-
-// await helmDriver.PlanAsync(argoCdTemplate, new Dictionary<string, string>() { });
+    }); */

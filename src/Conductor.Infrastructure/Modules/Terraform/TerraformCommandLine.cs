@@ -89,9 +89,10 @@ public sealed class TerraformCommandLine : ITerraformCommandLine
 
     public async Task<bool> RunPlanAsync(string executeDirectory)
     {
+        _logger.LogInformation("Running Terraform plan in {Directory}", executeDirectory);
         CommandLineResult cliResult =
             await new CommandLineBuilder("terraform")
-                .WithArguments("plan -input=false -out=planfile")
+                .WithArguments("plan -input=false -out=plan.tfplan")
                 .WithWorkingDirectory(executeDirectory)
                 .ExecuteAsync();
 

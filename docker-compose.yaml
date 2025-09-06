@@ -14,6 +14,8 @@ services:
           path: .src/Conductor.Api
           target: .src/Conductor.Api
   cli:
+    env_file:
+      - src/Conductor.Cli/.env
     build:
       context: .
       dockerfile: src/Conductor.Cli/Dockerfile
