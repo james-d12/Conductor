@@ -13,7 +13,6 @@ public sealed class ResourceTemplateTests
     {
         var request = _fixture.Build<CreateResourceTemplateRequest>()
             .With(x => x.Provider, ResourceTemplateProvider.Terraform)
-            .With(x => x.Type, ResourceTemplateType.AzureCosmosDb)
             .Create();
 
         var template = Core.Modules.ResourceTemplate.Domain.ResourceTemplate.Create(request);
@@ -21,7 +20,6 @@ public sealed class ResourceTemplateTests
         Assert.Equal(request.Name, template.Name);
         Assert.Equal(request.Description, template.Description);
         Assert.Equal(request.Provider, template.Provider);
-        Assert.Equal(request.Type, template.Type);
         Assert.NotEqual(default, template.Id);
         Assert.Empty(template.Versions);
         Assert.Null(template.LatestVersion);
@@ -36,7 +34,6 @@ public sealed class ResourceTemplateTests
 
         var request = _fixture.Build<CreateResourceTemplateWithVersionRequest>()
             .With(x => x.Provider, ResourceTemplateProvider.Terraform)
-            .With(x => x.Type, ResourceTemplateType.AzureCosmosDb)
             .With(x => x.Source, resourceTemplateVersionSource)
             .Create();
 
@@ -51,7 +48,6 @@ public sealed class ResourceTemplateTests
     {
         var templateRequest = _fixture.Build<CreateResourceTemplateRequest>()
             .With(x => x.Provider, ResourceTemplateProvider.Terraform)
-            .With(x => x.Type, ResourceTemplateType.AzureCosmosDb)
             .Create();
 
         var template = Core.Modules.ResourceTemplate.Domain.ResourceTemplate.Create(templateRequest);
@@ -80,7 +76,6 @@ public sealed class ResourceTemplateTests
         var template = Core.Modules.ResourceTemplate.Domain.ResourceTemplate.Create(_fixture
             .Build<CreateResourceTemplateRequest>()
             .With(x => x.Provider, ResourceTemplateProvider.Terraform)
-            .With(x => x.Type, ResourceTemplateType.AzureCosmosDb)
             .Create());
 
         var resourceTemplateVersionSource1 = _fixture.Build<ResourceTemplateVersionSource>()
@@ -119,7 +114,6 @@ public sealed class ResourceTemplateTests
         var template = Core.Modules.ResourceTemplate.Domain.ResourceTemplate.Create(_fixture
             .Build<CreateResourceTemplateRequest>()
             .With(x => x.Provider, ResourceTemplateProvider.Terraform)
-            .With(x => x.Type, ResourceTemplateType.AzureCosmosDb)
             .Create());
 
         var resourceTemplateVersionSource = _fixture.Build<ResourceTemplateVersionSource>()
@@ -156,7 +150,6 @@ public sealed class ResourceTemplateTests
                 Name = null!,
                 Description = valid,
                 Provider = ResourceTemplateProvider.Terraform,
-                Type = ResourceTemplateType.AzureCosmosDb
             }));
 
         Assert.Throws<ArgumentNullException>(() => Core.Modules.ResourceTemplate.Domain.ResourceTemplate.Create(
@@ -165,7 +158,6 @@ public sealed class ResourceTemplateTests
                 Name = null!,
                 Description = null!,
                 Provider = ResourceTemplateProvider.Terraform,
-                Type = ResourceTemplateType.AzureCosmosDb
             }));
     }
 
@@ -179,17 +171,15 @@ public sealed class ResourceTemplateTests
             {
                 Name = string.Empty,
                 Description = valid,
-                Provider = ResourceTemplateProvider.Terraform,
-                Type = ResourceTemplateType.AzureCosmosDb
+                Provider = ResourceTemplateProvider.Terraform
             }));
 
         Assert.Throws<ArgumentException>(() => Core.Modules.ResourceTemplate.Domain.ResourceTemplate.Create(
             new CreateResourceTemplateRequest
             {
-                Name = string.Empty!,
-                Description = string.Empty!,
-                Provider = ResourceTemplateProvider.Terraform,
-                Type = ResourceTemplateType.AzureCosmosDb
+                Name = string.Empty,
+                Description = string.Empty,
+                Provider = ResourceTemplateProvider.Terraform
             }));
     }
 }

@@ -15,7 +15,6 @@ public sealed record ResourceTemplate
     public string Name { get; private set; } = string.Empty;
     public string Description { get; private set; } = string.Empty;
     public ResourceTemplateProvider Provider { get; private set; }
-    public ResourceTemplateType Type { get; private set; }
     public DateTime CreatedAt { get; private init; }
     public DateTime UpdatedAt { get; private set; }
 
@@ -40,7 +39,6 @@ public sealed record ResourceTemplate
             Name = request.Name,
             Description = request.Description,
             Provider = request.Provider,
-            Type = request.Type,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
         };
@@ -52,8 +50,7 @@ public sealed record ResourceTemplate
         {
             Name = request.Name,
             Description = request.Description,
-            Provider = request.Provider,
-            Type = request.Type
+            Provider = request.Provider
         });
         resourceTemplate.AddVersion(new CreateNewResourceTemplateVersionRequest
         {

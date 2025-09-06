@@ -25,7 +25,6 @@ var azureStorageAccount = ResourceTemplate.CreateWithVersion(new CreateResourceT
     Name = "Azure Storage Account",
     Description = "Azure Storage Account Terraform Module",
     Provider = ResourceTemplateProvider.Terraform,
-    Type = ResourceTemplateType.AzureStorageAccount,
     Version = "1.0.0",
     Source = new ResourceTemplateVersionSource
     {
@@ -41,7 +40,6 @@ var azureVirtualNetwork = ResourceTemplate.CreateWithVersion(new CreateResourceT
     Name = "Azure Virtual Network",
     Description = "Azure Virtual Network Terraform Module",
     Provider = ResourceTemplateProvider.Terraform,
-    Type = ResourceTemplateType.AzureStorageAccount,
     Version = "1.0.0",
     Source = new ResourceTemplateVersionSource
     {
@@ -57,7 +55,6 @@ var argoCdTemplate = ResourceTemplate.CreateWithVersion(new CreateResourceTempla
     Name = "ArgoCD Helm Chart",
     Description = "An ArgoCD Helm Chart",
     Provider = ResourceTemplateProvider.Helm,
-    Type = ResourceTemplateType.HelmChart,
     Version = "1.0",
     Source = new ResourceTemplateVersionSource
     {
