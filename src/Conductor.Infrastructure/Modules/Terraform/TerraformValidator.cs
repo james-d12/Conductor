@@ -33,40 +33,46 @@ public sealed class TerraformValidator : ITerraformValidator
         if (template.Provider != ResourceTemplateProvider.Terraform)
         {
             var message = $"The template: {template.Name} is configured to use {template.Provider}";
-            return TerraformValidationResult.WrongProvider(message);
+            return TerraformValidationResult.TemplateInvalid(message);
         }
 
         ResourceTemplateVersion? latestVersion = template.LatestVersion;
         if (latestVersion is null)
         {
             var message = $"No Version could be found for {template.Name} found.";
-            return TerraformValidationResult.TemplateNotFound(message);
+            return TerraformValidationResult.TemplateInvalid(message);
         }
 
-        var templateDir = Path.Combine(Path.GetTempPath(), "conductor", "terraform", "downloads", template.Name.Replace(" ", "."),
-            latestVersion.Version);
-        var cloneResult =
-            await _gitCommandLine.CloneAsync(latestVersion.Source.BaseUrl, templateDir);
+        var basePath = Path.Combine(Path.GetTempPath(), "conductor", "terraform");
+        var templateDir = Path.Combine(basePath, "modules", template.Name.Replace(" ", "."), latestVersion.Version);
+        var cloneResult = await _gitCommandLine.CloneAsync(latestVersion.Source.BaseUrl, templateDir);
+
+        if (!cloneResult)
+        {
+            var message = $"Could not clone template: {template.Name} from {latestVersion.Source}";
+            return TerraformValidationResult.ModuleInvalid(message);
+        }
+
+        _logger.LogInformation("Successfully cloned Repository: {Url} to {Output}", latestVersion.Source, templateDir);
 
         if (!string.IsNullOrEmpty(latestVersion.Source.FolderPath))
         {
             templateDir = Path.Combine(templateDir, latestVersion.Source.FolderPath);
         }
 
-        if (!cloneResult)
-        {
-            var message = $"Could not clone template: {template.Name} from {latestVersion.Source}";
-            return TerraformValidationResult.ModuleNotFound(message);
-        }
+        var (isValidModule, errorMessage) = IsValidModuleDirectory(templateDir);
 
-        _logger.LogInformation("Successfully cloned Repository: {Url} to {Output}", latestVersion.Source, templateDir);
+        if (!isValidModule)
+        {
+            return TerraformValidationResult.ModuleInvalid(errorMessage);
+        }
 
         TerraformConfig? terraformConfig = await _parser.ParseTerraformModuleAsync(templateDir);
 
         if (terraformConfig is null)
         {
             var message = $"Could not parse module: {template.Name} from {latestVersion.Source}";
-            return TerraformValidationResult.ModuleNotParsable(message);
+            return TerraformValidationResult.ModuleInvalid(message);
         }
 
         var invalidInputs = inputs
@@ -78,7 +84,7 @@ public sealed class TerraformValidator : ITerraformValidator
         if (invalidInputs.Count > 0)
         {
             var message = $"These inputs were not present in the terraform module: {string.Join(",", invalidInputs)}";
-            return TerraformValidationResult.InputNotPresent(message);
+            return TerraformValidationResult.InputInvalid(message);
         }
 
         var requiredInputs = terraformConfig.Variables.Values.Where(v => v.Required).ToList();
@@ -93,9 +99,32 @@ public sealed class TerraformValidator : ITerraformValidator
                 .Select(r => $"{r.Name}:{r.Type}"));
             var message =
                 $"These inputs are required in the terraform module, but were not provided: {requiredInputNames}";
-            return TerraformValidationResult.RequiredInputNotProvided(message);
+            return TerraformValidationResult.InputInvalid(message);
         }
 
         return TerraformValidationResult.Valid(terraformConfig, templateDir);
+    }
+
+    private static (bool, string) IsValidModuleDirectory(string moduleDirectory)
+    {
+        var variablesFile = Directory
+            .GetFiles(moduleDirectory, "variables.tf", SearchOption.AllDirectories)
+            .FirstOrDefault();
+
+        if (variablesFile is null)
+        {
+            return (false, $"Could not find variables.tf in template directory: {moduleDirectory} found.");
+        }
+
+        var outputsFile = Directory
+            .GetFiles(moduleDirectory, "outputs.tf", SearchOption.AllDirectories)
+            .FirstOrDefault();
+
+        if (outputsFile is null)
+        {
+            return (false, $"Could not find outputs.tf in template directory: {moduleDirectory} found.");
+        }
+
+        return (true, string.Empty);
     }
 }

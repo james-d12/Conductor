@@ -45,4 +45,9 @@ public sealed class HelmDriver : IResourceDriver
     {
         throw new NotImplementedException();
     }
+
+    public Task DestroyAsync(ResourceTemplate template, Dictionary<string, string> inputs)
+    {
+        throw new NotImplementedException();
+    }
 }

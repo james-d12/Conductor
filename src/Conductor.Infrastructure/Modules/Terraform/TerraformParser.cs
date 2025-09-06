@@ -22,11 +22,6 @@ public sealed class TerraformParser : ITerraformParser
 
     public async Task<TerraformConfig?> ParseTerraformModuleAsync(string moduleDirectory)
     {
-        if (!IsValidModule(moduleDirectory))
-        {
-            return null;
-        }
-
         var inputJsonPath = Path.Combine(moduleDirectory, "inputs-outputs.json");
         var createdJsonFile = await _terraformCommandLine.GenerateOutputJsonAsync(moduleDirectory, inputJsonPath);
 
@@ -39,31 +34,5 @@ public sealed class TerraformParser : ITerraformParser
         var fileContents = await File.ReadAllTextAsync(inputJsonPath);
         File.Delete(inputJsonPath);
         return JsonSerializer.Deserialize<TerraformConfig>(fileContents);
-    }
-
-    private bool IsValidModule(string moduleDirectory)
-    {
-        var variablesFile = Directory
-            .GetFiles(moduleDirectory, "variables.tf", SearchOption.AllDirectories)
-            .FirstOrDefault();
-
-        if (variablesFile is null)
-        {
-            _logger.LogWarning("Could not find variables.tf in template directory: {Directory} found.",
-                moduleDirectory);
-            return false;
-        }
-
-        var outputsFile = Directory
-            .GetFiles(moduleDirectory, "outputs.tf", SearchOption.AllDirectories)
-            .FirstOrDefault();
-
-        if (outputsFile is null)
-        {
-            _logger.LogWarning("Could not find outputs.tf in template directory: {Directory} found.", moduleDirectory);
-            return false;
-        }
-
-        return true;
     }
 }

@@ -1,10 +1,10 @@
 namespace Conductor.Infrastructure.Modules.Terraform.Models;
 
-public record TerraformValidationResult
+public sealed record TerraformValidationResult
 {
     public TerraformConfig? Config { get; init; }
     public string Message { get; private init; } = string.Empty;
-    public string ModuleDirectory { get; init; } = string.Empty;
+    public string ModuleDirectory { get; private init; } = string.Empty;
     public required TerraformValidationResultState State { get; init; }
 
     public static TerraformValidationResult Valid(TerraformConfig config, string moduleDirectory) => new()
@@ -14,39 +14,21 @@ public record TerraformValidationResult
         State = TerraformValidationResultState.Valid
     };
 
-    public static TerraformValidationResult WrongProvider(string message) => new()
+    public static TerraformValidationResult TemplateInvalid(string message) => new()
     {
         Message = message,
-        State = TerraformValidationResultState.WrongProvider
+        State = TerraformValidationResultState.TemplateInvalid
     };
 
-    public static TerraformValidationResult TemplateNotFound(string message) => new()
+    public static TerraformValidationResult ModuleInvalid(string message) => new()
     {
         Message = message,
-        State = TerraformValidationResultState.TemplateNotFound
+        State = TerraformValidationResultState.ModuleInvalid
     };
 
-    public static TerraformValidationResult ModuleNotFound(string message) => new()
+    public static TerraformValidationResult InputInvalid(string message) => new()
     {
         Message = message,
-        State = TerraformValidationResultState.ModuleNotFound
-    };
-
-    public static TerraformValidationResult ModuleNotParsable(string message) => new()
-    {
-        Message = message,
-        State = TerraformValidationResultState.ModuleNotParsable
-    };
-
-    public static TerraformValidationResult InputNotPresent(string message) => new()
-    {
-        Message = message,
-        State = TerraformValidationResultState.InputNotPresent
-    };
-
-    public static TerraformValidationResult RequiredInputNotProvided(string message) => new()
-    {
-        Message = message,
-        State = TerraformValidationResultState.RequiredInputNotProvided
+        State = TerraformValidationResultState.InputInvalid
     };
 }

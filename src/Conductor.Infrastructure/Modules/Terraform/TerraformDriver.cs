@@ -29,18 +29,15 @@ public sealed class TerraformDriver : IResourceDriver
 
         switch (result.State)
         {
-            case TerraformValidationResultState.TemplateNotFound:
-            case TerraformValidationResultState.ModuleNotFound:
-            case TerraformValidationResultState.ModuleNotParsable:
-            case TerraformValidationResultState.InputNotPresent:
-            case TerraformValidationResultState.RequiredInputNotProvided:
+            case TerraformValidationResultState.TemplateInvalid:
+            case TerraformValidationResultState.ModuleInvalid:
+            case TerraformValidationResultState.InputInvalid:
                 _logger.LogError("Terraform Validation for {Template} Failed due to: {State} with Message: {Message}",
                     template.Name, result.State,
                     result.Message);
                 break;
             case TerraformValidationResultState.Valid:
                 _logger.LogInformation("Terraform Validation for {Template} Passed.", template.Name);
-
 
                 var stateDirectory = Path.Combine(Path.GetTempPath(), "conductor", "terraform", "state",
                     template.Name.Replace(" ", "."));
@@ -79,11 +76,18 @@ public sealed class TerraformDriver : IResourceDriver
                 var planResult = await _commandLine.RunPlanAsync(stateDirectory);
 
                 break;
+            default:
+                throw new ArgumentOutOfRangeException();
         }
     }
 
     public async Task ApplyAsync(ResourceTemplate template, Dictionary<string, string> inputs)
     {
         var result = await _validator.ValidateAsync(template, inputs);
+    }
+
+    public Task DestroyAsync(ResourceTemplate template, Dictionary<string, string> inputs)
+    {
+        throw new NotImplementedException();
     }
 }

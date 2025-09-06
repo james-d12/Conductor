@@ -82,12 +82,11 @@ await terraformDriver.PlanAsync(azureStorageAccount,
         { "resource_group_name", "dev-rg" }
     });
 
-/*
 await terraformDriver.PlanAsync(azureVirtualNetwork,
     new Dictionary<string, string>()
     {
         { "name", "PaymentsNetwork" },
-        { "address_space", "['10.0.0.0/16', '10.0.0.0/16']"},
+        { "address_space", "['10.0.0.0/16', '10.0.0.0/16']" },
         { "location", "uk south" },
         { "resource_group_name", "dev" }
-    }); */
+    });
