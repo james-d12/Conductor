@@ -15,14 +15,12 @@ public sealed class TerraformValidator : ITerraformValidator
 {
     private readonly ILogger<TerraformValidator> _logger;
     private readonly IGitCommandLine _gitCommandLine;
-    private readonly ITerraformRenderer _renderer;
     private readonly ITerraformParser _parser;
 
-    public TerraformValidator(ILogger<TerraformValidator> logger, ITerraformRenderer renderer, ITerraformParser parser,
+    public TerraformValidator(ILogger<TerraformValidator> logger, ITerraformParser parser,
         IGitCommandLine gitCommandLine)
     {
         _logger = logger;
-        _renderer = renderer;
         _parser = parser;
         _gitCommandLine = gitCommandLine;
     }
@@ -45,7 +43,7 @@ public sealed class TerraformValidator : ITerraformValidator
             return TerraformValidationResult.TemplateNotFound(message);
         }
 
-        var templateDir = Path.Combine(Path.GetTempPath(), "conductor", "terraform", template.Name,
+        var templateDir = Path.Combine(Path.GetTempPath(), "conductor", "terraform", "downloads", template.Name.Replace(" ", "."),
             latestVersion.Version);
         var cloneResult =
             await _gitCommandLine.CloneAsync(latestVersion.Source.BaseUrl, templateDir);
@@ -98,11 +96,6 @@ public sealed class TerraformValidator : ITerraformValidator
             return TerraformValidationResult.RequiredInputNotProvided(message);
         }
 
-        var mainTf = _renderer.Render(template, inputs);
-        var outputPath = Path.Combine(templateDir, "conductor_main.tf");
-        await File.WriteAllTextAsync(outputPath, mainTf);
-        _logger.LogInformation("Written contents to: {FilePath}", outputPath);
-
-        return TerraformValidationResult.Valid(terraformConfig);
+        return TerraformValidationResult.Valid(terraformConfig, templateDir);
     }
 }

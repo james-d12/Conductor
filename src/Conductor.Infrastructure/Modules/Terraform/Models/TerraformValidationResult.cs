@@ -4,11 +4,13 @@ public record TerraformValidationResult
 {
     public TerraformConfig? Config { get; init; }
     public string Message { get; private init; } = string.Empty;
+    public string ModuleDirectory { get; init; } = string.Empty;
     public required TerraformValidationResultState State { get; init; }
 
-    public static TerraformValidationResult Valid(TerraformConfig config) => new()
+    public static TerraformValidationResult Valid(TerraformConfig config, string moduleDirectory) => new()
     {
         Config = config,
+        ModuleDirectory = moduleDirectory,
         State = TerraformValidationResultState.Valid
     };
 

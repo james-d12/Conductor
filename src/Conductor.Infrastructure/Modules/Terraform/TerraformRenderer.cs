@@ -5,24 +5,20 @@ namespace Conductor.Infrastructure.Modules.Terraform;
 
 public interface ITerraformRenderer
 {
-    string Render(ResourceTemplate template, Dictionary<string, string> actualInputs);
+    string Render(ResourceTemplate template, string moduleDirectory,
+        Dictionary<string, string> actualInputs);
 }
 
 public sealed class TerraformRenderer : ITerraformRenderer
 {
-    public string Render(ResourceTemplate template, Dictionary<string, string> actualInputs)
+    public string Render(ResourceTemplate template, string moduleDirectory,
+        Dictionary<string, string> actualInputs)
     {
         var moduleName = template.Name.Replace(" ", "_").ToLowerInvariant();
-        var version = template.LatestVersion;
-
-        if (version is null)
-        {
-            return string.Empty;
-        }
 
         var sb = new StringBuilder();
         sb.AppendLine($"module \"{moduleName}\" {{");
-        sb.AppendLine($"  source = \"{version.Source.ToString()}\"");
+        sb.AppendLine($"  source = \"{moduleDirectory}\"");
 
         foreach (var kvp in actualInputs)
         {
@@ -39,6 +35,11 @@ public sealed class TerraformRenderer : ITerraformRenderer
         if (bool.TryParse(value, out _) || int.TryParse(value, out _) || double.TryParse(value, out _))
         {
             return value;
+        }
+
+        if (value.StartsWith('[') && value.EndsWith(']'))
+        {
+            return value.Replace("\'", "\"");
         }
 
         return $"\"{value}\"";
