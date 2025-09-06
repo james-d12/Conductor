@@ -1,11 +1,15 @@
-using Conductor.Core.Common.Services;
 using Conductor.Core.Modules.ResourceTemplate.Domain;
 using Conductor.Infrastructure.Modules.Helm.Models;
 using Microsoft.Extensions.Logging;
 
 namespace Conductor.Infrastructure.Modules.Helm;
 
-public sealed class HelmDriver : IResourceDriver
+public interface IHelmDriver
+{
+    Task PlanAsync(ResourceTemplate template, Dictionary<string, string> inputs);
+}
+
+public sealed class HelmDriver : IHelmDriver
 {
     public string Name => "Helm";
 
@@ -39,15 +43,5 @@ public sealed class HelmDriver : IResourceDriver
             default:
                 throw new ArgumentOutOfRangeException();
         }
-    }
-
-    public Task ApplyAsync(ResourceTemplate template, Dictionary<string, string> inputs)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task DestroyAsync(ResourceTemplate template, Dictionary<string, string> inputs)
-    {
-        throw new NotImplementedException();
     }
 }

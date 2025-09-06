@@ -1,4 +1,3 @@
-using Conductor.Core.Common.Services;
 using Conductor.Infrastructure.Common;
 using Conductor.Infrastructure.Modules.Helm;
 using Conductor.Infrastructure.Modules.Terraform;
@@ -21,7 +20,7 @@ public static class InfrastructureExtensions
 
     private static void AddHelmServices(this IServiceCollection services)
     {
-        services.AddSingleton<IResourceDriver, HelmDriver>();
+        services.TryAddSingleton<IHelmDriver, HelmDriver>();
         services.TryAddSingleton<IHelmValidator, HelmValidator>();
         services.TryAddSingleton<IHelmParser, HelmParser>();
     }
@@ -30,7 +29,9 @@ public static class InfrastructureExtensions
     {
         services.AddOptions<TerraformOptions>()
             .Bind(configuration.GetSection(nameof(TerraformOptions)));
-        services.AddSingleton<IResourceDriver, TerraformDriver>();
+
+        services.TryAddSingleton<ITerraformDriver, TerraformDriver>();
+        services.TryAddSingleton<ITerraformState, TerraformState>();
         services.TryAddSingleton<ITerraformRenderer, TerraformRenderer>();
         services.TryAddSingleton<ITerraformParser, TerraformParser>();
         services.TryAddSingleton<ITerraformCommandLine, TerraformCommandLine>();

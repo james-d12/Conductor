@@ -1,8 +1,9 @@
 ﻿using Conductor.Core;
-using Conductor.Core.Common.Services;
 using Conductor.Core.Modules.ResourceTemplate.Domain;
 using Conductor.Core.Modules.ResourceTemplate.Requests;
 using Conductor.Infrastructure;
+using Conductor.Infrastructure.Modules.Helm;
+using Conductor.Infrastructure.Modules.Terraform;
 using Conductor.Persistence;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -67,10 +68,8 @@ var argoCdTemplate = ResourceTemplate.CreateWithVersion(new CreateResourceTempla
     State = ResourceTemplateVersionState.Active
 });
 
-var resourceDriverFactory = host.Services.GetRequiredService<IResourceDriverFactory>();
-
-var terraformDriver = resourceDriverFactory.GetDriver(azureStorageAccount.Provider);
-var helmDriver = resourceDriverFactory.GetDriver(argoCdTemplate.Provider);
+var terraformDriver = host.Services.GetRequiredService<ITerraformDriver>();
+var helmDriver = host.Services.GetRequiredService<IHelmDriver>();
 
 await terraformDriver.PlanAsync(azureStorageAccount,
     new Dictionary<string, string>()

@@ -8,9 +8,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Conductor.Core\Conductor.Core.csproj" />
-      <ProjectReference Include="..\Conductor.Infrastructure\Conductor.Infrastructure.csproj" />
-      <ProjectReference Include="..\Conductor.Persistence\Conductor.Persistence.csproj" />
+        <ProjectReference Include="..\Conductor.Core\Conductor.Core.csproj"/>
+        <ProjectReference Include="..\Conductor.Infrastructure\Conductor.Infrastructure.csproj"/>
+        <ProjectReference Include="..\Conductor.Persistence\Conductor.Persistence.csproj"/>
     </ItemGroup>
 
 </Project>
