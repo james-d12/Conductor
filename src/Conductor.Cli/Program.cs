@@ -71,21 +71,17 @@ var argoCdTemplate = ResourceTemplate.CreateWithVersion(new CreateResourceTempla
 var terraformDriver = host.Services.GetRequiredService<ITerraformDriver>();
 var helmDriver = host.Services.GetRequiredService<IHelmDriver>();
 
-await terraformDriver.PlanAsync(azureStorageAccount,
-    new Dictionary<string, string>()
-    {
-        { "name", "payments" },
-        { "account_replication_type", "LRS" },
-        { "account_tier", "Standard" },
-        { "location", "uksouth" },
-        { "resource_group_name", "dev-rg" }
-    });
+var storageAccountInputs = new Dictionary<string, string>()
+{
+    { "name", "asdkiakdoaskd123132" },
+    { "account_replication_type", "LRS" },
+    { "account_tier", "Standard" },
+    { "location", "uksouth" },
+    { "resource_group_name", "dev-rg" }
+};
 
-await terraformDriver.PlanAsync(azureVirtualNetwork,
-    new Dictionary<string, string>()
-    {
-        { "name", "PaymentsNetwork" },
-        { "address_space", "['10.0.0.0/16', '10.0.0.0/16']" },
-        { "location", "uk south" },
-        { "resource_group_name", "dev" }
-    });
+var storageAccountPlanResult = await terraformDriver.PlanAsync(azureStorageAccount, storageAccountInputs);
+await terraformDriver.ApplyAsync(storageAccountPlanResult);
+
+var storageAccountPlanDestroyResult = await terraformDriver.PlanDestroyAsync(azureStorageAccount, storageAccountInputs);
+await terraformDriver.DestroyAsync(storageAccountPlanDestroyResult);

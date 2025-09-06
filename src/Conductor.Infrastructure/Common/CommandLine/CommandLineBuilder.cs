@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Text;
 
 namespace Conductor.Infrastructure.Common.CommandLine;
 
@@ -45,5 +46,41 @@ public sealed class CommandLineBuilder
         var stdErr = await stdErrTask;
 
         return new CommandLineResult(stdOut, stdErr, process.ExitCode);
+    }
+
+    public async Task<CommandLineResult> ExecuteStreamAsync()
+    {
+        using var process = new Process();
+        process.StartInfo = _startInfo;
+        process.EnableRaisingEvents = true;
+
+        var stdOut = new StringBuilder();
+        var stdErr = new StringBuilder();
+
+        process.OutputDataReceived += (sender, args) =>
+        {
+            if (args.Data != null)
+            {
+                stdOut.AppendLine(args.Data);
+                Console.WriteLine(args.Data);
+            }
+        };
+
+        process.ErrorDataReceived += (sender, args) =>
+        {
+            if (args.Data != null)
+            {
+                stdErr.AppendLine(args.Data);
+                Console.Error.WriteLine(args.Data); // optional: live logging
+            }
+        };
+
+        process.Start();
+        process.BeginOutputReadLine();
+        process.BeginErrorReadLine();
+
+        await process.WaitForExitAsync();
+
+        return new CommandLineResult(stdOut.ToString(), stdErr.ToString(), process.ExitCode);
     }
 }
