@@ -1,3 +1,4 @@
+using Conductor.Infrastructure.Common.CommandLine;
 using Microsoft.Extensions.Logging;
 
 namespace Conductor.Infrastructure.Common;

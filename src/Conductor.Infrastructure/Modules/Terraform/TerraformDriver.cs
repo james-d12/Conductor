@@ -46,7 +46,7 @@ public sealed class TerraformDriver : IResourceDriver
 
                 // Create main.tf
                 var mainTf = _renderer.RenderMainTf(template, result.ModuleDirectory, inputs);
-                _logger.LogInformation("Render output: {Output}", mainTf);
+                _logger.LogDebug("Render output: {Output}", mainTf);
                 var mainTfOutputPath = Path.Combine(stateDirectory, "main.tf");
                 await File.WriteAllTextAsync(mainTfOutputPath, mainTf);
                 _logger.LogInformation("Created main.tf to: {FilePath}", mainTfOutputPath);
@@ -54,26 +54,33 @@ public sealed class TerraformDriver : IResourceDriver
                 // Create providers.tf
                 var providersTf =
                     _renderer.RenderProvidersTf([new TerraformProvider("azurerm", "hashicorp/azurerm", ">= 4.43.0")]);
-                _logger.LogInformation("Render output: {Output}", mainTf);
+                _logger.LogDebug("Render output: {Output}", mainTf);
                 var providersTfOutputPath = Path.Combine(stateDirectory, "providers.tf");
                 await File.WriteAllTextAsync(providersTfOutputPath, providersTf);
                 _logger.LogInformation("Created providers.tf to: {FilePath}", providersTfOutputPath);
 
                 var initResult = await _commandLine.RunInitAsync(stateDirectory);
 
-                if (!initResult)
+                if (initResult.ExitCode != 0)
                 {
                     return;
                 }
 
                 var validateResult = await _commandLine.RunValidateAsync(stateDirectory);
 
-                if (!validateResult)
+                if (validateResult.ExitCode != 0)
                 {
                     return;
                 }
 
                 var planResult = await _commandLine.RunPlanAsync(stateDirectory);
+
+                if (planResult.ExitCode != 0)
+                {
+                    return;
+                }
+
+                _logger.LogInformation("Successfully run plan for {Template}", template.Name);
 
                 break;
             default:

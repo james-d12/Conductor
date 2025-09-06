@@ -1,6 +1,6 @@
 using System.Diagnostics;
 
-namespace Conductor.Infrastructure.Common;
+namespace Conductor.Infrastructure.Common.CommandLine;
 
 public sealed class CommandLineBuilder
 {

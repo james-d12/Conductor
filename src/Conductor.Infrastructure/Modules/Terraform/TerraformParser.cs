@@ -22,17 +22,14 @@ public sealed class TerraformParser : ITerraformParser
 
     public async Task<TerraformConfig?> ParseTerraformModuleAsync(string moduleDirectory)
     {
-        var inputJsonPath = Path.Combine(moduleDirectory, "inputs-outputs.json");
-        var createdJsonFile = await _terraformCommandLine.GenerateOutputJsonAsync(moduleDirectory, inputJsonPath);
+        var runTerraformJsonOutput = await _terraformCommandLine.RunTerraformJsonOutput(moduleDirectory);
 
-        if (!createdJsonFile)
+        if (runTerraformJsonOutput.ExitCode != 0)
         {
-            _logger.LogWarning("Could not create Input Json File: {File}", inputJsonPath);
+            _logger.LogWarning("Could not get json output for {Module}", moduleDirectory);
             return null;
         }
 
-        var fileContents = await File.ReadAllTextAsync(inputJsonPath);
-        File.Delete(inputJsonPath);
-        return JsonSerializer.Deserialize<TerraformConfig>(fileContents);
+        return JsonSerializer.Deserialize<TerraformConfig>(runTerraformJsonOutput.StdOut);
     }
 }
