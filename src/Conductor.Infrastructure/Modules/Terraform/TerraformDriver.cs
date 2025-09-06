@@ -1,4 +1,3 @@
-using System.Text.Json;
 using Conductor.Core.Common.Services;
 using Conductor.Core.Modules.ResourceTemplate.Domain;
 using Conductor.Infrastructure.Modules.Terraform.Models;
@@ -42,18 +41,26 @@ public sealed class TerraformDriver : IResourceDriver
             case TerraformValidationResultState.Valid:
                 _logger.LogInformation("Terraform Validation for {Template} Passed.", template.Name);
 
-                var mainTf = _renderer.Render(template, result.ModuleDirectory, inputs);
-
-                _logger.LogInformation("Render output: {Output}", mainTf);
 
                 var stateDirectory = Path.Combine(Path.GetTempPath(), "conductor", "terraform", "state",
                     template.Name.Replace(" ", "."));
 
                 Directory.CreateDirectory(stateDirectory);
 
+                // Create main.tf
+                var mainTf = _renderer.RenderMainTf(template, result.ModuleDirectory, inputs);
+                _logger.LogInformation("Render output: {Output}", mainTf);
                 var mainTfOutputPath = Path.Combine(stateDirectory, "main.tf");
                 await File.WriteAllTextAsync(mainTfOutputPath, mainTf);
                 _logger.LogInformation("Created main.tf to: {FilePath}", mainTfOutputPath);
+
+                // Create providers.tf
+                var providersTf =
+                    _renderer.RenderProvidersTf([new TerraformProvider("azurerm", "hashicorp/azurerm", ">= 4.43.0")]);
+                _logger.LogInformation("Render output: {Output}", mainTf);
+                var providersTfOutputPath = Path.Combine(stateDirectory, "providers.tf");
+                await File.WriteAllTextAsync(providersTfOutputPath, providersTf);
+                _logger.LogInformation("Created providers.tf to: {FilePath}", providersTfOutputPath);
 
                 var initResult = await _commandLine.RunInitAsync(stateDirectory);
 

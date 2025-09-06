@@ -1,17 +1,20 @@
 using System.Text;
 using Conductor.Core.Modules.ResourceTemplate.Domain;
+using Conductor.Infrastructure.Modules.Terraform.Models;
 
 namespace Conductor.Infrastructure.Modules.Terraform;
 
 public interface ITerraformRenderer
 {
-    string Render(ResourceTemplate template, string moduleDirectory,
+    string RenderMainTf(ResourceTemplate template, string moduleDirectory,
         Dictionary<string, string> actualInputs);
+
+    string RenderProvidersTf(List<TerraformProvider> providers);
 }
 
 public sealed class TerraformRenderer : ITerraformRenderer
 {
-    public string Render(ResourceTemplate template, string moduleDirectory,
+    public string RenderMainTf(ResourceTemplate template, string moduleDirectory,
         Dictionary<string, string> actualInputs)
     {
         var moduleName = template.Name.Replace(" ", "_").ToLowerInvariant();
@@ -27,6 +30,33 @@ public sealed class TerraformRenderer : ITerraformRenderer
         }
 
         sb.AppendLine("}");
+        return sb.ToString();
+    }
+
+    public string RenderProvidersTf(List<TerraformProvider> providers)
+    {
+        var sb = new StringBuilder();
+        sb.AppendLine("terraform {");
+        sb.AppendLine("    required_providers {");
+
+        foreach (var provider in providers)
+        {
+            sb.AppendLine($"      {provider.Name} = {{");
+            sb.AppendLine($"         source = \"{provider.Source}\"");
+            sb.AppendLine($"         version = \"{provider.Version}\"");
+            sb.AppendLine("        }");
+        }
+
+        sb.AppendLine("     }");
+        sb.AppendLine("}");
+
+        foreach (var provider in providers)
+        {
+            sb.AppendLine($"provider \"{provider.Name}\" {{");
+            sb.AppendLine("   features {}");
+            sb.AppendLine("}");
+        }
+
         return sb.ToString();
     }
 
