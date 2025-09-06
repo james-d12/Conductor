@@ -13,6 +13,7 @@ public static class InfrastructureExtensions
     public static void AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.TryAddSingleton<IGitCommandLine, GitCommandLine>();
+        
         services.AddHelmServices();
         services.AddTerraformServices(configuration);
     }
