@@ -13,6 +13,7 @@ public sealed record ResourceTemplate
 {
     public ResourceTemplateId Id { get; private init; }
     public string Name { get; private set; } = string.Empty;
+    public string Type { get; private set; } = string.Empty;
     public string Description { get; private set; } = string.Empty;
     public ResourceTemplateProvider Provider { get; private set; }
     public DateTime CreatedAt { get; private init; }
@@ -37,6 +38,7 @@ public sealed record ResourceTemplate
         {
             Id = new ResourceTemplateId(),
             Name = request.Name,
+            Type = request.Type,
             Description = request.Description,
             Provider = request.Provider,
             CreatedAt = DateTime.UtcNow,
@@ -49,6 +51,7 @@ public sealed record ResourceTemplate
         var resourceTemplate = Create(new CreateResourceTemplateRequest
         {
             Name = request.Name,
+            Type = request.Type,
             Description = request.Description,
             Provider = request.Provider
         });

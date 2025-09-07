@@ -1,0 +1,16 @@
+apiVersion: score.dev/v1b1
+metadata:
+  name: my-payment-service
+resources:
+  storage:
+    type: azure.storage-account
+    parameters:
+      name: mypaymentservicestorage123
+      account_replication_type: LRS
+      account_tier: Standard
+      location: uksouth
+      resource_group_name: dev-rg
+  network:
+    type: azure.virtual-network
+    parameters:
+      address_space: "10.0.0.0/16"

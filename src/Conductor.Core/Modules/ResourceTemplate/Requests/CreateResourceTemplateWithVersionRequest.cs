@@ -5,6 +5,7 @@ namespace Conductor.Core.Modules.ResourceTemplate.Requests;
 public sealed record CreateResourceTemplateWithVersionRequest
 {
     public required string Name { get; init; }
+    public required string Type { get; init; }
     public required string Description { get; init; }
     public required ResourceTemplateProvider Provider { get; init; }
     public required string Version { get; init; }

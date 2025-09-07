@@ -11,6 +11,7 @@ internal sealed class ResourceTemplateConfiguration : IEntityTypeConfiguration<R
         builder.HasKey(r => r.Id);
 
         builder.Property(b => b.Name).IsRequired();
+        builder.Property(b => b.Type).IsRequired();
         builder.Property(b => b.Description).IsRequired();
         builder.Property(b => b.Provider).IsRequired().HasConversion<string>();
         builder.Property(b => b.CreatedAt).IsRequired().HasDefaultValueSql("now()");

@@ -148,6 +148,7 @@ public sealed class ResourceTemplateTests
             new CreateResourceTemplateRequest
             {
                 Name = null!,
+                Type = string.Empty,
                 Description = valid,
                 Provider = ResourceTemplateProvider.Terraform,
             }));
@@ -156,6 +157,7 @@ public sealed class ResourceTemplateTests
             new CreateResourceTemplateRequest
             {
                 Name = null!,
+                Type = string.Empty,
                 Description = null!,
                 Provider = ResourceTemplateProvider.Terraform,
             }));
@@ -170,14 +172,16 @@ public sealed class ResourceTemplateTests
             new CreateResourceTemplateRequest
             {
                 Name = string.Empty,
+                Type = string.Empty,
                 Description = valid,
-                Provider = ResourceTemplateProvider.Terraform
+                Provider = ResourceTemplateProvider.Terraform,
             }));
 
         Assert.Throws<ArgumentException>(() => Core.Modules.ResourceTemplate.Domain.ResourceTemplate.Create(
             new CreateResourceTemplateRequest
             {
                 Name = string.Empty,
+                Type = string.Empty,
                 Description = string.Empty,
                 Provider = ResourceTemplateProvider.Terraform
             }));

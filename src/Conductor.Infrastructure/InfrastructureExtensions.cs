@@ -1,7 +1,9 @@
 using Conductor.Infrastructure.Common.CommandLine;
 using Conductor.Infrastructure.Modules.Helm;
+using Conductor.Infrastructure.Modules.Score;
 using Conductor.Infrastructure.Modules.Terraform;
 using Conductor.Infrastructure.Modules.Terraform.Models;
+using Conductor.Infrastructure.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -14,8 +16,15 @@ public static class InfrastructureExtensions
     {
         services.TryAddSingleton<IGitCommandLine, GitCommandLine>();
 
+        services.AddSharedServices();
         services.AddHelmServices();
         services.AddTerraformServices(configuration);
+    }
+
+    private static void AddSharedServices(this IServiceCollection services)
+    {
+        services.TryAddSingleton<IResourceProvisioner, ResourceProvisioner>();
+        services.TryAddSingleton<IScoreParser, ScoreParser>();
     }
 
     private static void AddHelmServices(this IServiceCollection services)

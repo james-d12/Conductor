@@ -1,9 +1,11 @@
-﻿using Conductor.Core;
+﻿using System.Text.Json;
+using Conductor.Core;
+using Conductor.Core.Modules.ResourceTemplate;
 using Conductor.Core.Modules.ResourceTemplate.Domain;
 using Conductor.Core.Modules.ResourceTemplate.Requests;
 using Conductor.Infrastructure;
-using Conductor.Infrastructure.Modules.Helm;
-using Conductor.Infrastructure.Modules.Terraform;
+using Conductor.Infrastructure.Modules.Score;
+using Conductor.Infrastructure.Services;
 using Conductor.Persistence;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,6 +25,7 @@ using var host = builder.Build();
 var azureStorageAccount = ResourceTemplate.CreateWithVersion(new CreateResourceTemplateWithVersionRequest
 {
     Name = "Azure Storage Account",
+    Type = "azure.storage-account",
     Description = "Azure Storage Account Terraform Module",
     Provider = ResourceTemplateProvider.Terraform,
     Version = "1.0.0",
@@ -38,6 +41,7 @@ var azureStorageAccount = ResourceTemplate.CreateWithVersion(new CreateResourceT
 var azureVirtualNetwork = ResourceTemplate.CreateWithVersion(new CreateResourceTemplateWithVersionRequest
 {
     Name = "Azure Virtual Network",
+    Type = "azure.virtual-network",
     Description = "Azure Virtual Network Terraform Module",
     Provider = ResourceTemplateProvider.Terraform,
     Version = "1.0.0",
@@ -53,6 +57,7 @@ var azureVirtualNetwork = ResourceTemplate.CreateWithVersion(new CreateResourceT
 var argoCdTemplate = ResourceTemplate.CreateWithVersion(new CreateResourceTemplateWithVersionRequest
 {
     Name = "ArgoCD Helm Chart",
+    Type = "helm.argocd",
     Description = "An ArgoCD Helm Chart",
     Provider = ResourceTemplateProvider.Helm,
     Version = "1.0",
@@ -65,20 +70,37 @@ var argoCdTemplate = ResourceTemplate.CreateWithVersion(new CreateResourceTempla
     State = ResourceTemplateVersionState.Active
 });
 
-var terraformDriver = host.Services.GetRequiredService<ITerraformDriver>();
-var helmDriver = host.Services.GetRequiredService<IHelmDriver>();
+var resourceTemplateRepository = host.Services.GetRequiredService<IResourceTemplateRepository>();
+var scoreParser = host.Services.GetRequiredService<IScoreParser>();
 
-var storageAccountInputs = new Dictionary<string, string>()
+var resourceProvisioner = host.Services.GetRequiredService<IResourceProvisioner>();
+
+await resourceTemplateRepository.CreateAsync(azureStorageAccount);
+await resourceTemplateRepository.CreateAsync(azureVirtualNetwork);
+await resourceTemplateRepository.CreateAsync(argoCdTemplate);
+
+var scoreFile = await scoreParser.ParseAsync("./example.yaml");
+
+var allTemplates = resourceTemplateRepository.GetAll().ToList();
+
+Console.WriteLine($"storage account feteched by id: {JsonSerializer.Serialize(allTemplates)}");
+
+if (scoreFile?.Resources != null)
 {
-    { "name", "asdkiakdoaskd123132" },
-    { "account_replication_type", "LRS" },
-    { "account_tier", "Standard" },
-    { "location", "uksouth" },
-    { "resource_group_name", "dev-rg" }
-};
+    Console.WriteLine("Provisioning Resources for score file");
+    foreach (var resource in scoreFile.Resources)
+    {
+        var type = resource.Value.Type.Trim().ToLower();
+        var inputs = resource.Value.Params;
+        
+        ResourceTemplate? resourceTemplate = await resourceTemplateRepository.GetByTypeAsync("azure.storage-account");
 
-var storageAccountPlanResult = await terraformDriver.PlanAsync(azureStorageAccount, storageAccountInputs);
-await terraformDriver.ApplyAsync(storageAccountPlanResult);
+        if (resourceTemplate is null || inputs is null)
+        {
+            Console.WriteLine("Could not get template");
+            continue;
+        }
 
-var storageAccountPlanDestroyResult = await terraformDriver.PlanDestroyAsync(azureStorageAccount, storageAccountInputs);
-await terraformDriver.DestroyAsync(storageAccountPlanDestroyResult);
+        await resourceProvisioner.ProvisionAsync(resourceTemplate, inputs);
+    }
+}
