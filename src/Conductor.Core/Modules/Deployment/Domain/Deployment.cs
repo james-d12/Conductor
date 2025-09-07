@@ -3,7 +3,7 @@ using ApplicationId = Conductor.Core.Modules.Application.Domain.ApplicationId;
 
 namespace Conductor.Core.Modules.Deployment.Domain;
 
-public readonly record struct DeploymentId(Guid Id)
+public readonly record struct DeploymentId(Guid Value)
 {
     public DeploymentId() : this(Guid.NewGuid())
     {

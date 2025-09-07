@@ -1,6 +1,6 @@
 namespace Conductor.Core.Modules.Application.Domain;
 
-public readonly record struct ApplicationId(Guid Id)
+public readonly record struct ApplicationId(Guid Value)
 {
     public ApplicationId() : this(Guid.NewGuid())
     {
@@ -17,7 +17,6 @@ public sealed record Application
     public required string Name { get; init; }
     public required Repository Repository { get; init; }
     public required List<Deployment.Domain.Deployment> Deployments { get; init; }
-
     public required DateTime CreatedAt { get; set; }
     public required DateTime UpdatedAt { get; set; }
 

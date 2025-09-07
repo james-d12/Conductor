@@ -1,6 +1,6 @@
 namespace Conductor.Core.Modules.Deployment.Domain;
 
-public readonly record struct CommitId(string Id);
+public readonly record struct CommitId(string Value);
 
 public sealed record Commit
 {

@@ -1,6 +1,6 @@
 namespace Conductor.Core.Modules.Environment.Domain;
 
-public readonly record struct EnvironmentId(Guid Id)
+public readonly record struct EnvironmentId(Guid Value)
 {
     public EnvironmentId() : this(Guid.NewGuid())
     {
@@ -17,7 +17,6 @@ public sealed record Environment
     public required string Name { get; init; }
     public required string Description { get; init; }
     public required List<Deployment.Domain.Deployment> Deployments { get; init; }
-
     public required DateTime CreatedAt { get; set; }
     public required DateTime UpdatedAt { get; set; }
 
