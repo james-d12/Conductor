@@ -2,7 +2,7 @@ using Conductor.Core.Modules.ResourceTemplate.Requests;
 
 namespace Conductor.Core.Modules.ResourceTemplate.Domain;
 
-public readonly record struct ResourceTemplateId(Guid Id)
+public readonly record struct ResourceTemplateId(Guid Value)
 {
     public ResourceTemplateId() : this(Guid.NewGuid())
     {

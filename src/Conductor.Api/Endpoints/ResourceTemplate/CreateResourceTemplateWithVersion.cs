@@ -1,0 +1,31 @@
+using Conductor.Api.Common;
+using Conductor.Core.Modules.ResourceTemplate;
+using Conductor.Core.Modules.ResourceTemplate.Requests;
+using Microsoft.AspNetCore.Http.HttpResults;
+
+namespace Conductor.Api.Endpoints.ResourceTemplate;
+
+public sealed class CreateResourceTemplateWithVersion : IEndpoint
+{
+    public static void Map(IEndpointRouteBuilder builder) => builder
+        .MapPost("/with-version", HandleAsync)
+        .WithSummary("Creates a new resource template with the specified version");
+
+    private sealed record CreateResourceTemplateWithVersionResponse(Guid Id);
+
+    private static async Task<Results<Ok<CreateResourceTemplateWithVersionResponse>, InternalServerError>> HandleAsync(
+        CreateResourceTemplateWithVersionRequest request,
+        IResourceTemplateRepository repository,
+        CancellationToken cancellationToken)
+    {
+        var resourceTemplate = Core.Modules.ResourceTemplate.Domain.ResourceTemplate.CreateWithVersion(request);
+        var resourceTemplateResponse = await repository.CreateAsync(resourceTemplate, cancellationToken);
+
+        if (resourceTemplateResponse is null)
+        {
+            return TypedResults.InternalServerError();
+        }
+
+        return TypedResults.Ok(new CreateResourceTemplateWithVersionResponse(resourceTemplateResponse.Id.Value));
+    }
+}

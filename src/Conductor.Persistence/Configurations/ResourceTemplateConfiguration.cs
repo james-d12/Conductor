@@ -18,7 +18,7 @@ internal sealed class ResourceTemplateConfiguration : IEntityTypeConfiguration<R
 
         builder.Property(r => r.Id)
             .HasConversion(
-                id => id.Id,
+                id => id.Value,
                 value => new ResourceTemplateId(value)
             );
 
