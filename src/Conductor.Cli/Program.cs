@@ -92,7 +92,7 @@ if (scoreFile?.Resources != null)
     {
         var type = resource.Value.Type.Trim().ToLower();
         var inputs = resource.Value.Params;
-        
+
         ResourceTemplate? resourceTemplate = await resourceTemplateRepository.GetByTypeAsync("azure.storage-account");
 
         if (resourceTemplate is null || inputs is null)
