@@ -81,23 +81,25 @@ await resourceTemplateRepository.CreateAsync(argoCdTemplate);
 
 var scoreFile = await scoreParser.ParseAsync("./example.yaml");
 
-var allTemplates = resourceTemplateRepository.GetAll().ToList();
-
-Console.WriteLine($"storage account feteched by id: {JsonSerializer.Serialize(allTemplates)}");
-
 if (scoreFile?.Resources != null)
 {
     Console.WriteLine("Provisioning Resources for score file");
     foreach (var resource in scoreFile.Resources)
     {
         var type = resource.Value.Type.Trim().ToLower();
-        var inputs = resource.Value.Params;
+        var inputs = resource.Value.Parameters;
 
-        ResourceTemplate? resourceTemplate = await resourceTemplateRepository.GetByTypeAsync("azure.storage-account");
+        ResourceTemplate? resourceTemplate = await resourceTemplateRepository.GetByTypeAsync(type);
 
-        if (resourceTemplate is null || inputs is null)
+        if (resourceTemplate is null)
         {
             Console.WriteLine("Could not get template");
+            continue;
+        }
+
+        if (inputs is null)
+        {
+            Console.WriteLine("inputs is null bruv");
             continue;
         }
 

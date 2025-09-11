@@ -5,7 +5,7 @@ resources:
   storage:
     type: azure.storage-account
     parameters:
-      name: mypaymentservicestorage123
+      name: mypaymentstorage
       account_replication_type: LRS
       account_tier: Standard
       location: uksouth

@@ -6,5 +6,5 @@ public sealed record ScoreResource
     public string? Class { get; init; }
     public string? Id { get; init; }
     public ScoreResourceMetadata? Metadata { get; init; }
-    public Dictionary<string, string>? Params { get; init; }
+    public Dictionary<string, string>? Parameters { get; init; }
 }
