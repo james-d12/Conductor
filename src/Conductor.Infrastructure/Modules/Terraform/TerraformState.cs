@@ -39,7 +39,18 @@ public sealed class TerraformState : ITerraformState
         await File.WriteAllTextAsync(mainTfOutputPath, mainTf);
         _logger.LogInformation("Created main.tf to: {FilePath}", mainTfOutputPath);
 
-        var providers = new List<TerraformProvider> { new("azurerm", "hashicorp/azurerm", ">= 4.43.0") };
+
+        var providers = validationResult.Config?.RequiredProviders.Select(rp => new TerraformProvider(
+            Name: rp.Key.ToString(),
+            Source: rp.Value.Source,
+            Version: rp.Value.VersionConstraints.FirstOrDefault() ?? string.Empty
+        )).ToList();
+
+        if (providers is null || providers.Count == 0)
+        {
+            throw new Exception($"No provider found for {template.Name} Passed.");
+        }
+
         var providersTf = _renderer.RenderProvidersTf(providers);
         _logger.LogDebug("Render output: {Output}", mainTf);
         var providersTfOutputPath = Path.Combine(stateDirectory, "providers.tf");

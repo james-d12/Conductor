@@ -5,28 +5,28 @@ namespace Conductor.Infrastructure.Modules.Terraform.Models;
 public record TerraformConfig
 {
     [JsonPropertyName("path")]
-    public string Path { get; set; } = string.Empty;
+    public string Path { get; init; } = string.Empty;
 
     [JsonPropertyName("variables")]
-    public Dictionary<string, Variable> Variables { get; set; } = new();
+    public Dictionary<string, Variable> Variables { get; init; } = [];
 
     [JsonPropertyName("outputs")]
-    public Dictionary<string, Output> Outputs { get; set; } = new();
+    public Dictionary<string, Output> Outputs { get; init; } = [];
 
     [JsonPropertyName("required_core")]
-    public List<string> RequiredCore { get; set; } = new();
+    public List<string> RequiredCore { get; init; } = [];
 
     [JsonPropertyName("required_providers")]
-    public Dictionary<string, RequiredProvider> RequiredProviders { get; set; } = new();
+    public Dictionary<string, RequiredProvider> RequiredProviders { get; init; } = [];
 
     [JsonPropertyName("managed_resources")]
-    public Dictionary<string, object> ManagedResources { get; set; } = new();
+    public Dictionary<string, object> ManagedResources { get; init; } = [];
 
     [JsonPropertyName("data_resources")]
-    public Dictionary<string, object> DataResources { get; set; } = new();
+    public Dictionary<string, object> DataResources { get; init; } = [];
 
     [JsonPropertyName("module_calls")]
-    public Dictionary<string, ModuleCall> ModuleCalls { get; set; } = new();
+    public Dictionary<string, ModuleCall> ModuleCalls { get; init; } = [];
 }
 
 public record Variable
@@ -68,7 +68,7 @@ public record RequiredProvider
     public string Source { get; set; } = string.Empty;
 
     [JsonPropertyName("version_constraints")]
-    public List<string> VersionConstraints { get; set; } = new();
+    public List<string> VersionConstraints { get; set; } = [];
 }
 
 public record ModuleCall
