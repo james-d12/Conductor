@@ -1,0 +1,48 @@
+apiVersion: score.dev/v1b1
+
+metadata:
+  name: payment-api
+
+service:
+  ports:
+    http:
+      port: 8080
+      targetPort: 8080
+
+resources:
+  storage:
+    type: blob
+    metadata:
+      class: azure-storage
+      parameters:
+        accountSku: Standard_LRS
+        container: payment-data
+        access: workload-identity   # The app will authenticate using workload identity
+
+  database:
+    type: cosmos
+    metadata:
+      class: azure-cosmos
+      parameters:
+        database: paymentsdb
+        container: payments
+        throughput: 400
+
+  identity:
+    type: identity
+    metadata:
+      class: azure-workload-identity
+      parameters:
+        name: payment-api-identity
+        roles:
+          - "Storage Blob Data Contributor"
+          - "Cosmos DB Built-in Data Contributor"
+
+containers:
+  payment-api:
+    image: myregistry.azurecr.io/payment-api:latest
+    variables:
+      BLOB_STORAGE_URI: ${resources.storage.connection.uri}
+      COSMOSDB_URI: ${resources.database.connection.uri}
+      COSMOSDB_KEY: ${resources.database.connection.key}
+      AZURE_CLIENT_ID: ${resources.identity.client.id}

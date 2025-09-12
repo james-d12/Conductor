@@ -4,6 +4,7 @@ public sealed record ResourceTemplateVersionSource
 {
     public required Uri BaseUrl { get; init; }
     public required string FolderPath { get; init; }
+    public required string Tag { get; set; }
 
     public static ResourceTemplateVersionSource CreateFromUrl(Uri url)
     {
@@ -21,7 +22,8 @@ public sealed record ResourceTemplateVersionSource
         return new ResourceTemplateVersionSource
         {
             BaseUrl = url,
-            FolderPath = string.Empty
+            FolderPath = string.Empty,
+            Tag = string.Empty
         };
     }
 }

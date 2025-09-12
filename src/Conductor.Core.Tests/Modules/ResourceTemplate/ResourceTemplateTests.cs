@@ -58,7 +58,8 @@ public sealed class ResourceTemplateTests
             Source = new ResourceTemplateVersionSource
             {
                 BaseUrl = new Uri("https://example.com/v1"),
-                FolderPath = string.Empty
+                FolderPath = string.Empty,
+                Tag = string.Empty
             },
             Notes = _fixture.Create<string>(),
             State = ResourceTemplateVersionState.Active

@@ -1,5 +1,4 @@
-﻿using System.Text.Json;
-using Conductor.Core;
+﻿using Conductor.Core;
 using Conductor.Core.Modules.ResourceTemplate;
 using Conductor.Core.Modules.ResourceTemplate.Domain;
 using Conductor.Core.Modules.ResourceTemplate.Requests;
@@ -32,9 +31,10 @@ var azureStorageAccount = ResourceTemplate.CreateWithVersion(new CreateResourceT
     Source = new ResourceTemplateVersionSource
     {
         BaseUrl = new Uri("https://github.com/aztfm/terraform-azurerm-storage-account.git"),
-        FolderPath = string.Empty
+        FolderPath = string.Empty,
+        Tag = string.Empty
     },
-    Notes = "",
+    Notes = string.Empty,
     State = ResourceTemplateVersionState.Active
 });
 
@@ -48,9 +48,27 @@ var azureVirtualNetwork = ResourceTemplate.CreateWithVersion(new CreateResourceT
     Source = new ResourceTemplateVersionSource
     {
         BaseUrl = new Uri("https://github.com/aztfm/terraform-azurerm-virtual-network.git"),
-        FolderPath = string.Empty
+        FolderPath = string.Empty,
+        Tag = string.Empty
     },
-    Notes = "",
+    Notes = string.Empty,
+    State = ResourceTemplateVersionState.Active
+});
+
+var azureContainerRegistry = ResourceTemplate.CreateWithVersion(new CreateResourceTemplateWithVersionRequest
+{
+    Name = "Azure Container Registry",
+    Type = "azure.container-registry",
+    Description = "Azure Container Registry Terraform Module",
+    Provider = ResourceTemplateProvider.Terraform,
+    Version = "1.0.0",
+    Source = new ResourceTemplateVersionSource
+    {
+        BaseUrl = new Uri("https://github.com/Azure/terraform-azurerm-avm-res-containerregistry-registry.git"),
+        FolderPath = string.Empty,
+        Tag = string.Empty
+    },
+    Notes = string.Empty,
     State = ResourceTemplateVersionState.Active
 });
 
@@ -64,7 +82,8 @@ var argoCdTemplate = ResourceTemplate.CreateWithVersion(new CreateResourceTempla
     Source = new ResourceTemplateVersionSource
     {
         BaseUrl = new Uri("https://github.com/bitnami/charts.git"),
-        FolderPath = "bitnami/argo-cd"
+        FolderPath = "bitnami/argo-cd",
+        Tag = string.Empty
     },
     Notes = string.Empty,
     State = ResourceTemplateVersionState.Active

@@ -45,7 +45,7 @@ public sealed class TerraformValidator : ITerraformValidator
 
         var basePath = Path.Combine(Path.GetTempPath(), "conductor", "terraform");
         var templateDir = Path.Combine(basePath, "modules", template.Name.Replace(" ", "."), latestVersion.Version);
-        var cloneResult = await _gitCommandLine.CloneAsync(latestVersion.Source.BaseUrl, templateDir);
+        var cloneResult = await CloneModuleAsync(latestVersion, templateDir);
 
         if (!cloneResult)
         {
@@ -126,5 +126,16 @@ public sealed class TerraformValidator : ITerraformValidator
         }
 
         return (true, string.Empty);
+    }
+
+    private async Task<bool> CloneModuleAsync(ResourceTemplateVersion latestVersion, string templateDir)
+    {
+        if (!string.IsNullOrEmpty(latestVersion.Source.Tag))
+        {
+            return await _gitCommandLine.CloneTagAsync(latestVersion.Source.BaseUrl, latestVersion.Source.Tag,
+                templateDir);
+        }
+
+        return await _gitCommandLine.CloneAsync(latestVersion.Source.BaseUrl, templateDir);
     }
 }

@@ -5,6 +5,7 @@ namespace Conductor.Infrastructure.Common.CommandLine;
 public interface IGitCommandLine
 {
     Task<bool> CloneAsync(Uri source, string destination);
+    Task<bool> CloneTagAsync(Uri source, string tag, string destination);
 }
 
 public sealed class GitCommandLine : IGitCommandLine
@@ -20,6 +21,25 @@ public sealed class GitCommandLine : IGitCommandLine
     {
         var arguments =
             $"clone --depth 1 --single-branch --no-tags --no-recurse-submodules \"{source}\" \"{destination}\"";
+        CommandLineResult cliResult =
+            await new CommandLineBuilder("git")
+                .WithArguments(arguments)
+                .ExecuteAsync();
+
+        _logger.LogDebug("Git clone output for {Source}:\n{StdOut}", source, cliResult.StdOut);
+
+        if (cliResult.ExitCode != 0)
+        {
+            _logger.LogWarning("Could not Clone {Source} Due to {Error}", source, cliResult.StdErr);
+        }
+
+        return Directory.Exists(destination);
+    }
+
+    public async Task<bool> CloneTagAsync(Uri source, string tag, string destination)
+    {
+        var arguments =
+            $"clone --branch \"{tag}\" --depth 1 --single-branch --no-tags --no-recurse-submodules \"{source}\" \"{destination}\"";
         CommandLineResult cliResult =
             await new CommandLineBuilder("git")
                 .WithArguments(arguments)
