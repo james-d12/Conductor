@@ -5,17 +5,24 @@ namespace Conductor.Infrastructure.Modules.Terraform.Models;
 public sealed record TerraformPlanResult
 {
     public string StateDirectory { get; init; }
-    public CommandLineResult? PlanCommandLineResult { get; init; }
+    public string Message { get; init; }
+    public int? ExitCode { get; init; }
+    public TerraformPlanResultState State { get; init; }
 
-    public TerraformPlanResult()
+    public TerraformPlanResult(TerraformPlanResultState state, string message)
     {
+        State = state;
+        Message = message;
         StateDirectory = string.Empty;
-        PlanCommandLineResult = null;
+        ExitCode = null;
     }
 
-    public TerraformPlanResult(string stateDirectory, CommandLineResult? planCommandLineResult = null)
+    public TerraformPlanResult(string stateDirectory, TerraformPlanResultState state,
+        CommandLineResult? planCommandLineResult = null)
     {
         StateDirectory = stateDirectory;
-        PlanCommandLineResult = planCommandLineResult;
+        Message = planCommandLineResult?.StdOut ?? planCommandLineResult?.StdErr ?? string.Empty;
+        State = state;
+        ExitCode = planCommandLineResult?.ExitCode;
     }
 }

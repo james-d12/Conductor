@@ -41,6 +41,7 @@ resources:
 containers:
   payment-api:
     image: myregistry.azurecr.io/payment-api:latest
+    type: "api"
     variables:
       BLOB_STORAGE_URI: ${resources.storage.connection.uri}
       COSMOSDB_URI: ${resources.database.connection.uri}

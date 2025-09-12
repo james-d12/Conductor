@@ -1,4 +1,5 @@
 using Conductor.Core.Modules.ResourceTemplate.Domain;
+using Conductor.Infrastructure.Common.CommandLine;
 using Conductor.Infrastructure.Modules.Terraform.Models;
 using Microsoft.Extensions.Logging;
 
@@ -37,7 +38,7 @@ public sealed class TerraformDriver : ITerraformDriver
             _logger.LogError("Terraform Validation for {Template} Failed due to: {State} with Message: {Message}",
                 template.Name, validationResult.State,
                 validationResult.Message);
-            return new TerraformPlanResult();
+            return new TerraformPlanResult(TerraformPlanResultState.PreValidationFailed, validationResult.Message);
         }
 
         _logger.LogInformation("Terraform Validation for {Template} Passed.", template.Name);
@@ -48,7 +49,7 @@ public sealed class TerraformDriver : ITerraformDriver
 
         if (initResult.ExitCode != 0)
         {
-            return new TerraformPlanResult(stateDirectory);
+            return new TerraformPlanResult(stateDirectory, TerraformPlanResultState.InitFailed);
         }
 
         _logger.LogDebug("Terraform Init Output: {Output}", initResult.StdOut);
@@ -59,7 +60,7 @@ public sealed class TerraformDriver : ITerraformDriver
         {
             _logger.LogWarning("Terraform Validate Failed: {ExitCode} with {Output}", validateResult.ExitCode,
                 validateResult.StdErr);
-            return new TerraformPlanResult(stateDirectory);
+            return new TerraformPlanResult(stateDirectory, TerraformPlanResultState.ValidateFailed);
         }
 
         _logger.LogDebug("Terraform Validate Output: {Output}", validateResult.StdOut);
@@ -68,14 +69,14 @@ public sealed class TerraformDriver : ITerraformDriver
 
         if (planResult.ExitCode != 0)
         {
-            return new TerraformPlanResult(stateDirectory, planResult);
+            return new TerraformPlanResult(stateDirectory, TerraformPlanResultState.PlanFailed, planResult);
         }
 
         _logger.LogDebug("Terraform Plan Output: {Output}", planResult.StdOut);
 
         _logger.LogInformation("Successfully run plan for {Template}", template.Name);
 
-        return new TerraformPlanResult(stateDirectory, planResult);
+        return new TerraformPlanResult(stateDirectory, TerraformPlanResultState.Success, planResult);
     }
 
     public async Task<TerraformPlanDestroyResult> PlanDestroyAsync(ResourceTemplate template,
@@ -131,25 +132,23 @@ public sealed class TerraformDriver : ITerraformDriver
 
     public async Task ApplyAsync(TerraformPlanResult planResult)
     {
-        if (planResult.PlanCommandLineResult?.ExitCode != 0)
+        switch (planResult.State)
         {
-            _logger.LogWarning("Plan Result did not have a successful exit code: {ExitCode}",
-                planResult.PlanCommandLineResult?.ExitCode);
-            return;
+            case TerraformPlanResultState.PreValidationFailed:
+            case TerraformPlanResultState.InitFailed:
+            case TerraformPlanResultState.ValidateFailed:
+            case TerraformPlanResultState.PlanFailed:
+                _logger.LogWarning("Plan Was not in a valid state: {Message} {State}",
+                    planResult.Message, planResult.State.ToString());
+                break;
+            case TerraformPlanResultState.Success:
+                _logger.LogInformation("Running Terraform Apply in {Directory}", planResult.StateDirectory);
+                CommandLineResult applyResult = await _commandLine.RunApplyAsync(planResult.StateDirectory);
+                _logger.LogInformation("Terraform Apply Result: {Result}", applyResult.StdOut);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
         }
-
-        if (string.IsNullOrEmpty(planResult.StateDirectory))
-        {
-            _logger.LogWarning("Plan Result did not have valid state directory: {StateDirectory}",
-                planResult.StateDirectory);
-            return;
-        }
-
-        _logger.LogInformation("Running Terraform Apply in {Directory}", planResult.StateDirectory);
-
-        var applyResult = await _commandLine.RunApplyAsync(planResult.StateDirectory);
-
-        _logger.LogInformation("Terraform Apply Result: {Result}", applyResult.StdOut);
     }
 
     public async Task DestroyAsync(TerraformPlanDestroyResult planDestroyResult)

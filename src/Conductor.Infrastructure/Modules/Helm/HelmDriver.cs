@@ -11,8 +11,6 @@ public interface IHelmDriver
 
 public sealed class HelmDriver : IHelmDriver
 {
-    public string Name => "Helm";
-
     private readonly ILogger<HelmDriver> _logger;
     private readonly IHelmValidator _validator;
 
