@@ -3,7 +3,6 @@ using Conductor.Core.Modules.ResourceTemplate;
 using Conductor.Core.Modules.ResourceTemplate.Domain;
 using Conductor.Core.Modules.ResourceTemplate.Requests;
 using Conductor.Infrastructure;
-using Conductor.Infrastructure.Modules.Score;
 using Conductor.Infrastructure.Services;
 using Conductor.Persistence;
 using Microsoft.Extensions.Configuration;
@@ -90,38 +89,11 @@ var argoCdTemplate = ResourceTemplate.CreateWithVersion(new CreateResourceTempla
 });
 
 var resourceTemplateRepository = host.Services.GetRequiredService<IResourceTemplateRepository>();
-var scoreParser = host.Services.GetRequiredService<IScoreParser>();
-
-var resourceProvisioner = host.Services.GetRequiredService<IResourceProvisioner>();
-
 await resourceTemplateRepository.CreateAsync(azureStorageAccount);
 await resourceTemplateRepository.CreateAsync(azureVirtualNetwork);
+await resourceTemplateRepository.CreateAsync(azureContainerRegistry);
 await resourceTemplateRepository.CreateAsync(argoCdTemplate);
 
-var scoreFile = await scoreParser.ParseAsync("./example.yaml");
+var resourceProvisioner = host.Services.GetRequiredService<ResourceProvisioner>();
 
-if (scoreFile?.Resources != null)
-{
-    Console.WriteLine("Provisioning Resources for score file");
-    foreach (var resource in scoreFile.Resources)
-    {
-        var type = resource.Value.Type.Trim().ToLower();
-        var inputs = resource.Value.Parameters;
-
-        ResourceTemplate? resourceTemplate = await resourceTemplateRepository.GetByTypeAsync(type);
-
-        if (resourceTemplate is null)
-        {
-            Console.WriteLine("Could not get template");
-            continue;
-        }
-
-        if (inputs is null)
-        {
-            Console.WriteLine("inputs is null bruv");
-            continue;
-        }
-
-        await resourceProvisioner.ProvisionAsync(resourceTemplate, inputs);
-    }
-}
+await resourceProvisioner.StartAsync();

@@ -6,17 +6,17 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Conductor.Infrastructure.Services;
 
-public interface IResourceProvisioner
+public interface IResourceFactory
 {
     Task ProvisionAsync(ResourceTemplate template, Dictionary<string, string> inputs);
     Task DeleteAsync(ResourceTemplate template, Dictionary<string, string> inputs);
 }
 
-public sealed class ResourceProvisioner : IResourceProvisioner
+public sealed class ResourceFactory : IResourceFactory
 {
     private readonly IServiceProvider _serviceProvider;
 
-    public ResourceProvisioner(IServiceProvider serviceProvider)
+    public ResourceFactory(IServiceProvider serviceProvider)
     {
         _serviceProvider = serviceProvider;
     }

@@ -23,8 +23,9 @@ public static class InfrastructureExtensions
 
     private static void AddSharedServices(this IServiceCollection services)
     {
-        services.TryAddSingleton<IResourceProvisioner, ResourceProvisioner>();
+        services.TryAddSingleton<IResourceFactory, ResourceFactory>();
         services.TryAddSingleton<IScoreParser, ScoreParser>();
+        services.TryAddSingleton<ResourceProvisioner>();
     }
 
     private static void AddHelmServices(this IServiceCollection services)
