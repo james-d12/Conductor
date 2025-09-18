@@ -5,22 +5,24 @@ namespace Conductor.Infrastructure.Modules.Terraform;
 
 public interface ITerraformRenderer
 {
-    string RenderMainTf(List<TerraformPlanInput> terraformPlanInputs, string moduleDirectory);
+    string RenderMainTf(Dictionary<TerraformPlanInput, TerraformValidationResult> terraformValidationResults);
     string RenderProvidersTf(List<TerraformProvider> providers);
 }
 
 public sealed class TerraformRenderer : ITerraformRenderer
 {
-    public string RenderMainTf(List<TerraformPlanInput> terraformPlanInputs, string moduleDirectory)
+    public string RenderMainTf(Dictionary<TerraformPlanInput, TerraformValidationResult> terraformValidationResults)
     {
         var sb = new StringBuilder();
 
-        foreach (var terraformPlanInput in terraformPlanInputs)
+        foreach (var (terraformPlanInput, terraformValidationResult) in terraformValidationResults)
         {
-            var moduleName = terraformPlanInput.Template.Name.Replace(" ", "_").ToLowerInvariant();
+            var key =  terraformPlanInput.Key.Replace(" ", "_").Trim().ToLowerInvariant();
+            var templateName = terraformPlanInput.Template.Name.Replace(" ", "_").ToLowerInvariant();
+            var moduleName = string.Join("_", templateName, key);
 
             sb.AppendLine($"module \"{moduleName}\" {{");
-            sb.AppendLine($"  source = \"{moduleDirectory}\"");
+            sb.AppendLine($"  source = \"{terraformValidationResult.ModuleDirectory}\"");
 
             foreach (var kvp in terraformPlanInput.Inputs)
             {

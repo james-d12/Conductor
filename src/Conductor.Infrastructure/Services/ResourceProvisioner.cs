@@ -26,10 +26,21 @@ public sealed class ResourceProvisioner
     {
         ScoreFile? scoreFile = await _scoreParser.ParseAsync("./example.yaml");
 
-        if (scoreFile?.Resources != null)
+        if (scoreFile is null)
+        {
+            _logger.LogWarning("Unable to find / parse the provided score file.");
+            return;
+        }
+        
+        if (scoreFile.Resources is not null)
         {
             _logger.LogInformation("Provisioning Resources for score file");
-            foreach (var resource in scoreFile.Resources)
+
+            var directoryName = scoreFile.Metadata.Name;
+
+            var provisionInputs = new List<ProvisionInput>();
+            
+            foreach (var resource in scoreFile.Resources ?? [])
             {
                 var type = resource.Value.Type.Trim().ToLower();
                 var inputs = resource.Value.Parameters;
@@ -47,9 +58,12 @@ public sealed class ResourceProvisioner
                     _logger.LogInformation("No inputs present in the score file");
                     continue;
                 }
-
-                await _resourceFactory.ProvisionAsync(resourceTemplate, inputs);
+                
+                provisionInputs.Add(new ProvisionInput(resourceTemplate, inputs, resource.Key));
             }
+            
+            
+            await _resourceFactory.ProvisionAsync(provisionInputs, directoryName);
         }
     }
 }

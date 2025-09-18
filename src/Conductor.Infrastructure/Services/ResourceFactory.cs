@@ -8,9 +8,11 @@ namespace Conductor.Infrastructure.Services;
 
 public interface IResourceFactory
 {
-    Task ProvisionAsync(ResourceTemplate template, Dictionary<string, string> inputs);
+    Task ProvisionAsync(List<ProvisionInput> provisionInputs, string folderName);
     Task DeleteAsync(ResourceTemplate template, Dictionary<string, string> inputs);
 }
+
+public sealed record ProvisionInput(ResourceTemplate Template, Dictionary<string, string> Inputs, string Key);
 
 public sealed class ResourceFactory : IResourceFactory
 {
@@ -21,21 +23,20 @@ public sealed class ResourceFactory : IResourceFactory
         _serviceProvider = serviceProvider;
     }
 
-    public async Task ProvisionAsync(ResourceTemplate template, Dictionary<string, string> inputs)
+    public async Task ProvisionAsync(List<ProvisionInput> provisionInputs, string folderName)
     {
-        switch (template.Provider)
+        var terraformProvisionInputs = provisionInputs
+            .Where(p => p.Template.Provider == ResourceTemplateProvider.Terraform)
+            .ToList();
+
+        if (terraformProvisionInputs.Count > 0)
         {
-            case ResourceTemplateProvider.Terraform:
-                var terraformDriver = _serviceProvider.GetRequiredService<ITerraformDriver>();
-                var terraformPlanInput = new TerraformPlanInput(template, inputs);
-                TerraformPlanResult planResult = await terraformDriver.PlanAsync(terraformPlanInput);
-                await terraformDriver.ApplyAsync(planResult);
-                break;
-            case ResourceTemplateProvider.Helm:
-                var helmDriver = _serviceProvider.GetRequiredService<IHelmDriver>();
-                break;
-            default:
-                throw new ArgumentOutOfRangeException();
+            var terraformDriver = _serviceProvider.GetRequiredService<ITerraformDriver>();
+            var terraformPlanInputs = terraformProvisionInputs
+                .Select(tp => new TerraformPlanInput(tp.Template, tp.Inputs, tp.Key))
+                .ToList();
+            TerraformPlanResult planResult = await terraformDriver.PlanAsync(terraformPlanInputs, folderName);
+            await terraformDriver.ApplyAsync(planResult);
         }
     }
 
@@ -45,8 +46,9 @@ public sealed class ResourceFactory : IResourceFactory
         {
             case ResourceTemplateProvider.Terraform:
                 var terraformDriver = _serviceProvider.GetRequiredService<ITerraformDriver>();
-                var terraformPlanInput = new TerraformPlanInput(template, inputs);
-                TerraformPlanDestroyResult planDestroyResult = await terraformDriver.PlanDestroyAsync(terraformPlanInput);
+                var terraformPlanInput = new TerraformPlanInput(template, inputs, "");
+                TerraformPlanDestroyResult planDestroyResult =
+                    await terraformDriver.PlanDestroyAsync(terraformPlanInput);
                 await terraformDriver.DestroyAsync(planDestroyResult);
                 break;
             case ResourceTemplateProvider.Helm:

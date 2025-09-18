@@ -6,7 +6,7 @@ namespace Conductor.Infrastructure.Modules.Terraform;
 
 public interface ITerraformDriver
 {
-    Task<TerraformPlanResult> PlanAsync(TerraformPlanInput terraformPlanInput);
+    Task<TerraformPlanResult> PlanAsync(List<TerraformPlanInput> terraformPlanInputs, string folderName);
     Task<TerraformPlanDestroyResult> PlanDestroyAsync(TerraformPlanInput terraformPlanInput);
     Task ApplyAsync(TerraformPlanResult planResult);
     Task DestroyAsync(TerraformPlanDestroyResult planDestroyResult);
@@ -28,21 +28,24 @@ public sealed class TerraformDriver : ITerraformDriver
         _fileManager = fileManager;
     }
 
-    public async Task<TerraformPlanResult> PlanAsync(TerraformPlanInput terraformPlanInput)
+    public async Task<TerraformPlanResult> PlanAsync(List<TerraformPlanInput> terraformPlanInputs, string folderName)
     {
-        var validationResult = await _validator.ValidateAsync(terraformPlanInput);
+        var validationResults = await _validator.ValidateManyAsync(terraformPlanInputs);
 
-        if (validationResult.State != TerraformValidationResultState.Valid)
+        foreach ((TerraformPlanInput planInput, TerraformValidationResult validationResult) in validationResults)
         {
-            _logger.LogError("Terraform Validation for {Template} Failed due to: {State} with Message: {Message}",
-                terraformPlanInput.Template.Name, validationResult.State,
-                validationResult.Message);
-            return new TerraformPlanResult(TerraformPlanResultState.PreValidationFailed, validationResult.Message);
+            if (validationResult.State != TerraformValidationResultState.Valid)
+            {
+                _logger.LogError("Terraform Validation for {Template} Failed due to: {State} with Message: {Message}",
+                    planInput.Template.Name, validationResult.State,
+                    validationResult.Message);
+                return new TerraformPlanResult(TerraformPlanResultState.PreValidationFailed, validationResult.Message);    
+            }
+
+            _logger.LogInformation("Terraform Validation for {Template} Passed.", planInput.Template.Name);
         }
 
-        _logger.LogInformation("Terraform Validation for {Template} Passed.", terraformPlanInput.Template.Name);
-
-        var stateDirectory = await _fileManager.SetupDirectoryAsync(terraformPlanInput, validationResult);
+        var stateDirectory = await _fileManager.SetupTerraformDirectory(validationResults, folderName);
 
         var initResult = await _commandLine.RunInitAsync(stateDirectory);
 
@@ -72,8 +75,8 @@ public sealed class TerraformDriver : ITerraformDriver
         }
 
         _logger.LogDebug("Terraform Plan Output: {Output}", planResult.StdOut);
-
-        _logger.LogInformation("Successfully run plan for {Template}", terraformPlanInput.Template.Name);
+        
+        _logger.LogInformation("Successfully run plan for {Folder}", folderName);
 
         return new TerraformPlanResult(stateDirectory, TerraformPlanResultState.Success, planResult);
     }
