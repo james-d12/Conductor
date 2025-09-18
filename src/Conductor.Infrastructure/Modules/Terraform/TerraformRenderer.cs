@@ -27,7 +27,7 @@ public sealed class TerraformRenderer : ITerraformRenderer
                 var value = QuoteIfNeeded(kvp.Value);
                 sb.AppendLine($"  {kvp.Key} = {value}");
             }
-            
+
             sb.AppendLine("}");
             sb.AppendLine("");
         }

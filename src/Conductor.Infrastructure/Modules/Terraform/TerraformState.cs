@@ -35,7 +35,7 @@ public sealed class TerraformState : ITerraformState
         var mainTfOutputPath = Path.Combine(stateDirectory, "main.tf");
         await File.WriteAllTextAsync(mainTfOutputPath, mainTf);
         _logger.LogInformation("Created main.tf to: {FilePath}", mainTfOutputPath);
-        
+
         var providers = validationResult.Config?.RequiredProviders.Select(rp => new TerraformProvider(
             Name: rp.Key.ToString(),
             Source: rp.Value.Source,
