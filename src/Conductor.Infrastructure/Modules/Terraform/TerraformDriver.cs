@@ -17,15 +17,15 @@ public sealed class TerraformDriver : ITerraformDriver
     private readonly ILogger<TerraformDriver> _logger;
     private readonly ITerraformValidator _validator;
     private readonly ITerraformCommandLine _commandLine;
-    private readonly ITerraformState _state;
+    private readonly ITerraformFileManager _fileManager;
 
     public TerraformDriver(ILogger<TerraformDriver> logger, ITerraformValidator validator,
-        ITerraformCommandLine commandLine, ITerraformState state)
+        ITerraformCommandLine commandLine, ITerraformFileManager fileManager)
     {
         _logger = logger;
         _validator = validator;
         _commandLine = commandLine;
-        _state = state;
+        _fileManager = fileManager;
     }
 
     public async Task<TerraformPlanResult> PlanAsync(TerraformPlanInput terraformPlanInput)
@@ -42,7 +42,7 @@ public sealed class TerraformDriver : ITerraformDriver
 
         _logger.LogInformation("Terraform Validation for {Template} Passed.", terraformPlanInput.Template.Name);
 
-        var stateDirectory = await _state.SetupDirectoryAsync(terraformPlanInput, validationResult);
+        var stateDirectory = await _fileManager.SetupDirectoryAsync(terraformPlanInput, validationResult);
 
         var initResult = await _commandLine.RunInitAsync(stateDirectory);
 
@@ -92,7 +92,7 @@ public sealed class TerraformDriver : ITerraformDriver
 
         _logger.LogInformation("Terraform Validation for {Template} Passed.", terraformPlanInput.Template.Name);
 
-        var stateDirectory = await _state.SetupDirectoryAsync(terraformPlanInput, validationResult);
+        var stateDirectory = await _fileManager.SetupDirectoryAsync(terraformPlanInput, validationResult);
 
         var initResult = await _commandLine.RunInitAsync(stateDirectory);
 

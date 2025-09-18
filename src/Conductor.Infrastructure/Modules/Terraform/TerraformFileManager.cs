@@ -3,19 +3,19 @@ using Microsoft.Extensions.Logging;
 
 namespace Conductor.Infrastructure.Modules.Terraform;
 
-public interface ITerraformState
+public interface ITerraformFileManager
 {
     Task<string> SetupDirectoryAsync(
         TerraformPlanInput terraformPlanInput,
         TerraformValidationResult validationResult);
 }
 
-public sealed class TerraformState : ITerraformState
+public sealed class TerraformFileManager : ITerraformFileManager
 {
-    private readonly ILogger<TerraformState> _logger;
+    private readonly ILogger<TerraformFileManager> _logger;
     private readonly ITerraformRenderer _renderer;
 
-    public TerraformState(ILogger<TerraformState> logger, ITerraformRenderer renderer)
+    public TerraformFileManager(ILogger<TerraformFileManager> logger, ITerraformRenderer renderer)
     {
         _logger = logger;
         _renderer = renderer;

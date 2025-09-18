@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Conductor.Core.Modules.ResourceTemplate.Domain;
 using Conductor.Infrastructure.Common.CommandLine;
 using Conductor.Infrastructure.Modules.Terraform.Models;
@@ -17,14 +18,14 @@ public sealed class TerraformValidator : ITerraformValidator
 {
     private readonly ILogger<TerraformValidator> _logger;
     private readonly IGitCommandLine _gitCommandLine;
-    private readonly ITerraformParser _parser;
+    private readonly ITerraformCommandLine _terraformCommandLine;
 
-    public TerraformValidator(ILogger<TerraformValidator> logger, ITerraformParser parser,
-        IGitCommandLine gitCommandLine)
+    public TerraformValidator(ILogger<TerraformValidator> logger, IGitCommandLine gitCommandLine,
+        ITerraformCommandLine terraformCommandLine)
     {
         _logger = logger;
-        _parser = parser;
         _gitCommandLine = gitCommandLine;
+        _terraformCommandLine = terraformCommandLine;
     }
 
     public async Task<Dictionary<TerraformPlanInput, TerraformValidationResult>> ValidateManyAsync(
@@ -81,7 +82,7 @@ public sealed class TerraformValidator : ITerraformValidator
             return TerraformValidationResult.ModuleInvalid(errorMessage);
         }
 
-        TerraformConfig? terraformConfig = await _parser.ParseTerraformModuleAsync(templateDir);
+        TerraformConfig? terraformConfig = await ParseTerraformModuleAsync(templateDir);
 
         if (terraformConfig is null)
         {
@@ -117,6 +118,19 @@ public sealed class TerraformValidator : ITerraformValidator
         }
 
         return TerraformValidationResult.Valid(terraformConfig, templateDir);
+    }
+
+    private async Task<TerraformConfig?> ParseTerraformModuleAsync(string moduleDirectory)
+    {
+        var runTerraformJsonOutput = await _terraformCommandLine.RunTerraformJsonOutput(moduleDirectory);
+
+        if (runTerraformJsonOutput.ExitCode != 0)
+        {
+            _logger.LogWarning("Could not get json output for {Module}", moduleDirectory);
+            return null;
+        }
+
+        return JsonSerializer.Deserialize<TerraformConfig>(runTerraformJsonOutput.StdOut);
     }
 
     private static (bool, string) IsValidModuleDirectory(string moduleDirectory)
