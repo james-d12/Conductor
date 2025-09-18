@@ -1,4 +1,3 @@
-using Conductor.Core.Modules.ResourceTemplate.Domain;
 using Conductor.Infrastructure.Common.CommandLine;
 using Conductor.Infrastructure.Modules.Terraform.Models;
 using Microsoft.Extensions.Logging;
@@ -7,8 +6,8 @@ namespace Conductor.Infrastructure.Modules.Terraform;
 
 public interface ITerraformDriver
 {
-    Task<TerraformPlanResult> PlanAsync(ResourceTemplate template, Dictionary<string, string> inputs);
-    Task<TerraformPlanDestroyResult> PlanDestroyAsync(ResourceTemplate template, Dictionary<string, string> inputs);
+    Task<TerraformPlanResult> PlanAsync(TerraformPlanInput terraformPlanInput);
+    Task<TerraformPlanDestroyResult> PlanDestroyAsync(TerraformPlanInput terraformPlanInput);
     Task ApplyAsync(TerraformPlanResult planResult);
     Task DestroyAsync(TerraformPlanDestroyResult planDestroyResult);
 }
@@ -29,21 +28,21 @@ public sealed class TerraformDriver : ITerraformDriver
         _state = state;
     }
 
-    public async Task<TerraformPlanResult> PlanAsync(ResourceTemplate template, Dictionary<string, string> inputs)
+    public async Task<TerraformPlanResult> PlanAsync(TerraformPlanInput terraformPlanInput)
     {
-        var validationResult = await _validator.ValidateAsync(template, inputs);
+        var validationResult = await _validator.ValidateAsync(terraformPlanInput);
 
         if (validationResult.State != TerraformValidationResultState.Valid)
         {
             _logger.LogError("Terraform Validation for {Template} Failed due to: {State} with Message: {Message}",
-                template.Name, validationResult.State,
+                terraformPlanInput.Template.Name, validationResult.State,
                 validationResult.Message);
             return new TerraformPlanResult(TerraformPlanResultState.PreValidationFailed, validationResult.Message);
         }
 
-        _logger.LogInformation("Terraform Validation for {Template} Passed.", template.Name);
+        _logger.LogInformation("Terraform Validation for {Template} Passed.", terraformPlanInput.Template.Name);
 
-        var stateDirectory = await _state.SetupDirectoryAsync(template, validationResult, inputs);
+        var stateDirectory = await _state.SetupDirectoryAsync(terraformPlanInput, validationResult);
 
         var initResult = await _commandLine.RunInitAsync(stateDirectory);
 
@@ -74,27 +73,26 @@ public sealed class TerraformDriver : ITerraformDriver
 
         _logger.LogDebug("Terraform Plan Output: {Output}", planResult.StdOut);
 
-        _logger.LogInformation("Successfully run plan for {Template}", template.Name);
+        _logger.LogInformation("Successfully run plan for {Template}", terraformPlanInput.Template.Name);
 
         return new TerraformPlanResult(stateDirectory, TerraformPlanResultState.Success, planResult);
     }
 
-    public async Task<TerraformPlanDestroyResult> PlanDestroyAsync(ResourceTemplate template,
-        Dictionary<string, string> inputs)
+    public async Task<TerraformPlanDestroyResult> PlanDestroyAsync(TerraformPlanInput terraformPlanInput)
     {
-        var validationResult = await _validator.ValidateAsync(template, inputs);
+        var validationResult = await _validator.ValidateAsync(terraformPlanInput);
 
         if (validationResult.State != TerraformValidationResultState.Valid)
         {
             _logger.LogError("Terraform Validation for {Template} Failed due to: {State} with Message: {Message}",
-                template.Name, validationResult.State,
+                terraformPlanInput.Template.Name, validationResult.State,
                 validationResult.Message);
             return new TerraformPlanDestroyResult();
         }
 
-        _logger.LogInformation("Terraform Validation for {Template} Passed.", template.Name);
+        _logger.LogInformation("Terraform Validation for {Template} Passed.", terraformPlanInput.Template.Name);
 
-        var stateDirectory = await _state.SetupDirectoryAsync(template, validationResult, inputs);
+        var stateDirectory = await _state.SetupDirectoryAsync(terraformPlanInput, validationResult);
 
         var initResult = await _commandLine.RunInitAsync(stateDirectory);
 
@@ -125,7 +123,7 @@ public sealed class TerraformDriver : ITerraformDriver
 
         _logger.LogDebug("Terraform Destroy Plan Output: {Output}", planDestroyResult.StdOut);
 
-        _logger.LogInformation("Successfully run destroy plan for {Template}", template.Name);
+        _logger.LogInformation("Successfully run destroy plan for {Template}", terraformPlanInput.Template.Name);
 
         return new TerraformPlanDestroyResult(stateDirectory, planDestroyResult);
     }

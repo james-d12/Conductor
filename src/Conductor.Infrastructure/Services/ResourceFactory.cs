@@ -27,7 +27,8 @@ public sealed class ResourceFactory : IResourceFactory
         {
             case ResourceTemplateProvider.Terraform:
                 var terraformDriver = _serviceProvider.GetRequiredService<ITerraformDriver>();
-                TerraformPlanResult planResult = await terraformDriver.PlanAsync(template, inputs);
+                var terraformPlanInput = new TerraformPlanInput(template, inputs);
+                TerraformPlanResult planResult = await terraformDriver.PlanAsync(terraformPlanInput);
                 await terraformDriver.ApplyAsync(planResult);
                 break;
             case ResourceTemplateProvider.Helm:
@@ -44,7 +45,8 @@ public sealed class ResourceFactory : IResourceFactory
         {
             case ResourceTemplateProvider.Terraform:
                 var terraformDriver = _serviceProvider.GetRequiredService<ITerraformDriver>();
-                TerraformPlanDestroyResult planDestroyResult = await terraformDriver.PlanDestroyAsync(template, inputs);
+                var terraformPlanInput = new TerraformPlanInput(template, inputs);
+                TerraformPlanDestroyResult planDestroyResult = await terraformDriver.PlanDestroyAsync(terraformPlanInput);
                 await terraformDriver.DestroyAsync(planDestroyResult);
                 break;
             case ResourceTemplateProvider.Helm:

@@ -1,4 +1,3 @@
-using Conductor.Core.Modules.ResourceTemplate.Domain;
 using Conductor.Infrastructure.Modules.Terraform.Models;
 using Microsoft.Extensions.Logging;
 
@@ -7,9 +6,8 @@ namespace Conductor.Infrastructure.Modules.Terraform;
 public interface ITerraformState
 {
     Task<string> SetupDirectoryAsync(
-        ResourceTemplate template,
-        TerraformValidationResult validationResult,
-        Dictionary<string, string> inputs);
+        TerraformPlanInput terraformPlanInput,
+        TerraformValidationResult validationResult);
 }
 
 public sealed class TerraformState : ITerraformState
@@ -24,22 +22,20 @@ public sealed class TerraformState : ITerraformState
     }
 
     public async Task<string> SetupDirectoryAsync(
-        ResourceTemplate template,
-        TerraformValidationResult validationResult,
-        Dictionary<string, string> inputs)
+        TerraformPlanInput terraformPlanInput,
+        TerraformValidationResult validationResult)
     {
         var stateDirectory = Path.Combine(Path.GetTempPath(), "conductor", "terraform", "state",
-            template.Name.Replace(" ", "."));
+            terraformPlanInput.Template.Name.Replace(" ", "."));
 
         Directory.CreateDirectory(stateDirectory);
 
-        var mainTf = _renderer.RenderMainTf(template, validationResult.ModuleDirectory, inputs);
+        var mainTf = _renderer.RenderMainTf([terraformPlanInput], validationResult.ModuleDirectory);
         _logger.LogDebug("Render output: {Output}", mainTf);
         var mainTfOutputPath = Path.Combine(stateDirectory, "main.tf");
         await File.WriteAllTextAsync(mainTfOutputPath, mainTf);
         _logger.LogInformation("Created main.tf to: {FilePath}", mainTfOutputPath);
-
-
+        
         var providers = validationResult.Config?.RequiredProviders.Select(rp => new TerraformProvider(
             Name: rp.Key.ToString(),
             Source: rp.Value.Source,
@@ -48,7 +44,7 @@ public sealed class TerraformState : ITerraformState
 
         if (providers is null || providers.Count == 0)
         {
-            throw new Exception($"No provider found for {template.Name} Passed.");
+            throw new Exception($"No provider found for {terraformPlanInput.Template.Name} Passed.");
         }
 
         var providersTf = _renderer.RenderProvidersTf(providers);

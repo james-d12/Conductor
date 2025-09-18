@@ -1,4 +1,6 @@
 ﻿using Conductor.Core;
+using Conductor.Core.Modules.Application.Domain;
+using Conductor.Core.Modules.Deployment.Domain;
 using Conductor.Core.Modules.ResourceTemplate;
 using Conductor.Core.Modules.ResourceTemplate.Domain;
 using Conductor.Core.Modules.ResourceTemplate.Requests;
@@ -8,6 +10,7 @@ using Conductor.Persistence;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Environment = Conductor.Core.Modules.Environment.Domain.Environment;
 
 var builder = Host.CreateApplicationBuilder();
 
@@ -87,6 +90,23 @@ var argoCdTemplate = ResourceTemplate.CreateWithVersion(new CreateResourceTempla
     Notes = string.Empty,
     State = ResourceTemplateVersionState.Active
 });
+
+var paymentApi = Application.Create("payment-api", new Repository
+{
+    Id = Guid.NewGuid(),
+    Name = "payment api repository",
+    Provider = RepositoryProvider.GitHub
+});
+
+var devEnvironment = Environment.Create("dev", "The Development Environment");
+
+var commit = new Commit
+{
+    Id = new CommitId("dsoaid9asid9"),
+    Message = "Updated Application"
+};
+
+var deployment = Deployment.Create(paymentApi.Id, devEnvironment.Id, commit.Id);
 
 var resourceTemplateRepository = host.Services.GetRequiredService<IResourceTemplateRepository>();
 await resourceTemplateRepository.CreateAsync(azureStorageAccount);

@@ -1,35 +1,37 @@
 using System.Text;
-using Conductor.Core.Modules.ResourceTemplate.Domain;
 using Conductor.Infrastructure.Modules.Terraform.Models;
 
 namespace Conductor.Infrastructure.Modules.Terraform;
 
 public interface ITerraformRenderer
 {
-    string RenderMainTf(ResourceTemplate template, string moduleDirectory,
-        Dictionary<string, string> actualInputs);
-
+    string RenderMainTf(List<TerraformPlanInput> terraformPlanInputs, string moduleDirectory);
     string RenderProvidersTf(List<TerraformProvider> providers);
 }
 
 public sealed class TerraformRenderer : ITerraformRenderer
 {
-    public string RenderMainTf(ResourceTemplate template, string moduleDirectory,
-        Dictionary<string, string> actualInputs)
+    public string RenderMainTf(List<TerraformPlanInput> terraformPlanInputs, string moduleDirectory)
     {
-        var moduleName = template.Name.Replace(" ", "_").ToLowerInvariant();
-
         var sb = new StringBuilder();
-        sb.AppendLine($"module \"{moduleName}\" {{");
-        sb.AppendLine($"  source = \"{moduleDirectory}\"");
 
-        foreach (var kvp in actualInputs)
+        foreach (var terraformPlanInput in terraformPlanInputs)
         {
-            var value = QuoteIfNeeded(kvp.Value);
-            sb.AppendLine($"  {kvp.Key} = {value}");
+            var moduleName = terraformPlanInput.Template.Name.Replace(" ", "_").ToLowerInvariant();
+
+            sb.AppendLine($"module \"{moduleName}\" {{");
+            sb.AppendLine($"  source = \"{moduleDirectory}\"");
+
+            foreach (var kvp in terraformPlanInput.Inputs)
+            {
+                var value = QuoteIfNeeded(kvp.Value);
+                sb.AppendLine($"  {kvp.Key} = {value}");
+            }
+            
+            sb.AppendLine("}");
+            sb.AppendLine("");
         }
 
-        sb.AppendLine("}");
         return sb.ToString();
     }
 
