@@ -17,7 +17,7 @@ public sealed class TerraformRenderer : ITerraformRenderer
 
         foreach (var (terraformPlanInput, terraformValidationResult) in terraformValidationResults)
         {
-            var key =  terraformPlanInput.Key.Replace(" ", "_").Trim().ToLowerInvariant();
+            var key = terraformPlanInput.Key.Replace(" ", "_").Trim().ToLowerInvariant();
             var templateName = terraformPlanInput.Template.Name.Replace(" ", "_").ToLowerInvariant();
             var moduleName = string.Join("_", templateName, key);
 

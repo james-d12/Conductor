@@ -31,7 +31,7 @@ public sealed class ResourceProvisioner
             _logger.LogWarning("Unable to find / parse the provided score file.");
             return;
         }
-        
+
         if (scoreFile.Resources is not null)
         {
             _logger.LogInformation("Provisioning Resources for score file");
@@ -39,7 +39,7 @@ public sealed class ResourceProvisioner
             var directoryName = scoreFile.Metadata.Name;
 
             var provisionInputs = new List<ProvisionInput>();
-            
+
             foreach (var resource in scoreFile.Resources ?? [])
             {
                 var type = resource.Value.Type.Trim().ToLower();
@@ -58,11 +58,11 @@ public sealed class ResourceProvisioner
                     _logger.LogInformation("No inputs present in the score file");
                     continue;
                 }
-                
+
                 provisionInputs.Add(new ProvisionInput(resourceTemplate, inputs, resource.Key));
             }
-            
-            
+
+
             await _resourceFactory.ProvisionAsync(provisionInputs, directoryName);
         }
     }

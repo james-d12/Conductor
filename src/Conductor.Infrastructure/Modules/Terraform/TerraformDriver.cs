@@ -39,7 +39,7 @@ public sealed class TerraformDriver : ITerraformDriver
                 _logger.LogError("Terraform Validation for {Template} Failed due to: {State} with Message: {Message}",
                     planInput.Template.Name, validationResult.State,
                     validationResult.Message);
-                return new TerraformPlanResult(TerraformPlanResultState.PreValidationFailed, validationResult.Message);    
+                return new TerraformPlanResult(TerraformPlanResultState.PreValidationFailed, validationResult.Message);
             }
 
             _logger.LogInformation("Terraform Validation for {Template} Passed.", planInput.Template.Name);
@@ -75,7 +75,7 @@ public sealed class TerraformDriver : ITerraformDriver
         }
 
         _logger.LogDebug("Terraform Plan Output: {Output}", planResult.StdOut);
-        
+
         _logger.LogInformation("Successfully run plan for {Folder}", folderName);
 
         return new TerraformPlanResult(stateDirectory, TerraformPlanResultState.Success, planResult);
