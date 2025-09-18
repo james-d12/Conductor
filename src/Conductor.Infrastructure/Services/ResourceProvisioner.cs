@@ -22,9 +22,9 @@ public sealed class ResourceProvisioner
         _resourceFactory = resourceFactory;
     }
 
-    public async Task StartAsync()
+    public async Task StartAsync(string fileName, bool delete = false)
     {
-        ScoreFile? scoreFile = await _scoreParser.ParseAsync("./example.yaml");
+        ScoreFile? scoreFile = await _scoreParser.ParseAsync(fileName);
 
         if (scoreFile is null)
         {
@@ -62,8 +62,14 @@ public sealed class ResourceProvisioner
                 provisionInputs.Add(new ProvisionInput(resourceTemplate, inputs, resource.Key));
             }
 
-
-            await _resourceFactory.ProvisionAsync(provisionInputs, directoryName);
+            if (delete)
+            {
+                await _resourceFactory.DeleteAsync(provisionInputs, directoryName);
+            }
+            else
+            {
+                await _resourceFactory.ProvisionAsync(provisionInputs, directoryName);
+            }
         }
     }
 }

@@ -116,4 +116,4 @@ await resourceTemplateRepository.CreateAsync(argoCdTemplate);
 
 var resourceProvisioner = host.Services.GetRequiredService<ResourceProvisioner>();
 
-await resourceProvisioner.StartAsync();
+await resourceProvisioner.StartAsync("example.yaml");

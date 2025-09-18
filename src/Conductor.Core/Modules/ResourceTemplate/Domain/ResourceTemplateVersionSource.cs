@@ -4,7 +4,7 @@ public sealed record ResourceTemplateVersionSource
 {
     public required Uri BaseUrl { get; init; }
     public required string FolderPath { get; init; }
-    public required string Tag { get; set; }
+    public required string Tag { get; init; }
 
     public static ResourceTemplateVersionSource CreateFromUrl(Uri url)
     {

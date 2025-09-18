@@ -41,7 +41,7 @@ public static class InfrastructureExtensions
             .Bind(configuration.GetSection(nameof(TerraformOptions)));
 
         services.TryAddSingleton<ITerraformDriver, TerraformDriver>();
-        services.TryAddSingleton<ITerraformFileManager, TerraformFileManager>();
+        services.TryAddSingleton<ITerraformProjectBuilder, TerraformProjectBuilder>();
         services.TryAddSingleton<ITerraformRenderer, TerraformRenderer>();
         services.TryAddSingleton<ITerraformCommandLine, TerraformCommandLine>();
         services.TryAddSingleton<ITerraformValidator, TerraformValidator>();

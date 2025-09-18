@@ -6,10 +6,11 @@ namespace Conductor.Infrastructure.Modules.Terraform;
 
 public interface ITerraformDriver
 {
-    Task<TerraformPlanResult> PlanAsync(List<TerraformPlanInput> terraformPlanInputs, string folderName);
-    Task<TerraformPlanDestroyResult> PlanDestroyAsync(TerraformPlanInput terraformPlanInput);
+    Task<TerraformPlanResult> PlanAsync(List<TerraformPlanInput> terraformPlanInputs, string folderName,
+        bool destroy = false);
+
     Task ApplyAsync(TerraformPlanResult planResult);
-    Task DestroyAsync(TerraformPlanDestroyResult planDestroyResult);
+    Task DestroyAsync(TerraformPlanResult planResult);
 }
 
 public sealed class TerraformDriver : ITerraformDriver
@@ -17,20 +18,21 @@ public sealed class TerraformDriver : ITerraformDriver
     private readonly ILogger<TerraformDriver> _logger;
     private readonly ITerraformValidator _validator;
     private readonly ITerraformCommandLine _commandLine;
-    private readonly ITerraformFileManager _fileManager;
+    private readonly ITerraformProjectBuilder _projectBuilder;
 
     public TerraformDriver(ILogger<TerraformDriver> logger, ITerraformValidator validator,
-        ITerraformCommandLine commandLine, ITerraformFileManager fileManager)
+        ITerraformCommandLine commandLine, ITerraformProjectBuilder projectBuilder)
     {
         _logger = logger;
         _validator = validator;
         _commandLine = commandLine;
-        _fileManager = fileManager;
+        _projectBuilder = projectBuilder;
     }
 
-    public async Task<TerraformPlanResult> PlanAsync(List<TerraformPlanInput> terraformPlanInputs, string folderName)
+    public async Task<TerraformPlanResult> PlanAsync(List<TerraformPlanInput> terraformPlanInputs, string folderName,
+        bool destroy = false)
     {
-        var validationResults = await _validator.ValidateManyAsync(terraformPlanInputs);
+        var validationResults = await _validator.ValidateAsync(terraformPlanInputs);
 
         foreach ((TerraformPlanInput planInput, TerraformValidationResult validationResult) in validationResults)
         {
@@ -45,7 +47,7 @@ public sealed class TerraformDriver : ITerraformDriver
             _logger.LogInformation("Terraform Validation for {Template} Passed.", planInput.Template.Name);
         }
 
-        var stateDirectory = await _fileManager.SetupTerraformDirectory(validationResults, folderName);
+        var stateDirectory = await _projectBuilder.BuildProject(validationResults, folderName);
 
         var initResult = await _commandLine.RunInitAsync(stateDirectory);
 
@@ -67,7 +69,9 @@ public sealed class TerraformDriver : ITerraformDriver
 
         _logger.LogDebug("Terraform Validate Output: {Output}", validateResult.StdOut);
 
-        var planResult = await _commandLine.RunPlanAsync(stateDirectory);
+        CommandLineResult planResult = destroy
+            ? await _commandLine.RunPlanDestroyAsync(stateDirectory)
+            : await _commandLine.RunPlanAsync(stateDirectory);
 
         if (planResult.ExitCode != 0)
         {
@@ -79,56 +83,6 @@ public sealed class TerraformDriver : ITerraformDriver
         _logger.LogInformation("Successfully run plan for {Folder}", folderName);
 
         return new TerraformPlanResult(stateDirectory, TerraformPlanResultState.Success, planResult);
-    }
-
-    public async Task<TerraformPlanDestroyResult> PlanDestroyAsync(TerraformPlanInput terraformPlanInput)
-    {
-        var validationResult = await _validator.ValidateAsync(terraformPlanInput);
-
-        if (validationResult.State != TerraformValidationResultState.Valid)
-        {
-            _logger.LogError("Terraform Validation for {Template} Failed due to: {State} with Message: {Message}",
-                terraformPlanInput.Template.Name, validationResult.State,
-                validationResult.Message);
-            return new TerraformPlanDestroyResult();
-        }
-
-        _logger.LogInformation("Terraform Validation for {Template} Passed.", terraformPlanInput.Template.Name);
-
-        var stateDirectory = await _fileManager.SetupDirectoryAsync(terraformPlanInput, validationResult);
-
-        var initResult = await _commandLine.RunInitAsync(stateDirectory);
-
-        if (initResult.ExitCode != 0)
-        {
-            return new TerraformPlanDestroyResult(stateDirectory);
-        }
-
-        _logger.LogDebug("Terraform Init Output: {Output}", initResult.StdOut);
-
-        var validateResult = await _commandLine.RunValidateAsync(stateDirectory);
-
-        if (validateResult.ExitCode != 0)
-        {
-            _logger.LogWarning("Terraform Validate Failed: {ExitCode} with {Output}", validateResult.ExitCode,
-                validateResult.StdErr);
-            return new TerraformPlanDestroyResult(stateDirectory);
-        }
-
-        _logger.LogDebug("Terraform Validate Output: {Output}", validateResult.StdOut);
-
-        var planDestroyResult = await _commandLine.RunPlanDestroyAsync(stateDirectory);
-
-        if (planDestroyResult.ExitCode != 0)
-        {
-            return new TerraformPlanDestroyResult(stateDirectory, planDestroyResult);
-        }
-
-        _logger.LogDebug("Terraform Destroy Plan Output: {Output}", planDestroyResult.StdOut);
-
-        _logger.LogInformation("Successfully run destroy plan for {Template}", terraformPlanInput.Template.Name);
-
-        return new TerraformPlanDestroyResult(stateDirectory, planDestroyResult);
     }
 
     public async Task ApplyAsync(TerraformPlanResult planResult)
@@ -152,23 +106,22 @@ public sealed class TerraformDriver : ITerraformDriver
         }
     }
 
-    public async Task DestroyAsync(TerraformPlanDestroyResult planDestroyResult)
+    public async Task DestroyAsync(TerraformPlanResult planResult)
     {
-        if (planDestroyResult.PlanDestroyCommandLineResult?.ExitCode != 0)
+        if (planResult.ExitCode != 0)
         {
-            _logger.LogWarning("Plan Result did not have a successful exit code: {ExitCode}",
-                planDestroyResult.PlanDestroyCommandLineResult?.ExitCode);
+            _logger.LogWarning("Plan Result did not have a successful exit code: {ExitCode}", planResult.ExitCode);
             return;
         }
 
-        if (string.IsNullOrEmpty(planDestroyResult.StateDirectory))
+        if (string.IsNullOrEmpty(planResult.StateDirectory))
         {
             _logger.LogWarning("Plan Result did not have valid state directory: {StateDirectory}",
-                planDestroyResult.StateDirectory);
+                planResult.StateDirectory);
             return;
         }
 
-        var destroyResult = await _commandLine.RunDestroyAsync(planDestroyResult.StateDirectory);
+        var destroyResult = await _commandLine.RunDestroyAsync(planResult.StateDirectory);
 
         _logger.LogInformation("Terraform Apply Result: {Result}", destroyResult.StdOut);
     }

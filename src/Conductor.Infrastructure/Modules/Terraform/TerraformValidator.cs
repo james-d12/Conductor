@@ -8,9 +8,7 @@ namespace Conductor.Infrastructure.Modules.Terraform;
 
 public interface ITerraformValidator
 {
-    Task<TerraformValidationResult> ValidateAsync(TerraformPlanInput terraformPlanInput);
-
-    Task<Dictionary<TerraformPlanInput, TerraformValidationResult>> ValidateManyAsync(
+    Task<Dictionary<TerraformPlanInput, TerraformValidationResult>> ValidateAsync(
         List<TerraformPlanInput> terraformPlanInputs);
 }
 
@@ -28,17 +26,17 @@ public sealed class TerraformValidator : ITerraformValidator
         _terraformCommandLine = terraformCommandLine;
     }
 
-    public async Task<Dictionary<TerraformPlanInput, TerraformValidationResult>> ValidateManyAsync(
+    public async Task<Dictionary<TerraformPlanInput, TerraformValidationResult>> ValidateAsync(
         List<TerraformPlanInput> terraformPlanInputs)
     {
-        var validateTasks = terraformPlanInputs.Select(ValidateAsync).ToList();
+        var validateTasks = terraformPlanInputs.Select(ValidatePlanAsync).ToList();
         var results = await Task.WhenAll(validateTasks);
         return terraformPlanInputs
             .Zip(results, (input, result) => new { input, result })
             .ToDictionary(x => x.input, x => x.result);
     }
 
-    public async Task<TerraformValidationResult> ValidateAsync(TerraformPlanInput terraformPlanInput)
+    private async Task<TerraformValidationResult> ValidatePlanAsync(TerraformPlanInput terraformPlanInput)
     {
         var template = terraformPlanInput.Template;
         var inputs = terraformPlanInput.Inputs;
@@ -148,22 +146,15 @@ public sealed class TerraformValidator : ITerraformValidator
             .GetFiles(moduleDirectory, "outputs.tf", SearchOption.AllDirectories)
             .FirstOrDefault();
 
-        if (outputsFile is null)
-        {
-            return (false, $"Could not find outputs.tf in template directory: {moduleDirectory} found.");
-        }
-
-        return (true, string.Empty);
+        return outputsFile is null
+            ? (false, $"Could not find outputs.tf in template directory: {moduleDirectory} found.")
+            : (true, string.Empty);
     }
 
     private async Task<bool> CloneModuleAsync(ResourceTemplateVersion latestVersion, string templateDir)
     {
-        if (!string.IsNullOrEmpty(latestVersion.Source.Tag))
-        {
-            return await _gitCommandLine.CloneTagAsync(latestVersion.Source.BaseUrl, latestVersion.Source.Tag,
-                templateDir);
-        }
-
-        return await _gitCommandLine.CloneAsync(latestVersion.Source.BaseUrl, templateDir);
+        return !string.IsNullOrEmpty(latestVersion.Source.Tag)
+            ? await _gitCommandLine.CloneTagAsync(latestVersion.Source.BaseUrl, latestVersion.Source.Tag, templateDir)
+            : await _gitCommandLine.CloneAsync(latestVersion.Source.BaseUrl, templateDir);
     }
 }
