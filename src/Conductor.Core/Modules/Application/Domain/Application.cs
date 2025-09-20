@@ -1,3 +1,5 @@
+using Conductor.Core.Modules.Application.Requests;
+
 namespace Conductor.Core.Modules.Application.Domain;
 
 public readonly record struct ApplicationId(Guid Value)
@@ -33,6 +35,27 @@ public sealed record Application
             Id = new ApplicationId(),
             Name = name,
             Repository = repository,
+            Deployments = [],
+            CreatedAt = DateTime.Now,
+            UpdatedAt = DateTime.Now
+        };
+    }
+
+    public static Application Create(CreateApplicationRequest request)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(request.Name);
+
+        return new Application
+        {
+            Id = new ApplicationId(),
+            Name = request.Name,
+            Repository = new Repository()
+            {
+                Id = Guid.NewGuid(),
+                Name = request.Repository.Name,
+                Url = request.Repository.Url,
+                Provider = request.Repository.Provider
+            },
             Deployments = [],
             CreatedAt = DateTime.Now,
             UpdatedAt = DateTime.Now

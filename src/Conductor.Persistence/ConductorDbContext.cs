@@ -1,3 +1,4 @@
+using Conductor.Core.Modules.Application.Domain;
 using Conductor.Core.Modules.ResourceTemplate.Domain;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,6 +7,7 @@ namespace Conductor.Persistence;
 public sealed class ConductorDbContext : DbContext
 {
     public required DbSet<ResourceTemplate> ResourceTemplates { get; init; }
+    public required DbSet<Application> Applications { get; init; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

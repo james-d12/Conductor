@@ -1,3 +1,4 @@
+using Conductor.Core.Modules.Application;
 using Conductor.Core.Modules.ResourceTemplate;
 using Conductor.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,7 @@ public static class ConfigureServices
     {
         services.AddDbContext<ConductorDbContext>();
         services.AddScoped<IResourceTemplateRepository, ResourceTemplateRepository>();
+        services.AddScoped<IApplicationRepository, ApplicationRepository>();
 
         return services;
     }

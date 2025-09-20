@@ -95,6 +95,7 @@ var paymentApi = Application.Create("payment-api", new Repository
 {
     Id = Guid.NewGuid(),
     Name = "payment api repository",
+    Url = new Uri("https://github.com/james-d12/Panda.git"),
     Provider = RepositoryProvider.GitHub
 });
 
@@ -117,3 +118,4 @@ await resourceTemplateRepository.CreateAsync(argoCdTemplate);
 var resourceProvisioner = host.Services.GetRequiredService<ResourceProvisioner>();
 
 await resourceProvisioner.StartAsync("example.yaml");
+await resourceProvisioner.StartAsync("example-after.yaml");
