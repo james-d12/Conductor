@@ -1,3 +1,4 @@
+using Conductor.Core.Modules.Deployment.Requests;
 using Conductor.Core.Modules.Environment.Domain;
 using ApplicationId = Conductor.Core.Modules.Application.Domain.ApplicationId;
 
@@ -41,9 +42,8 @@ public sealed record Deployment
         };
     }
 
-    public void MarkAsFailed()
+    public static Deployment Create(CreateDeploymentRequest request)
     {
-        Status = DeploymentStatus.Failed;
-        UpdatedAt = DateTime.UtcNow;
+        return Create(request.ApplicationId, request.EnvironmentId, request.CommitId);
     }
 }
