@@ -1,9 +1,9 @@
-using Conductor.Infrastructure.Common.CommandLine;
-using Conductor.Infrastructure.Modules.Helm;
-using Conductor.Infrastructure.Modules.Score;
-using Conductor.Infrastructure.Modules.Terraform;
-using Conductor.Infrastructure.Modules.Terraform.Models;
-using Conductor.Infrastructure.Services;
+using Conductor.Infrastructure.CommandLine;
+using Conductor.Infrastructure.Helm;
+using Conductor.Infrastructure.Resources;
+using Conductor.Infrastructure.Score;
+using Conductor.Infrastructure.Terraform;
+using Conductor.Infrastructure.Terraform.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;

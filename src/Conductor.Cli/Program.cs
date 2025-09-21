@@ -5,7 +5,7 @@ using Conductor.Core.ResourceTemplate;
 using Conductor.Core.ResourceTemplate.Domain;
 using Conductor.Core.ResourceTemplate.Requests;
 using Conductor.Infrastructure;
-using Conductor.Infrastructure.Services;
+using Conductor.Infrastructure.Resources;
 using Conductor.Persistence;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

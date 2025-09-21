@@ -25,7 +25,7 @@ internal sealed class ApplicationConfiguration : IEntityTypeConfiguration<Applic
             .WithOne()
             .HasForeignKey(d => d.ApplicationId)
             .OnDelete(DeleteBehavior.Cascade);
-        
+
         builder.OwnsOne(a => a.Repository, r =>
         {
             r.Property(x => x.Id).IsRequired();

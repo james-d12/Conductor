@@ -3,7 +3,7 @@ using Conductor.Core.Application;
 using Conductor.Core.Deployment;
 using Conductor.Core.Deployment.Requests;
 using Conductor.Core.Environment;
-using Conductor.Infrastructure.Services;
+using Conductor.Infrastructure.Resources;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Conductor.Api.Endpoints.Deployment;
