@@ -32,7 +32,7 @@ public static class Endpoints
         endpoints.MapPublicGroup()
             .MapEndpoint<CreateEnvironment>();
     }
-    
+
     private static void MapDeploymentEndpoints(this IEndpointRouteBuilder app)
     {
         var endpoints = app.MapGroup("/deployment")
