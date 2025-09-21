@@ -131,7 +131,7 @@ namespace Conductor.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Environment");
+                    b.ToTable("Environments");
                 });
 
             modelBuilder.Entity("Conductor.Core.Modules.ResourceTemplate.Domain.ResourceTemplate", b =>

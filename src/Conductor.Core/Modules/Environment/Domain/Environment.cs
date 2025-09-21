@@ -1,3 +1,5 @@
+using Conductor.Core.Modules.Environment.Requests;
+
 namespace Conductor.Core.Modules.Environment.Domain;
 
 public readonly record struct EnvironmentId(Guid Value)
@@ -38,6 +40,11 @@ public sealed record Environment
             CreatedAt = DateTime.Now,
             UpdatedAt = DateTime.Now
         };
+    }
+
+    public static Environment Create(CreateEnvironmentRequest request)
+    {
+        return Create(request.Name, request.Description);
     }
 
     public void Deploy(Deployment.Domain.Deployment deployment)
