@@ -116,6 +116,3 @@ await resourceTemplateRepository.CreateAsync(azureContainerRegistry);
 await resourceTemplateRepository.CreateAsync(argoCdTemplate);
 
 var resourceProvisioner = host.Services.GetRequiredService<ResourceProvisioner>();
-
-await resourceProvisioner.StartAsync("example.yaml");
-await resourceProvisioner.StartAsync("example-after.yaml");

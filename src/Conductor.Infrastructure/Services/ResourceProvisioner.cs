@@ -1,3 +1,5 @@
+using Conductor.Core.Modules.Application.Domain;
+using Conductor.Core.Modules.Deployment.Domain;
 using Conductor.Core.Modules.ResourceTemplate;
 using Conductor.Core.Modules.ResourceTemplate.Domain;
 using Conductor.Infrastructure.Modules.Score;
@@ -6,25 +8,43 @@ using Microsoft.Extensions.Logging;
 
 namespace Conductor.Infrastructure.Services;
 
-public sealed class ResourceProvisioner
+public interface IResourceProvisioner
+{
+    Task StartAsync(Application application, Deployment deployment, CancellationToken cancellationToken);
+}
+
+public sealed class ResourceProvisioner : IResourceProvisioner
 {
     private readonly ILogger<ResourceProvisioner> _logger;
     private readonly IResourceTemplateRepository _resourceTemplateRepository;
     private readonly IResourceFactory _resourceFactory;
     private readonly IScoreParser _scoreParser;
+    private readonly IScoreValidator _scoreValidator;
 
     public ResourceProvisioner(ILogger<ResourceProvisioner> logger, IScoreParser scoreParser,
-        IResourceTemplateRepository resourceTemplateRepository, IResourceFactory resourceFactory)
+        IResourceTemplateRepository resourceTemplateRepository, IResourceFactory resourceFactory,
+        IScoreValidator scoreValidator)
     {
         _logger = logger;
         _scoreParser = scoreParser;
         _resourceTemplateRepository = resourceTemplateRepository;
         _resourceFactory = resourceFactory;
+        _scoreValidator = scoreValidator;
     }
 
-    public async Task StartAsync(string fileName, bool delete = false)
+    public async Task StartAsync(Application application, Deployment deployment, CancellationToken cancellationToken)
     {
-        ScoreFile? scoreFile = await _scoreParser.ParseAsync(fileName);
+        var scoreValidationResult =
+            await _scoreValidator.ValidateAsync(deployment, application, cancellationToken: cancellationToken);
+
+        if (scoreValidationResult.State != ScoreValidationResultState.Valid)
+        {
+            _logger.LogError("Score Validation for {Application} failed due to: {State}",
+                application.Name, scoreValidationResult.State);
+            return;
+        }
+
+        ScoreFile? scoreFile = await _scoreParser.ParseAsync(scoreValidationResult.ScoreFilePath);
 
         if (scoreFile is null)
         {
@@ -45,7 +65,8 @@ public sealed class ResourceProvisioner
                 var type = resource.Value.Type.Trim().ToLower();
                 var inputs = resource.Value.Parameters;
 
-                ResourceTemplate? resourceTemplate = await _resourceTemplateRepository.GetByTypeAsync(type);
+                ResourceTemplate? resourceTemplate =
+                    await _resourceTemplateRepository.GetByTypeAsync(type, cancellationToken);
 
                 if (resourceTemplate is null)
                 {
@@ -62,14 +83,7 @@ public sealed class ResourceProvisioner
                 provisionInputs.Add(new ProvisionInput(resourceTemplate, inputs, resource.Key));
             }
 
-            if (delete)
-            {
-                await _resourceFactory.DeleteAsync(provisionInputs, directoryName);
-            }
-            else
-            {
-                await _resourceFactory.ProvisionAsync(provisionInputs, directoryName);
-            }
+            await _resourceFactory.ProvisionAsync(provisionInputs, directoryName);
         }
     }
 }

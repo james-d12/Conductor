@@ -1,5 +1,7 @@
 using Conductor.Core.Modules.Application;
 using Conductor.Core.Modules.Application.Domain;
+using Microsoft.EntityFrameworkCore;
+using ApplicationId = Conductor.Core.Modules.Application.Domain.ApplicationId;
 
 namespace Conductor.Persistence.Repositories;
 
@@ -18,5 +20,16 @@ public sealed class ApplicationRepository : IApplicationRepository
         var result = await _dbContext.Applications.AddAsync(application, cancellationToken);
         await _dbContext.SaveChangesAsync(cancellationToken);
         return result.Entity;
+    }
+
+    public IEnumerable<Application> GetAll()
+    {
+        return _dbContext.Applications.AsEnumerable();
+    }
+
+    public Task<Application?> GetByIdAsync(ApplicationId id,
+        CancellationToken cancellationToken = default)
+    {
+        return _dbContext.Applications.FirstOrDefaultAsync(t => t.Id == id, cancellationToken: cancellationToken);
     }
 }

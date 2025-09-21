@@ -1,4 +1,6 @@
 using Conductor.Core.Modules.Environment;
+using Conductor.Core.Modules.Environment.Domain;
+using Microsoft.EntityFrameworkCore;
 using Environment = Conductor.Core.Modules.Environment.Domain.Environment;
 
 namespace Conductor.Persistence.Repositories;
@@ -18,5 +20,16 @@ public sealed class EnvironmentRepository : IEnvironmentRepository
         var result = await _dbContext.Environments.AddAsync(application, cancellationToken);
         await _dbContext.SaveChangesAsync(cancellationToken);
         return result.Entity;
+    }
+
+    public IEnumerable<Environment> GetAll()
+    {
+        return _dbContext.Environments.AsEnumerable();
+    }
+
+    public Task<Environment?> GetByIdAsync(EnvironmentId id,
+        CancellationToken cancellationToken = default)
+    {
+        return _dbContext.Environments.FirstOrDefaultAsync(t => t.Id == id, cancellationToken: cancellationToken);
     }
 }

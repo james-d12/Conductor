@@ -14,18 +14,23 @@ public static class InfrastructureExtensions
 {
     public static void AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
-        services.TryAddSingleton<IGitCommandLine, GitCommandLine>();
-
         services.AddSharedServices();
+        services.AddScoreServices();
         services.AddHelmServices();
         services.AddTerraformServices(configuration);
     }
 
     private static void AddSharedServices(this IServiceCollection services)
     {
+        services.TryAddSingleton<IGitCommandLine, GitCommandLine>();
         services.TryAddSingleton<IResourceFactory, ResourceFactory>();
+        services.TryAddScoped<IResourceProvisioner, ResourceProvisioner>();
+    }
+
+    private static void AddScoreServices(this IServiceCollection services)
+    {
         services.TryAddSingleton<IScoreParser, ScoreParser>();
-        services.TryAddSingleton<ResourceProvisioner>();
+        services.TryAddSingleton<IScoreValidator, ScoreValidator>();
     }
 
     private static void AddHelmServices(this IServiceCollection services)
