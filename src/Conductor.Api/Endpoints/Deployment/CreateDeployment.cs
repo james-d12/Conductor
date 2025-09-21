@@ -26,7 +26,7 @@ public sealed class CreateDeployment : IEndpoint
         {
             return TypedResults.InternalServerError();
         }
-        
+
         var locationUrl = new Uri($"{httpContext.Request.Scheme}://{httpContext.Request.Host}/deployments/{deploymentResponse.Id.Value}");
 
         var response = new CreateDeploymentResponse(
