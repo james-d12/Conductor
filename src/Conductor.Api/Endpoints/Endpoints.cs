@@ -18,16 +18,18 @@ public static class Endpoints
 
     private static void MapApplicationEndpoints(this IEndpointRouteBuilder app)
     {
-        var endpoints = app.MapGroup("/application")
+        var endpoints = app.MapGroup("/applications")
             .WithTags("Application");
 
         endpoints.MapPublicGroup()
-            .MapEndpoint<CreateApplicationEndpoint>();
+            .MapEndpoint<CreateApplicationEndpoint>()
+            .MapEndpoint<GetAllApplicationsEndpoint>()
+            .MapEndpoint<GetApplicationEndpoint>();
     }
 
     private static void MapEnvironmentEndpoints(this IEndpointRouteBuilder app)
     {
-        var endpoints = app.MapGroup("/environment")
+        var endpoints = app.MapGroup("/environments")
             .WithTags("Environment");
 
         endpoints.MapPublicGroup()
@@ -38,7 +40,7 @@ public static class Endpoints
 
     private static void MapDeploymentEndpoints(this IEndpointRouteBuilder app)
     {
-        var endpoints = app.MapGroup("/deployment")
+        var endpoints = app.MapGroup("/deployments")
             .WithTags("Deployment");
 
         endpoints.MapPublicGroup()
@@ -47,7 +49,7 @@ public static class Endpoints
 
     private static void MapResourceTemplateEndpoints(this IEndpointRouteBuilder app)
     {
-        var endpoints = app.MapGroup("/resource-template")
+        var endpoints = app.MapGroup("/resource-templates")
             .WithTags("Resource Template");
 
         endpoints.MapPublicGroup()
