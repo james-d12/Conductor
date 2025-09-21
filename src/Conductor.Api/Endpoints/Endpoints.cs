@@ -51,7 +51,8 @@ public static class Endpoints
         endpoints.MapPublicGroup()
             .MapEndpoint<CreateResourceTemplate>()
             .MapEndpoint<CreateResourceTemplateWithVersion>()
-            .MapEndpoint<GetResourceTemplate>();
+            .MapEndpoint<GetResourceTemplate>()
+            .MapEndpoint<GetAllResourceTemplates>();
     }
 
     private static RouteGroupBuilder MapPublicGroup(this IEndpointRouteBuilder app, string? prefix = null)

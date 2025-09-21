@@ -11,7 +11,7 @@ public sealed class GetResourceTemplate : IEndpoint
         .MapGet("/{id:guid}", HandleAsync)
         .WithSummary("Gets an existing resource template by id.");
 
-    private sealed record GetResourceTemplateResponse(string Name);
+    public sealed record GetResourceTemplateResponse(string Name);
 
     private static async Task<Results<Ok<GetResourceTemplateResponse>, NotFound, InternalServerError>> HandleAsync(
         Guid id,

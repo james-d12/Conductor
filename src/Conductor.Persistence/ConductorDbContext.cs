@@ -15,7 +15,7 @@ public sealed class ConductorDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        var dbPath = Path.Combine(AppContext.BaseDirectory, "Conductor.db");
+        var dbPath = Path.Combine(Path.GetTempPath(), "Conductor.db");
 
         if (!File.Exists(dbPath))
         {
