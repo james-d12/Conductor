@@ -2,10 +2,11 @@ using Conductor.Api.Common;
 using Conductor.Core.ResourceTemplate;
 using Conductor.Core.ResourceTemplate.Requests;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Conductor.Api.Endpoints.ResourceTemplate;
 
-public sealed class CreateResourceTemplate : IEndpoint
+public sealed class CreateResourceTemplateEndpoint : IEndpoint
 {
     public static void Map(IEndpointRouteBuilder builder) => builder
         .MapPost("/", HandleAsync)
@@ -14,7 +15,9 @@ public sealed class CreateResourceTemplate : IEndpoint
     private sealed record CreateResourceTemplateResponse(Guid Id);
 
     private static async Task<Results<Ok<CreateResourceTemplateResponse>, InternalServerError>> HandleAsync(
+        [FromBody]
         CreateResourceTemplateRequest request,
+        [FromServices]
         IResourceTemplateRepository repository,
         CancellationToken cancellationToken)
     {

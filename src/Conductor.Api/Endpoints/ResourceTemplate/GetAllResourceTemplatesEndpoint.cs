@@ -1,28 +1,31 @@
 using Conductor.Api.Common;
 using Conductor.Core.ResourceTemplate;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Conductor.Api.Endpoints.ResourceTemplate;
 
-public sealed class GetAllResourceTemplates : IEndpoint
+public sealed class GetAllResourceTemplatesEndpoint : IEndpoint
 {
     public static void Map(IEndpointRouteBuilder builder) => builder
         .MapGet("/", Handle)
         .WithSummary("Gets all resource templates.");
 
     private sealed record GetAllResourceTemplatesResponse(
-        List<GetResourceTemplate.GetResourceTemplateResponse> ResourceTemplates);
+        List<GetResourceTemplateEndpoint.GetResourceTemplateResponse> ResourceTemplates);
 
     private static Results<Ok<GetAllResourceTemplatesResponse>, NotFound, InternalServerError> Handle(
+        [FromServices]
         IResourceTemplateRepository repository,
-        ILogger<GetResourceTemplate> logger,
+        [FromServices]
+        ILogger<GetResourceTemplateEndpoint> logger,
         CancellationToken cancellationToken)
     {
         try
         {
             var resourceTemplates = repository.GetAll().ToList();
             var resourceTemplatesResponse = resourceTemplates
-                .Select(r => new GetResourceTemplate.GetResourceTemplateResponse(r.Name))
+                .Select(r => new GetResourceTemplateEndpoint.GetResourceTemplateResponse(r.Name))
                 .ToList();
 
             return TypedResults.Ok(new GetAllResourceTemplatesResponse(resourceTemplatesResponse));

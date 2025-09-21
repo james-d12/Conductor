@@ -22,7 +22,7 @@ public static class Endpoints
             .WithTags("Application");
 
         endpoints.MapPublicGroup()
-            .MapEndpoint<CreateApplication>();
+            .MapEndpoint<CreateApplicationEndpoint>();
     }
 
     private static void MapEnvironmentEndpoints(this IEndpointRouteBuilder app)
@@ -31,7 +31,9 @@ public static class Endpoints
             .WithTags("Environment");
 
         endpoints.MapPublicGroup()
-            .MapEndpoint<CreateEnvironment>();
+            .MapEndpoint<CreateEnvironmentEndpoint>()
+            .MapEndpoint<GetAllEnvironmentsEndpoint>()
+            .MapEndpoint<GetEnvironmentEndpoint>();
     }
 
     private static void MapDeploymentEndpoints(this IEndpointRouteBuilder app)
@@ -40,7 +42,7 @@ public static class Endpoints
             .WithTags("Deployment");
 
         endpoints.MapPublicGroup()
-            .MapEndpoint<CreateDeployment>();
+            .MapEndpoint<CreateDeploymentEndpoint>();
     }
 
     private static void MapResourceTemplateEndpoints(this IEndpointRouteBuilder app)
@@ -49,10 +51,10 @@ public static class Endpoints
             .WithTags("Resource Template");
 
         endpoints.MapPublicGroup()
-            .MapEndpoint<CreateResourceTemplate>()
-            .MapEndpoint<CreateResourceTemplateWithVersion>()
-            .MapEndpoint<GetResourceTemplate>()
-            .MapEndpoint<GetAllResourceTemplates>();
+            .MapEndpoint<CreateResourceTemplateEndpoint>()
+            .MapEndpoint<CreateResourceTemplateWithVersionEndpoint>()
+            .MapEndpoint<GetResourceTemplateEndpoint>()
+            .MapEndpoint<GetAllResourceTemplatesEndpoint>();
     }
 
     private static RouteGroupBuilder MapPublicGroup(this IEndpointRouteBuilder app, string? prefix = null)

@@ -2,10 +2,11 @@ using Conductor.Api.Common;
 using Conductor.Core.ResourceTemplate;
 using Conductor.Core.ResourceTemplate.Requests;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Conductor.Api.Endpoints.ResourceTemplate;
 
-public sealed class CreateResourceTemplateWithVersion : IEndpoint
+public sealed class CreateResourceTemplateWithVersionEndpoint : IEndpoint
 {
     public static void Map(IEndpointRouteBuilder builder) => builder
         .MapPost("/with-version", HandleAsync)
@@ -14,7 +15,9 @@ public sealed class CreateResourceTemplateWithVersion : IEndpoint
     private sealed record CreateResourceTemplateWithVersionResponse(Guid Id);
 
     private static async Task<Results<Ok<CreateResourceTemplateWithVersionResponse>, InternalServerError>> HandleAsync(
+        [FromBody]
         CreateResourceTemplateWithVersionRequest request,
+        [FromServices]
         IResourceTemplateRepository repository,
         CancellationToken cancellationToken)
     {

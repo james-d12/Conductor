@@ -2,10 +2,11 @@ using Conductor.Api.Common;
 using Conductor.Core.ResourceTemplate;
 using Conductor.Core.ResourceTemplate.Domain;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Conductor.Api.Endpoints.ResourceTemplate;
 
-public sealed class GetResourceTemplate : IEndpoint
+public sealed class GetResourceTemplateEndpoint : IEndpoint
 {
     public static void Map(IEndpointRouteBuilder builder) => builder
         .MapGet("/{id:guid}", HandleAsync)
@@ -14,9 +15,12 @@ public sealed class GetResourceTemplate : IEndpoint
     public sealed record GetResourceTemplateResponse(string Name);
 
     private static async Task<Results<Ok<GetResourceTemplateResponse>, NotFound, InternalServerError>> HandleAsync(
+        [FromQuery]
         Guid id,
+        [FromServices]
         IResourceTemplateRepository repository,
-        ILogger<GetResourceTemplate> logger,
+        [FromServices]
+        ILogger<GetResourceTemplateEndpoint> logger,
         CancellationToken cancellationToken)
     {
         try

@@ -2,10 +2,11 @@ using Conductor.Api.Common;
 using Conductor.Core.Environment;
 using Conductor.Core.Environment.Requests;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Conductor.Api.Endpoints.Environment;
 
-public sealed class CreateEnvironment : IEndpoint
+public sealed class CreateEnvironmentEndpoint : IEndpoint
 {
     public static void Map(IEndpointRouteBuilder builder) => builder
         .MapPost("/", HandleAsync)
@@ -14,7 +15,9 @@ public sealed class CreateEnvironment : IEndpoint
     private sealed record CreateEnvironmentResponse(Guid Id);
 
     private static async Task<Results<Ok<CreateEnvironmentResponse>, InternalServerError>> HandleAsync(
+        [FromBody]
         CreateEnvironmentRequest request,
+        [FromServices]
         IEnvironmentRepository repository,
         CancellationToken cancellationToken)
     {

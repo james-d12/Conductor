@@ -5,10 +5,11 @@ using Conductor.Core.Deployment.Requests;
 using Conductor.Core.Environment;
 using Conductor.Infrastructure.Resources;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Conductor.Api.Endpoints.Deployment;
 
-public sealed class CreateDeployment : IEndpoint
+public sealed class CreateDeploymentEndpoint : IEndpoint
 {
     public static void Map(IEndpointRouteBuilder builder) => builder
         .MapPost("/", HandleAsync)
@@ -18,10 +19,15 @@ public sealed class CreateDeployment : IEndpoint
 
     private static async Task<Results<Accepted<CreateDeploymentResponse>, BadRequest<string>, InternalServerError>>
         HandleAsync(
+            [FromBody]
             CreateDeploymentRequest request,
+            [FromServices]
             IDeploymentRepository repository,
+            [FromServices]
             IApplicationRepository applicationRepository,
+            [FromServices]
             IEnvironmentRepository environmentRepository,
+            [FromServices]
             IResourceProvisioner resourceProvisioner,
             HttpContext httpContext,
             CancellationToken cancellationToken)
