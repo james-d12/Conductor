@@ -1,5 +1,6 @@
 using Conductor.Core.Modules.Deployment;
 using Conductor.Core.Modules.Deployment.Domain;
+using Microsoft.EntityFrameworkCore;
 
 namespace Conductor.Persistence.Repositories;
 
@@ -18,5 +19,10 @@ public sealed class DeploymentRepository : IDeploymentRepository
         var result = await _dbContext.Deployments.AddAsync(deployment, cancellationToken);
         await _dbContext.SaveChangesAsync(cancellationToken);
         return result.Entity;
+    }
+
+    public Task<Deployment?> GetByIdAsync(DeploymentId id, CancellationToken cancellationToken = default)
+    {
+        return _dbContext.Deployments.FirstOrDefaultAsync(t => t.Id == id, cancellationToken: cancellationToken);
     }
 }

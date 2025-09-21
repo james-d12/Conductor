@@ -11,11 +11,12 @@ public sealed class CreateDeployment : IEndpoint
         .MapPost("/", HandleAsync)
         .WithSummary("Creates a new deployment into an environment for an application with a given commit id.");
 
-    private sealed record CreateDeploymentResponse(Guid Id);
+    private sealed record CreateDeploymentResponse(Guid Id, string Status, Uri Location);
 
-    private static async Task<Results<Ok<CreateDeploymentResponse>, InternalServerError>> HandleAsync(
+    private static async Task<Results<Accepted<CreateDeploymentResponse>, InternalServerError>> HandleAsync(
         CreateDeploymentRequest request,
         IDeploymentRepository repository,
+        HttpContext httpContext,
         CancellationToken cancellationToken)
     {
         var deployment = Core.Modules.Deployment.Domain.Deployment.Create(request);
@@ -25,7 +26,15 @@ public sealed class CreateDeployment : IEndpoint
         {
             return TypedResults.InternalServerError();
         }
+        
+        var locationUrl = new Uri($"{httpContext.Request.Scheme}://{httpContext.Request.Host}/deployments/{deploymentResponse.Id.Value}");
 
-        return TypedResults.Ok(new CreateDeploymentResponse(deploymentResponse.Id.Value));
+        var response = new CreateDeploymentResponse(
+            Id: deploymentResponse.Id.Value,
+            Status: "in_progress",
+            Location: locationUrl
+        );
+
+        return TypedResults.Accepted(locationUrl, response);
     }
 }
