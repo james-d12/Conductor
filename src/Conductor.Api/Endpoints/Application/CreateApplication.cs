@@ -1,6 +1,6 @@
 using Conductor.Api.Common;
-using Conductor.Core.Modules.Application;
-using Conductor.Core.Modules.Application.Requests;
+using Conductor.Core.Application;
+using Conductor.Core.Application.Requests;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Conductor.Api.Endpoints.Application;
@@ -18,7 +18,7 @@ public sealed class CreateApplication : IEndpoint
         IApplicationRepository repository,
         CancellationToken cancellationToken)
     {
-        var application = Core.Modules.Application.Domain.Application.Create(request);
+        var application = Core.Application.Domain.Application.Create(request);
         var applicationResponse = await repository.CreateAsync(application, cancellationToken);
 
         if (applicationResponse is null)

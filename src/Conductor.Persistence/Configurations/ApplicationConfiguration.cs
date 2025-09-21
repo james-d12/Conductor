@@ -1,7 +1,7 @@
-using Conductor.Core.Modules.Application.Domain;
+using Conductor.Core.Application.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using ApplicationId = Conductor.Core.Modules.Application.Domain.ApplicationId;
+using ApplicationId = Conductor.Core.Application.Domain.ApplicationId;
 
 namespace Conductor.Persistence.Configurations;
 

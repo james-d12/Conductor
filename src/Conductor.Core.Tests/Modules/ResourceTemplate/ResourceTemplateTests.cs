@@ -1,6 +1,6 @@
 ﻿using AutoFixture;
-using Conductor.Core.Modules.ResourceTemplate.Domain;
-using Conductor.Core.Modules.ResourceTemplate.Requests;
+using Conductor.Core.ResourceTemplate.Domain;
+using Conductor.Core.ResourceTemplate.Requests;
 
 namespace Conductor.Core.Tests.Modules.ResourceTemplate;
 
@@ -15,7 +15,7 @@ public sealed class ResourceTemplateTests
             .With(x => x.Provider, ResourceTemplateProvider.Terraform)
             .Create();
 
-        var template = Core.Modules.ResourceTemplate.Domain.ResourceTemplate.Create(request);
+        var template = Core.ResourceTemplate.Domain.ResourceTemplate.Create(request);
 
         Assert.Equal(request.Name, template.Name);
         Assert.Equal(request.Description, template.Description);
@@ -37,7 +37,7 @@ public sealed class ResourceTemplateTests
             .With(x => x.Source, resourceTemplateVersionSource)
             .Create();
 
-        var template = Core.Modules.ResourceTemplate.Domain.ResourceTemplate.CreateWithVersion(request);
+        var template = Core.ResourceTemplate.Domain.ResourceTemplate.CreateWithVersion(request);
 
         Assert.Single(template.Versions);
         Assert.Equal(request.Version, template.LatestVersion?.Version);
@@ -50,7 +50,7 @@ public sealed class ResourceTemplateTests
             .With(x => x.Provider, ResourceTemplateProvider.Terraform)
             .Create();
 
-        var template = Core.Modules.ResourceTemplate.Domain.ResourceTemplate.Create(templateRequest);
+        var template = Core.ResourceTemplate.Domain.ResourceTemplate.Create(templateRequest);
 
         var versionRequest = new CreateNewResourceTemplateVersionRequest
         {
@@ -74,7 +74,7 @@ public sealed class ResourceTemplateTests
     [Fact]
     public void AddVersion_ShouldThrow_WhenVersionExists()
     {
-        var template = Core.Modules.ResourceTemplate.Domain.ResourceTemplate.Create(_fixture
+        var template = Core.ResourceTemplate.Domain.ResourceTemplate.Create(_fixture
             .Build<CreateResourceTemplateRequest>()
             .With(x => x.Provider, ResourceTemplateProvider.Terraform)
             .Create());
@@ -112,7 +112,7 @@ public sealed class ResourceTemplateTests
     [Fact]
     public void AddVersion_ShouldThrow_WhenSourceExists()
     {
-        var template = Core.Modules.ResourceTemplate.Domain.ResourceTemplate.Create(_fixture
+        var template = Core.ResourceTemplate.Domain.ResourceTemplate.Create(_fixture
             .Build<CreateResourceTemplateRequest>()
             .With(x => x.Provider, ResourceTemplateProvider.Terraform)
             .Create());
@@ -145,7 +145,7 @@ public sealed class ResourceTemplateTests
     {
         var valid = _fixture.Create<string>();
 
-        Assert.Throws<ArgumentNullException>(() => Core.Modules.ResourceTemplate.Domain.ResourceTemplate.Create(
+        Assert.Throws<ArgumentNullException>(() => Core.ResourceTemplate.Domain.ResourceTemplate.Create(
             new CreateResourceTemplateRequest
             {
                 Name = null!,
@@ -154,7 +154,7 @@ public sealed class ResourceTemplateTests
                 Provider = ResourceTemplateProvider.Terraform,
             }));
 
-        Assert.Throws<ArgumentNullException>(() => Core.Modules.ResourceTemplate.Domain.ResourceTemplate.Create(
+        Assert.Throws<ArgumentNullException>(() => Core.ResourceTemplate.Domain.ResourceTemplate.Create(
             new CreateResourceTemplateRequest
             {
                 Name = null!,
@@ -169,7 +169,7 @@ public sealed class ResourceTemplateTests
     {
         var valid = _fixture.Create<string>();
 
-        Assert.Throws<ArgumentException>(() => Core.Modules.ResourceTemplate.Domain.ResourceTemplate.Create(
+        Assert.Throws<ArgumentException>(() => Core.ResourceTemplate.Domain.ResourceTemplate.Create(
             new CreateResourceTemplateRequest
             {
                 Name = string.Empty,
@@ -178,7 +178,7 @@ public sealed class ResourceTemplateTests
                 Provider = ResourceTemplateProvider.Terraform,
             }));
 
-        Assert.Throws<ArgumentException>(() => Core.Modules.ResourceTemplate.Domain.ResourceTemplate.Create(
+        Assert.Throws<ArgumentException>(() => Core.ResourceTemplate.Domain.ResourceTemplate.Create(
             new CreateResourceTemplateRequest
             {
                 Name = string.Empty,

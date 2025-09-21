@@ -1,4 +1,4 @@
-using Conductor.Core.Modules.ResourceTemplate.Domain;
+using Conductor.Core.ResourceTemplate.Domain;
 using Conductor.Infrastructure.Modules.Terraform;
 using Conductor.Infrastructure.Modules.Terraform.Models;
 using Microsoft.Extensions.DependencyInjection;

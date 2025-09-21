@@ -1,8 +1,8 @@
-using Conductor.Core.Modules.Application.Domain;
-using Conductor.Core.Modules.Deployment.Domain;
-using Conductor.Core.Modules.ResourceTemplate.Domain;
+using Conductor.Core.Application.Domain;
+using Conductor.Core.Deployment.Domain;
+using Conductor.Core.ResourceTemplate.Domain;
 using Microsoft.EntityFrameworkCore;
-using Environment = Conductor.Core.Modules.Environment.Domain.Environment;
+using Environment = Conductor.Core.Environment.Domain.Environment;
 
 namespace Conductor.Persistence;
 

@@ -1,6 +1,6 @@
 using Conductor.Api.Common;
-using Conductor.Core.Modules.ResourceTemplate;
-using Conductor.Core.Modules.ResourceTemplate.Domain;
+using Conductor.Core.ResourceTemplate;
+using Conductor.Core.ResourceTemplate.Domain;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Conductor.Api.Endpoints.ResourceTemplate;

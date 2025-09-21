@@ -1,8 +1,8 @@
 using Conductor.Api.Common;
-using Conductor.Core.Modules.Application;
-using Conductor.Core.Modules.Deployment;
-using Conductor.Core.Modules.Deployment.Requests;
-using Conductor.Core.Modules.Environment;
+using Conductor.Core.Application;
+using Conductor.Core.Deployment;
+using Conductor.Core.Deployment.Requests;
+using Conductor.Core.Environment;
 using Conductor.Infrastructure.Services;
 using Microsoft.AspNetCore.Http.HttpResults;
 
@@ -40,7 +40,7 @@ public sealed class CreateDeployment : IEndpoint
             return TypedResults.BadRequest($"Environment with Id: {request.EnvironmentId} does not exist.");
         }
 
-        var deployment = Core.Modules.Deployment.Domain.Deployment.Create(request);
+        var deployment = Core.Deployment.Domain.Deployment.Create(request);
         var deploymentResponse = await repository.CreateAsync(deployment, cancellationToken);
 
         if (deploymentResponse is null)

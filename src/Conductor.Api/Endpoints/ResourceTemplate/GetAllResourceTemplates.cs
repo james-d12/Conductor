@@ -1,5 +1,5 @@
 using Conductor.Api.Common;
-using Conductor.Core.Modules.ResourceTemplate;
+using Conductor.Core.ResourceTemplate;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Conductor.Api.Endpoints.ResourceTemplate;

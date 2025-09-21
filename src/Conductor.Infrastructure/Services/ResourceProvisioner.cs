@@ -1,7 +1,7 @@
-using Conductor.Core.Modules.Application.Domain;
-using Conductor.Core.Modules.Deployment.Domain;
-using Conductor.Core.Modules.ResourceTemplate;
-using Conductor.Core.Modules.ResourceTemplate.Domain;
+using Conductor.Core.Application.Domain;
+using Conductor.Core.Deployment.Domain;
+using Conductor.Core.ResourceTemplate;
+using Conductor.Core.ResourceTemplate.Domain;
 using Conductor.Infrastructure.Modules.Score;
 using Conductor.Infrastructure.Modules.Score.Models;
 using Microsoft.Extensions.Logging;

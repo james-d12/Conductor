@@ -1,5 +1,5 @@
-using Conductor.Core.Modules.Deployment;
-using Conductor.Core.Modules.Deployment.Domain;
+using Conductor.Core.Deployment;
+using Conductor.Core.Deployment.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace Conductor.Persistence.Repositories;

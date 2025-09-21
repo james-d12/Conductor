@@ -1,8 +1,8 @@
-using Conductor.Core.Modules.Deployment.Domain;
-using Conductor.Core.Modules.Environment.Domain;
+using Conductor.Core.Deployment.Domain;
+using Conductor.Core.Environment.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using ApplicationId = Conductor.Core.Modules.Application.Domain.ApplicationId;
+using ApplicationId = Conductor.Core.Application.Domain.ApplicationId;
 
 namespace Conductor.Persistence.Configurations;
 
