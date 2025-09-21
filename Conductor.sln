@@ -29,8 +29,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Conductor.Persistence", "sr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Conductor.Core.Tests", "src\Conductor.Core.Tests\Conductor.Core.Tests.csproj", "{B0E37A08-71E7-449E-AC06-8F744D823B67}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Frontend", "Frontend", "{D5632738-1342-4681-9A56-878D7EBCA85F}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -64,6 +62,5 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{E7D2822A-AC18-4D30-A1AF-297E9375D8A6} = {197AC97F-893D-40D8-ABEE-5C722375AFB7}
-		{0E8A91D2-E999-4D7C-9984-2B04118A9604} = {D5632738-1342-4681-9A56-878D7EBCA85F}
 	EndGlobalSection
 EndGlobal
