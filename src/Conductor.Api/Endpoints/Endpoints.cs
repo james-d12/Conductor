@@ -1,5 +1,6 @@
 using Conductor.Api.Common;
 using Conductor.Api.Endpoints.Application;
+using Conductor.Api.Endpoints.Deployment;
 using Conductor.Api.Endpoints.Environment;
 using Conductor.Api.Endpoints.ResourceTemplate;
 
@@ -30,6 +31,15 @@ public static class Endpoints
 
         endpoints.MapPublicGroup()
             .MapEndpoint<CreateEnvironment>();
+    }
+
+    private static void MapDeploymentEndpoints(this IEndpointRouteBuilder app)
+    {
+        var endpoints = app.MapGroup("/deployment")
+            .WithTags("Deployment");
+
+        endpoints.MapPublicGroup()
+            .MapEndpoint<CreateDeployment>();
     }
 
     private static void MapResourceTemplateEndpoints(this IEndpointRouteBuilder app)

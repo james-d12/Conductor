@@ -1,4 +1,5 @@
 using Conductor.Core.Modules.Application;
+using Conductor.Core.Modules.Deployment;
 using Conductor.Core.Modules.Environment;
 using Conductor.Core.Modules.ResourceTemplate;
 using Conductor.Persistence.Repositories;
@@ -15,6 +16,7 @@ public static class ConfigureServices
         services.AddScoped<IResourceTemplateRepository, ResourceTemplateRepository>();
         services.AddScoped<IApplicationRepository, ApplicationRepository>();
         services.AddScoped<IEnvironmentRepository, EnvironmentRepository>();
+        services.AddScoped<IDeploymentRepository, DeploymentRepository>();
 
         return services;
     }
