@@ -1,3 +1,5 @@
+using Conductor.Core.Provisioning;
+using Conductor.Core.Provisioning.Requirements;
 using Conductor.Infrastructure.CommandLine;
 using Conductor.Infrastructure.Helm;
 using Conductor.Infrastructure.Resources;
@@ -23,14 +25,14 @@ public static class InfrastructureExtensions
     private static void AddSharedServices(this IServiceCollection services)
     {
         services.TryAddSingleton<IGitCommandLine, GitCommandLine>();
-        services.TryAddSingleton<IResourceFactory, ResourceFactory>();
-        services.TryAddScoped<IResourceProvisioner, ResourceProvisioner>();
+        services.TryAddScoped<IProvisionFactory, ResourceFactory>();
     }
 
     private static void AddScoreServices(this IServiceCollection services)
     {
         services.TryAddSingleton<IScoreParser, ScoreParser>();
         services.TryAddSingleton<IScoreValidator, ScoreValidator>();
+        services.TryAddSingleton<IRequirementDriver, ScoreRequirementDriver>();
     }
 
     private static void AddHelmServices(this IServiceCollection services)

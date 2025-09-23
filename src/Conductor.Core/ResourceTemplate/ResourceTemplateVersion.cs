@@ -1,6 +1,4 @@
-using Conductor.Core.ResourceTemplate.Requests;
-
-namespace Conductor.Core.ResourceTemplate.Domain;
+namespace Conductor.Core.ResourceTemplate;
 
 public sealed record ResourceTemplateVersion
 {
@@ -11,16 +9,17 @@ public sealed record ResourceTemplateVersion
     public required ResourceTemplateVersionState State { get; init; }
     public required DateTime CreatedAt { get; init; }
 
-    internal static ResourceTemplateVersion Create(CreateResourceTemplateVersionRequest request)
+    internal static ResourceTemplateVersion Create(ResourceTemplateId templateId, string version,
+        ResourceTemplateVersionSource source, string notes, ResourceTemplateVersionState state, DateTime createdAt)
     {
         return new ResourceTemplateVersion
         {
-            TemplateId = request.TemplateId,
-            Version = request.Version,
-            Source = request.Source,
-            Notes = request.Notes,
-            State = request.State,
-            CreatedAt = request.CreatedAt,
+            TemplateId = templateId,
+            Version = version,
+            Source = source,
+            Notes = notes,
+            State = state,
+            CreatedAt = createdAt,
         };
     }
 }

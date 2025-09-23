@@ -1,19 +1,12 @@
-using Conductor.Core.ResourceTemplate.Domain;
+using Conductor.Core.Provisioning;
+using Conductor.Core.ResourceTemplate;
 using Conductor.Infrastructure.Terraform;
 using Conductor.Infrastructure.Terraform.Models;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Conductor.Infrastructure.Resources;
 
-public interface IResourceFactory
-{
-    Task ProvisionAsync(List<ProvisionInput> provisionInputs, string folderName);
-    Task DeleteAsync(List<ProvisionInput> provisionInputs, string folderName);
-}
-
-public sealed record ProvisionInput(ResourceTemplate Template, Dictionary<string, string> Inputs, string Key);
-
-public sealed class ResourceFactory : IResourceFactory
+public sealed class ResourceFactory : IProvisionFactory
 {
     private readonly IServiceProvider _serviceProvider;
 

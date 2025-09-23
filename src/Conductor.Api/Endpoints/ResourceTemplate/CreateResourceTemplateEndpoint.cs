@@ -1,6 +1,5 @@
 using Conductor.Api.Common;
 using Conductor.Core.ResourceTemplate;
-using Conductor.Core.ResourceTemplate.Requests;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,6 +11,14 @@ public sealed class CreateResourceTemplateEndpoint : IEndpoint
         .MapPost("/", HandleAsync)
         .WithSummary("Creates a new resource template.");
 
+    public sealed record CreateResourceTemplateRequest
+    {
+        public required string Name { get; init; }
+        public required string Type { get; init; }
+        public required string Description { get; init; }
+        public required ResourceTemplateProvider Provider { get; init; }
+    };
+
     private sealed record CreateResourceTemplateResponse(Guid Id);
 
     private static async Task<Results<Ok<CreateResourceTemplateResponse>, InternalServerError>> HandleAsync(
@@ -21,7 +28,12 @@ public sealed class CreateResourceTemplateEndpoint : IEndpoint
         IResourceTemplateRepository repository,
         CancellationToken cancellationToken)
     {
-        var resourceTemplate = Core.ResourceTemplate.Domain.ResourceTemplate.Create(request);
+        var resourceTemplate = Core.ResourceTemplate.ResourceTemplate.Create(
+            name: request.Name,
+            type: request.Type,
+            description: request.Description,
+            provider: request.Provider);
+        
         var resourceTemplateResponse = await repository.CreateAsync(resourceTemplate, cancellationToken);
 
         if (resourceTemplateResponse is null)

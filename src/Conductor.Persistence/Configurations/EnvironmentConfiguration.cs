@@ -1,7 +1,7 @@
-using Conductor.Core.Environment.Domain;
+using Conductor.Core.Environment;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Environment = Conductor.Core.Environment.Domain.Environment;
+using Environment = Conductor.Core.Environment.Environment;
 
 namespace Conductor.Persistence.Configurations;
 

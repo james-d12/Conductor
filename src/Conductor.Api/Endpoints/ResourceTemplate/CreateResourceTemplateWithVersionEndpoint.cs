@@ -1,6 +1,5 @@
 using Conductor.Api.Common;
 using Conductor.Core.ResourceTemplate;
-using Conductor.Core.ResourceTemplate.Requests;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,6 +11,18 @@ public sealed class CreateResourceTemplateWithVersionEndpoint : IEndpoint
         .MapPost("/with-version", HandleAsync)
         .WithSummary("Creates a new resource template with the specified version");
 
+    public sealed record CreateResourceTemplateWithVersionRequest
+    {
+        public required string Name { get; init; }
+        public required string Type { get; init; }
+        public required string Description { get; init; }
+        public required ResourceTemplateProvider Provider { get; init; }
+        public required string Version { get; init; }
+        public required ResourceTemplateVersionSource Source { get; init; }
+        public required string Notes { get; init; }
+        public required ResourceTemplateVersionState State { get; init; }
+    }
+
     private sealed record CreateResourceTemplateWithVersionResponse(Guid Id);
 
     private static async Task<Results<Ok<CreateResourceTemplateWithVersionResponse>, InternalServerError>> HandleAsync(
@@ -21,7 +32,18 @@ public sealed class CreateResourceTemplateWithVersionEndpoint : IEndpoint
         IResourceTemplateRepository repository,
         CancellationToken cancellationToken)
     {
-        var resourceTemplate = Core.ResourceTemplate.Domain.ResourceTemplate.CreateWithVersion(request);
+        var resourceTemplate = Core.ResourceTemplate.ResourceTemplate.Create(
+            name: request.Name,
+            type: request.Type,
+            description: request.Description,
+            provider: request.Provider);
+
+        resourceTemplate.AddVersion(
+            version: request.Version,
+            source: request.Source,
+            notes: request.Notes,
+            state: request.State);
+
         var resourceTemplateResponse = await repository.CreateAsync(resourceTemplate, cancellationToken);
 
         if (resourceTemplateResponse is null)

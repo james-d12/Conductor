@@ -1,6 +1,5 @@
 using Conductor.Api.Common;
 using Conductor.Core.ResourceTemplate;
-using Conductor.Core.ResourceTemplate.Domain;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 

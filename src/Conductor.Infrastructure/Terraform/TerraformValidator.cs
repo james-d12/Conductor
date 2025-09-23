@@ -1,5 +1,5 @@
 using System.Text.Json;
-using Conductor.Core.ResourceTemplate.Domain;
+using Conductor.Core.ResourceTemplate;
 using Conductor.Infrastructure.CommandLine;
 using Conductor.Infrastructure.Terraform.Models;
 using Microsoft.Extensions.Logging;
@@ -49,7 +49,7 @@ public sealed class TerraformValidator : ITerraformValidator
             return TerraformValidationResult.TemplateInvalid(message);
         }
 
-        ResourceTemplateVersion? latestVersion = template.LatestVersion;
+        ResourceTemplateVersion? latestVersion = template.GetLatestVersion();
         if (latestVersion is null)
         {
             var message = $"No Version could be found for {template.Name} found.";

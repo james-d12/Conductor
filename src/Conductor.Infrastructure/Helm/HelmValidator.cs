@@ -1,4 +1,4 @@
-using Conductor.Core.ResourceTemplate.Domain;
+using Conductor.Core.ResourceTemplate;
 using Conductor.Infrastructure.CommandLine;
 using Conductor.Infrastructure.Helm.Models;
 using Microsoft.Extensions.Logging;
@@ -33,7 +33,7 @@ public sealed class HelmValidator : IHelmValidator
             return HelmValidationResult.WrongProvider(message);
         }
 
-        ResourceTemplateVersion? latestVersion = template.LatestVersion;
+        ResourceTemplateVersion? latestVersion = template.GetLatestVersion();
         if (latestVersion is null)
         {
             var message = $"No Version could be found for {template.Name} found.";

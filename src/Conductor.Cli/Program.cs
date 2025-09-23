@@ -1,16 +1,15 @@
 ﻿using Conductor.Core;
-using Conductor.Core.Application.Domain;
-using Conductor.Core.Deployment.Domain;
+using Conductor.Core.Application;
+using Conductor.Core.Deployment;
+using Conductor.Core.Provisioning;
 using Conductor.Core.ResourceTemplate;
-using Conductor.Core.ResourceTemplate.Domain;
-using Conductor.Core.ResourceTemplate.Requests;
+//using Conductor.Core.ResourceTemplate.Requests;
 using Conductor.Infrastructure;
-using Conductor.Infrastructure.Resources;
 using Conductor.Persistence;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Environment = Conductor.Core.Environment.Domain.Environment;
+using Environment = Conductor.Core.Environment.Environment;
 
 var builder = Host.CreateApplicationBuilder();
 
@@ -23,79 +22,87 @@ await builder.Services.ApplyMigrations();
 
 using var host = builder.Build();
 
-var azureStorageAccount = ResourceTemplate.CreateWithVersion(new CreateResourceTemplateWithVersionRequest
-{
-    Name = "Azure Storage Account",
-    Type = "azure.storage-account",
-    Description = "Azure Storage Account Terraform Module",
-    Provider = ResourceTemplateProvider.Terraform,
-    Version = "1.0.0",
-    Source = new ResourceTemplateVersionSource
+var azureStorageAccount = ResourceTemplate.Create(
+    name: "Azure Storage Account",
+    type: "azure.storage-account",
+    description: "Azure Storage Account Terraform Module",
+    provider: ResourceTemplateProvider.Terraform
+);
+
+azureStorageAccount.AddVersion(
+    version: "1.0.0",
+    source: new ResourceTemplateVersionSource
     {
         BaseUrl = new Uri("https://github.com/aztfm/terraform-azurerm-storage-account.git"),
         FolderPath = string.Empty,
         Tag = string.Empty
     },
-    Notes = string.Empty,
-    State = ResourceTemplateVersionState.Active
-});
+    notes: string.Empty,
+    state: ResourceTemplateVersionState.Active
+);
 
-var azureVirtualNetwork = ResourceTemplate.CreateWithVersion(new CreateResourceTemplateWithVersionRequest
-{
-    Name = "Azure Virtual Network",
-    Type = "azure.virtual-network",
-    Description = "Azure Virtual Network Terraform Module",
-    Provider = ResourceTemplateProvider.Terraform,
-    Version = "1.0.0",
-    Source = new ResourceTemplateVersionSource
+var azureVirtualNetwork = ResourceTemplate.Create(
+    name: "Azure Virtual Network",
+    type: "azure.virtual-network",
+    description: "Azure Virtual Network Terraform Module",
+    provider: ResourceTemplateProvider.Terraform
+);
+
+azureVirtualNetwork.AddVersion(
+    version: "1.0.0",
+    source: new ResourceTemplateVersionSource
     {
         BaseUrl = new Uri("https://github.com/aztfm/terraform-azurerm-virtual-network.git"),
         FolderPath = string.Empty,
         Tag = string.Empty
     },
-    Notes = string.Empty,
-    State = ResourceTemplateVersionState.Active
-});
+    notes: string.Empty,
+    state: ResourceTemplateVersionState.Active
+);
 
-var azureContainerRegistry = ResourceTemplate.CreateWithVersion(new CreateResourceTemplateWithVersionRequest
-{
-    Name = "Azure Container Registry",
-    Type = "azure.container-registry",
-    Description = "Azure Container Registry Terraform Module",
-    Provider = ResourceTemplateProvider.Terraform,
-    Version = "1.0.0",
-    Source = new ResourceTemplateVersionSource
+var azureContainerRegistry = ResourceTemplate.Create(
+    name: "Azure Container Registry",
+    type: "azure.container-registry",
+    description: "Azure Container Registry Terraform Module",
+    provider: ResourceTemplateProvider.Terraform
+);
+
+azureContainerRegistry.AddVersion(
+    version: "1.0.0",
+    source: new ResourceTemplateVersionSource
     {
         BaseUrl = new Uri("https://github.com/Azure/terraform-azurerm-avm-res-containerregistry-registry.git"),
         FolderPath = string.Empty,
         Tag = string.Empty
     },
-    Notes = string.Empty,
-    State = ResourceTemplateVersionState.Active
-});
+    notes: string.Empty,
+    state: ResourceTemplateVersionState.Active
+);
 
-var argoCdTemplate = ResourceTemplate.CreateWithVersion(new CreateResourceTemplateWithVersionRequest
-{
-    Name = "ArgoCD Helm Chart",
-    Type = "helm.argocd",
-    Description = "An ArgoCD Helm Chart",
-    Provider = ResourceTemplateProvider.Helm,
-    Version = "1.0",
-    Source = new ResourceTemplateVersionSource
+var argoCdTemplate = ResourceTemplate.Create(
+    name: "ArgoCD Helm Chart",
+    type: "helm.argocd",
+    description: "An ArgoCD Helm Chart",
+    provider: ResourceTemplateProvider.Helm
+);
+
+argoCdTemplate.AddVersion(
+    version: "1.0",
+    source: new ResourceTemplateVersionSource
     {
         BaseUrl = new Uri("https://github.com/bitnami/charts.git"),
         FolderPath = "bitnami/argo-cd",
         Tag = string.Empty
     },
-    Notes = string.Empty,
-    State = ResourceTemplateVersionState.Active
-});
+    notes: string.Empty,
+    state: ResourceTemplateVersionState.Active
+);
 
-var paymentApi = Application.Create("payment-api", new Repository
+
+var exampleApp = Application.Create("example-app", new Repository
 {
-    Id = Guid.NewGuid(),
-    Name = "payment api repository",
-    Url = new Uri("https://github.com/james-d12/Panda.git"),
+    Name = "example repository",
+    Url = new Uri("https://github.com/james-d12/Conductor-Example.git"),
     Provider = RepositoryProvider.GitHub
 });
 
@@ -103,11 +110,11 @@ var devEnvironment = Environment.Create("dev", "The Development Environment");
 
 var commit = new Commit
 {
-    Id = new CommitId("dsoaid9asid9"),
+    Id = new CommitId("7b926d5c23d0e806c62d4c86e25fc73564efb8a1"),
     Message = "Updated Application"
 };
 
-var deployment = Deployment.Create(paymentApi.Id, devEnvironment.Id, commit.Id);
+var deployment = Deployment.Create(exampleApp.Id, devEnvironment.Id, commit.Id);
 
 var resourceTemplateRepository = host.Services.GetRequiredService<IResourceTemplateRepository>();
 await resourceTemplateRepository.CreateAsync(azureStorageAccount);
@@ -115,4 +122,6 @@ await resourceTemplateRepository.CreateAsync(azureVirtualNetwork);
 await resourceTemplateRepository.CreateAsync(azureContainerRegistry);
 await resourceTemplateRepository.CreateAsync(argoCdTemplate);
 
-var resourceProvisioner = host.Services.GetRequiredService<ResourceProvisioner>();
+var provisioningService = host.Services.GetRequiredService<ProvisioningService>();
+
+await provisioningService.ProvisionAsync(exampleApp, deployment, CancellationToken.None);

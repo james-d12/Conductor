@@ -1,7 +1,7 @@
-using Conductor.Core.Application.Domain;
+using Conductor.Core.Application;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using ApplicationId = Conductor.Core.Application.Domain.ApplicationId;
+using ApplicationId = Conductor.Core.Application.ApplicationId;
 
 namespace Conductor.Persistence.Configurations;
 
@@ -28,11 +28,9 @@ internal sealed class ApplicationConfiguration : IEntityTypeConfiguration<Applic
 
         builder.OwnsOne(a => a.Repository, r =>
         {
-            r.Property(x => x.Id).IsRequired();
             r.Property(x => x.Name).IsRequired();
             r.Property(x => x.Url).IsRequired();
             r.Property(x => x.Provider).IsRequired().HasConversion<string>();
         });
-
     }
 }

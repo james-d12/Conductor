@@ -1,7 +1,6 @@
 using Conductor.Core.Application;
-using Conductor.Core.Application.Domain;
 using Microsoft.EntityFrameworkCore;
-using ApplicationId = Conductor.Core.Application.Domain.ApplicationId;
+using ApplicationId = Conductor.Core.Application.ApplicationId;
 
 namespace Conductor.Persistence.Repositories;
 

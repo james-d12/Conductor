@@ -1,8 +1,7 @@
-using Conductor.Core.Deployment.Requests;
-using Conductor.Core.Environment.Domain;
-using ApplicationId = Conductor.Core.Application.Domain.ApplicationId;
+using Conductor.Core.Environment;
+using ApplicationId = Conductor.Core.Application.ApplicationId;
 
-namespace Conductor.Core.Deployment.Domain;
+namespace Conductor.Core.Deployment;
 
 public readonly record struct DeploymentId(Guid Value)
 {

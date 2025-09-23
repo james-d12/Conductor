@@ -1,5 +1,5 @@
-using Conductor.Core.Application.Domain;
-using Conductor.Core.Deployment.Domain;
+using Conductor.Core.Application;
+using Conductor.Core.Deployment;
 using Conductor.Infrastructure.CommandLine;
 using Conductor.Infrastructure.Score.Models;
 using Microsoft.Extensions.Logging;

@@ -1,6 +1,4 @@
-using Conductor.Core.Environment.Requests;
-
-namespace Conductor.Core.Environment.Domain;
+namespace Conductor.Core.Environment;
 
 public readonly record struct EnvironmentId(Guid Value)
 {
@@ -18,7 +16,7 @@ public sealed record Environment
     public required EnvironmentId Id { get; init; }
     public required string Name { get; init; }
     public required string Description { get; init; }
-    public required List<Deployment.Domain.Deployment> Deployments { get; init; }
+    public required List<Deployment.Deployment> Deployments { get; init; }
     public required DateTime CreatedAt { get; set; }
     public required DateTime UpdatedAt { get; set; }
 
@@ -42,18 +40,13 @@ public sealed record Environment
         };
     }
 
-    public static Environment Create(CreateEnvironmentRequest request)
-    {
-        return Create(request.Name, request.Description);
-    }
-
-    public void Deploy(Deployment.Domain.Deployment deployment)
+    public void Deploy(Deployment.Deployment deployment)
     {
         Deployments.Add(deployment);
         CreatedAt = DateTime.Now;
     }
 
-    public void Undeploy(Deployment.Domain.Deployment deployment)
+    public void Undeploy(Deployment.Deployment deployment)
     {
         Deployments.Remove(deployment);
         CreatedAt = DateTime.Now;
