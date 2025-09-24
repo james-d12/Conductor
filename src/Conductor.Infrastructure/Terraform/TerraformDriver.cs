@@ -36,16 +36,16 @@ public sealed class TerraformDriver : ITerraformDriver
 
         var validResults = new Dictionary<TerraformPlanInput, TerraformValidationResult.ValidResult>();
 
-        foreach ((TerraformPlanInput planInput, TerraformValidationResult validationResult) in validationResults)
+        foreach (var result in validationResults)
         {
-            switch (validationResult)
+            switch (result.Value)
             {
                 case TerraformValidationResult.ValidResult vr:
-                    validResults.Add(planInput, vr);
+                    validResults.Add(result.Key, vr);
                     break;
                 default:
                     _logger.LogError("Validation failed for {Template}: {State} - {Message}",
-                        planInput.Template.Name, validationResult.State, validationResult.Message);
+                        result.Key.Template.Name, result.Value.State, result.Value.Message);
                     break;
             }
         }
@@ -112,26 +112,29 @@ public sealed class TerraformDriver : ITerraformDriver
                 CommandLineResult applyResult = await _commandLine.RunApplyAsync(planResult.StateDirectory);
                 _logger.LogInformation("Terraform Apply Result: {Result}", applyResult.StdOut);
                 break;
+            default:
+                throw new ArgumentOutOfRangeException();
         }
     }
 
     public async Task DestroyAsync(TerraformPlanResult planResult)
     {
-        if (planResult.ExitCode != 0)
+        switch (planResult.State)
         {
-            _logger.LogWarning("Plan Result did not have a successful exit code: {ExitCode}", planResult.ExitCode);
-            return;
+            case TerraformPlanResultState.PreValidationFailed:
+            case TerraformPlanResultState.InitFailed:
+            case TerraformPlanResultState.ValidateFailed:
+            case TerraformPlanResultState.PlanFailed:
+                _logger.LogWarning("Plan Was not in a valid state: {Message} {State}",
+                    planResult.Message, planResult.State.ToString());
+                break;
+            case TerraformPlanResultState.Success:
+                _logger.LogInformation("Running Terraform Destroy in {Directory}", planResult.StateDirectory);
+                CommandLineResult applyResult = await _commandLine.RunDestroyAsync(planResult.StateDirectory);
+                _logger.LogInformation("Terraform Destroy Result: {Result}", applyResult.StdOut);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
         }
-
-        if (string.IsNullOrEmpty(planResult.StateDirectory))
-        {
-            _logger.LogWarning("Plan Result did not have valid state directory: {StateDirectory}",
-                planResult.StateDirectory);
-            return;
-        }
-
-        var destroyResult = await _commandLine.RunDestroyAsync(planResult.StateDirectory);
-
-        _logger.LogInformation("Terraform Apply Result: {Result}", destroyResult.StdOut);
     }
 }

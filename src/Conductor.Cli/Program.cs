@@ -91,11 +91,17 @@ var argoCdTemplate = ResourceTemplate.CreateWithVersion(new CreateResourceTempla
     State = ResourceTemplateVersionState.Active
 });
 
+var resourceTemplateRepository = host.Services.GetRequiredService<IResourceTemplateRepository>();
+await resourceTemplateRepository.CreateAsync(azureStorageAccount);
+await resourceTemplateRepository.CreateAsync(azureVirtualNetwork);
+await resourceTemplateRepository.CreateAsync(azureContainerRegistry);
+await resourceTemplateRepository.CreateAsync(argoCdTemplate);
+
 var paymentApi = Application.Create("payment-api", new Repository
 {
     Id = Guid.NewGuid(),
     Name = "payment api repository",
-    Url = new Uri("https://github.com/james-d12/Panda.git"),
+    Url = new Uri("https://github.com/james-d12/Conductor-Example.git"),
     Provider = RepositoryProvider.GitHub
 });
 
@@ -103,14 +109,12 @@ var devEnvironment = Environment.Create("dev", "The Development Environment");
 
 var commit = new Commit
 {
-    Id = new CommitId("dsoaid9asid9"),
-    Message = "Updated Application"
+    Id = new CommitId("7b926d5c23d0e806c62d4c86e25fc73564efb8a1"),
+    Message = "example"
 };
 
 var deployment = Deployment.Create(paymentApi.Id, devEnvironment.Id, commit.Id);
 
-var resourceTemplateRepository = host.Services.GetRequiredService<IResourceTemplateRepository>();
-await resourceTemplateRepository.CreateAsync(azureStorageAccount);
-await resourceTemplateRepository.CreateAsync(azureVirtualNetwork);
-await resourceTemplateRepository.CreateAsync(azureContainerRegistry);
-await resourceTemplateRepository.CreateAsync(argoCdTemplate);
+var resourceProvisioner = host.Services.GetRequiredService<IResourceProvisioner>();
+
+await resourceProvisioner.StartAsync(paymentApi, deployment, CancellationToken.None);
