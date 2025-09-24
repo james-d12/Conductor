@@ -30,7 +30,7 @@ public abstract record TerraformValidationResult
         : TerraformValidationResult(State, Message);
 
     public static ValidResult Valid(TerraformConfig config, string moduleDirectory) =>
-        new (config, moduleDirectory, string.Empty);
+        new(config, moduleDirectory, string.Empty);
 
     public static InvalidResult TemplateInvalid(string message) =>
         new InvalidResult(ValidationResultState.TemplateInvalid, message);
