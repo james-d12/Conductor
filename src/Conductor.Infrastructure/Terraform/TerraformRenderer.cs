@@ -5,13 +5,13 @@ namespace Conductor.Infrastructure.Terraform;
 
 public interface ITerraformRenderer
 {
-    string RenderMainTf(Dictionary<TerraformPlanInput, TerraformValidationResult> terraformValidationResults);
+    string RenderMainTf(Dictionary<TerraformPlanInput, TerraformValidationResult.ValidResult> terraformValidationResults);
     string RenderProvidersTf(List<TerraformProvider> providers);
 }
 
 public sealed class TerraformRenderer : ITerraformRenderer
 {
-    public string RenderMainTf(Dictionary<TerraformPlanInput, TerraformValidationResult> terraformValidationResults)
+    public string RenderMainTf(Dictionary<TerraformPlanInput, TerraformValidationResult.ValidResult> terraformValidationResults)
     {
         var sb = new StringBuilder();
 

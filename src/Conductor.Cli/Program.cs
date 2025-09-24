@@ -16,7 +16,7 @@ var builder = Host.CreateApplicationBuilder();
 
 builder.Services.AddCoreServices();
 builder.Services.AddPersistenceServices();
-builder.Services.AddInfrastructureServices(builder.Configuration);
+builder.Services.AddInfrastructureServices();
 builder.Configuration.AddUserSecrets<Program>();
 
 await builder.Services.ApplyMigrations();
@@ -114,5 +114,3 @@ await resourceTemplateRepository.CreateAsync(azureStorageAccount);
 await resourceTemplateRepository.CreateAsync(azureVirtualNetwork);
 await resourceTemplateRepository.CreateAsync(azureContainerRegistry);
 await resourceTemplateRepository.CreateAsync(argoCdTemplate);
-
-var resourceProvisioner = host.Services.GetRequiredService<ResourceProvisioner>();

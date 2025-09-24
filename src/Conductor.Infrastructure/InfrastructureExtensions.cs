@@ -3,8 +3,6 @@ using Conductor.Infrastructure.Helm;
 using Conductor.Infrastructure.Resources;
 using Conductor.Infrastructure.Score;
 using Conductor.Infrastructure.Terraform;
-using Conductor.Infrastructure.Terraform.Models;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -12,12 +10,12 @@ namespace Conductor.Infrastructure;
 
 public static class InfrastructureExtensions
 {
-    public static void AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
+    public static void AddInfrastructureServices(this IServiceCollection services)
     {
         services.AddSharedServices();
         services.AddScoreServices();
         services.AddHelmServices();
-        services.AddTerraformServices(configuration);
+        services.AddTerraformServices();
     }
 
     private static void AddSharedServices(this IServiceCollection services)
@@ -29,8 +27,7 @@ public static class InfrastructureExtensions
 
     private static void AddScoreServices(this IServiceCollection services)
     {
-        services.TryAddSingleton<IScoreParser, ScoreParser>();
-        services.TryAddSingleton<IScoreValidator, ScoreValidator>();
+        services.TryAddSingleton<IScoreDriver, ScoreDriver>();
     }
 
     private static void AddHelmServices(this IServiceCollection services)
@@ -40,11 +37,8 @@ public static class InfrastructureExtensions
         services.TryAddSingleton<IHelmParser, HelmParser>();
     }
 
-    private static void AddTerraformServices(this IServiceCollection services, IConfiguration configuration)
+    private static void AddTerraformServices(this IServiceCollection services)
     {
-        services.AddOptions<TerraformOptions>()
-            .Bind(configuration.GetSection(nameof(TerraformOptions)));
-
         services.TryAddSingleton<ITerraformDriver, TerraformDriver>();
         services.TryAddSingleton<ITerraformProjectBuilder, TerraformProjectBuilder>();
         services.TryAddSingleton<ITerraformRenderer, TerraformRenderer>();

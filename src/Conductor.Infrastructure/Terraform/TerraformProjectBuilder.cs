@@ -5,7 +5,7 @@ namespace Conductor.Infrastructure.Terraform;
 
 public interface ITerraformProjectBuilder
 {
-    Task<string> BuildProject(Dictionary<TerraformPlanInput, TerraformValidationResult> validatedPlans,
+    Task<string> BuildProject(Dictionary<TerraformPlanInput, TerraformValidationResult.ValidResult> validatedPlans,
         string projectFolderName);
 }
 
@@ -21,7 +21,7 @@ public sealed class TerraformProjectBuilder : ITerraformProjectBuilder
     }
 
     public async Task<string> BuildProject(
-        Dictionary<TerraformPlanInput, TerraformValidationResult> validatedPlans, string projectFolderName)
+        Dictionary<TerraformPlanInput, TerraformValidationResult.ValidResult> validatedPlans, string projectFolderName)
     {
         var stateDirectory = Path.Combine(Path.GetTempPath(), "conductor", "terraform", "state", projectFolderName);
         Directory.CreateDirectory(stateDirectory);
@@ -35,8 +35,7 @@ public sealed class TerraformProjectBuilder : ITerraformProjectBuilder
         _logger.LogInformation("Created main.tf to: {FilePath}", mainTfOutputPath);
 
         var providers = terraformValidationResults
-            .Where(vr => vr.Config?.RequiredProviders is not null)
-            .SelectMany(vr => vr.Config!.RequiredProviders)
+            .SelectMany(vr => vr.Config.RequiredProviders)
             .DistinctBy(rp => rp.Key)
             .Select(rp => new TerraformProvider(
                 Name: rp.Key,

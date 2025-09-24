@@ -34,20 +34,31 @@ public sealed class TerraformDriver : ITerraformDriver
     {
         var validationResults = await _validator.ValidateAsync(terraformPlanInputs);
 
+        var validResults = new Dictionary<TerraformPlanInput, TerraformValidationResult.ValidResult>();
+
         foreach ((TerraformPlanInput planInput, TerraformValidationResult validationResult) in validationResults)
         {
-            if (validationResult.State != TerraformValidationResultState.Valid)
+            switch (validationResult)
             {
-                _logger.LogError("Terraform Validation for {Template} Failed due to: {State} with Message: {Message}",
-                    planInput.Template.Name, validationResult.State,
-                    validationResult.Message);
-                return new TerraformPlanResult(TerraformPlanResultState.PreValidationFailed, validationResult.Message);
+                case TerraformValidationResult.ValidResult vr:
+                    validResults.Add(planInput, vr);
+                    break;
+                default:
+                    _logger.LogError("Validation failed for {Template}: {State} - {Message}",
+                        planInput.Template.Name, validationResult.State, validationResult.Message);
+                    break;
             }
-
-            _logger.LogInformation("Terraform Validation for {Template} Passed.", planInput.Template.Name);
         }
 
-        var stateDirectory = await _projectBuilder.BuildProject(validationResults, folderName);
+        if (validResults.Count == 0)
+        {
+            _logger.LogError(
+                "Could not perform Terraform Plan, as not all provided inputs were validated successfully");
+            return new TerraformPlanResult(TerraformPlanResultState.PreValidationFailed,
+                "Could not validate all inputs.");
+        }
+
+        var stateDirectory = await _projectBuilder.BuildProject(validResults, folderName);
 
         var initResult = await _commandLine.RunInitAsync(stateDirectory);
 
@@ -101,8 +112,6 @@ public sealed class TerraformDriver : ITerraformDriver
                 CommandLineResult applyResult = await _commandLine.RunApplyAsync(planResult.StateDirectory);
                 _logger.LogInformation("Terraform Apply Result: {Result}", applyResult.StdOut);
                 break;
-            default:
-                throw new ArgumentOutOfRangeException();
         }
     }
 

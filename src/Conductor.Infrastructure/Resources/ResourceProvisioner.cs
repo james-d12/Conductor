@@ -18,33 +18,20 @@ public sealed class ResourceProvisioner : IResourceProvisioner
     private readonly ILogger<ResourceProvisioner> _logger;
     private readonly IResourceTemplateRepository _resourceTemplateRepository;
     private readonly IResourceFactory _resourceFactory;
-    private readonly IScoreParser _scoreParser;
-    private readonly IScoreValidator _scoreValidator;
+    private readonly IScoreDriver _scoreDriver;
 
-    public ResourceProvisioner(ILogger<ResourceProvisioner> logger, IScoreParser scoreParser,
-        IResourceTemplateRepository resourceTemplateRepository, IResourceFactory resourceFactory,
-        IScoreValidator scoreValidator)
+    public ResourceProvisioner(ILogger<ResourceProvisioner> logger, IScoreDriver scoreDriver,
+        IResourceTemplateRepository resourceTemplateRepository, IResourceFactory resourceFactory)
     {
         _logger = logger;
-        _scoreParser = scoreParser;
+        _scoreDriver = scoreDriver;
         _resourceTemplateRepository = resourceTemplateRepository;
         _resourceFactory = resourceFactory;
-        _scoreValidator = scoreValidator;
     }
 
     public async Task StartAsync(Application application, Deployment deployment, CancellationToken cancellationToken)
     {
-        var scoreValidationResult =
-            await _scoreValidator.ValidateAsync(deployment, application, cancellationToken: cancellationToken);
-
-        if (scoreValidationResult.State != ScoreValidationResultState.Valid)
-        {
-            _logger.LogError("Score Validation for {Application} failed due to: {State}",
-                application.Name, scoreValidationResult.State);
-            return;
-        }
-
-        ScoreFile? scoreFile = await _scoreParser.ParseAsync(scoreValidationResult.ScoreFilePath);
+        ScoreFile? scoreFile = await _scoreDriver.ParseAsync(deployment, application, cancellationToken);
 
         if (scoreFile is null)
         {

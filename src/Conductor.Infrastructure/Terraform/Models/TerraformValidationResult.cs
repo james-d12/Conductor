@@ -1,34 +1,43 @@
 namespace Conductor.Infrastructure.Terraform.Models;
 
-public sealed record TerraformValidationResult
+/// <summary>
+/// A union essentially of either a Valid or Invalid Result.
+/// Contains helper factory methods to reduce boilerplate when used.
+/// </summary>
+public abstract record TerraformValidationResult
 {
-    public TerraformConfig? Config { get; init; }
-    public string Message { get; private init; } = string.Empty;
-    public string ModuleDirectory { get; private init; } = string.Empty;
-    public required TerraformValidationResultState State { get; init; }
+    public ValidationResultState State { get; }
+    public string Message { get; }
 
-    public static TerraformValidationResult Valid(TerraformConfig config, string moduleDirectory) => new()
+    public enum ValidationResultState
     {
-        Config = config,
-        ModuleDirectory = moduleDirectory,
-        State = TerraformValidationResultState.Valid
-    };
+        Valid,
+        TemplateInvalid,
+        ModuleInvalid,
+        InputInvalid
+    }
 
-    public static TerraformValidationResult TemplateInvalid(string message) => new()
+    private TerraformValidationResult(ValidationResultState state, string message)
     {
-        Message = message,
-        State = TerraformValidationResultState.TemplateInvalid
-    };
+        State = state;
+        Message = message;
+    }
 
-    public static TerraformValidationResult ModuleInvalid(string message) => new()
-    {
-        Message = message,
-        State = TerraformValidationResultState.ModuleInvalid
-    };
+    public sealed record ValidResult(TerraformConfig Config, string ModuleDirectory, string Message)
+        : TerraformValidationResult(ValidationResultState.Valid, Message);
 
-    public static TerraformValidationResult InputInvalid(string message) => new()
-    {
-        Message = message,
-        State = TerraformValidationResultState.InputInvalid
-    };
+    public sealed record InvalidResult(ValidationResultState State, string Message)
+        : TerraformValidationResult(State, Message);
+
+    public static ValidResult Valid(TerraformConfig config, string moduleDirectory) =>
+        new (config, moduleDirectory, string.Empty);
+
+    public static InvalidResult TemplateInvalid(string message) =>
+        new InvalidResult(ValidationResultState.TemplateInvalid, message);
+
+    public static InvalidResult ModuleInvalid(string message) =>
+        new InvalidResult(ValidationResultState.ModuleInvalid, message);
+
+    public static InvalidResult InputInvalid(string message) =>
+        new InvalidResult(ValidationResultState.InputInvalid, message);
 }
