@@ -21,11 +21,10 @@ public static class ConfigureServices
         return services;
     }
 
-    public static async Task<IServiceCollection> ApplyMigrations(this IServiceCollection services)
+    public static async Task ApplyMigrations(this IServiceCollection services)
     {
         using IServiceScope scope = services.BuildServiceProvider().CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<ConductorDbContext>();
         await dbContext.Database.MigrateAsync();
-        return services;
     }
 }

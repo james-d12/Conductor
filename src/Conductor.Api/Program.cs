@@ -1,20 +1,19 @@
 using Conductor.Api.Endpoints;
-using Conductor.Core;
 using Conductor.Infrastructure;
 using Conductor.Persistence;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddOpenApi();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddCoreServices();
-builder.Services.AddPersistenceServices();
-builder.Services.AddInfrastructureServices();
+builder.Services
+    .AddOpenApi()
+    .AddEndpointsApiExplorer()
+    .AddSwaggerGen()
+    .AddPersistenceServices()
+    .AddInfrastructureServices();
 
 await builder.Services.ApplyMigrations();
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
 app.MapOpenApi();
 app.UseSwagger();

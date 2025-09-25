@@ -1,5 +1,4 @@
-﻿using Conductor.Core;
-using Conductor.Core.Application.Domain;
+﻿using Conductor.Core.Application.Domain;
 using Conductor.Core.Deployment.Domain;
 using Conductor.Core.ResourceTemplate;
 using Conductor.Core.ResourceTemplate.Domain;
@@ -12,16 +11,16 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Environment = Conductor.Core.Environment.Domain.Environment;
 
-var builder = Host.CreateApplicationBuilder();
+HostApplicationBuilder builder = Host.CreateApplicationBuilder();
 
-builder.Services.AddCoreServices();
-builder.Services.AddPersistenceServices();
-builder.Services.AddInfrastructureServices();
+builder.Services
+    .AddPersistenceServices()
+    .AddInfrastructureServices();
 builder.Configuration.AddUserSecrets<Program>();
 
 await builder.Services.ApplyMigrations();
 
-using var host = builder.Build();
+using IHost host = builder.Build();
 
 var azureStorageAccount = ResourceTemplate.CreateWithVersion(new CreateResourceTemplateWithVersionRequest
 {

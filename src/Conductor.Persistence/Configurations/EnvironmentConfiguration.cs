@@ -10,6 +10,8 @@ internal sealed class EnvironmentConfiguration : IEntityTypeConfiguration<Enviro
     public void Configure(EntityTypeBuilder<Environment> builder)
     {
         builder.HasKey(r => r.Id);
+        builder.HasIndex(r => r.Name).IsUnique();
+
         builder.Property(b => b.Name).IsRequired();
         builder.Property(b => b.Description).IsRequired();
         builder.Property(b => b.CreatedAt).IsRequired().HasDefaultValueSql("now()");
@@ -20,10 +22,5 @@ internal sealed class EnvironmentConfiguration : IEntityTypeConfiguration<Enviro
                 id => id.Value,
                 value => new EnvironmentId(value)
             );
-
-        builder.HasMany(a => a.Deployments)
-            .WithOne()
-            .HasForeignKey(d => d.EnvironmentId)
-            .OnDelete(DeleteBehavior.Cascade);
     }
 }

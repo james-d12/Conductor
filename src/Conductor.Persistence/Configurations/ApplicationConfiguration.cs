@@ -21,11 +21,6 @@ internal sealed class ApplicationConfiguration : IEntityTypeConfiguration<Applic
                 value => new ApplicationId(value)
             );
 
-        builder.HasMany(a => a.Deployments)
-            .WithOne()
-            .HasForeignKey(d => d.ApplicationId)
-            .OnDelete(DeleteBehavior.Cascade);
-
         builder.OwnsOne(a => a.Repository, r =>
         {
             r.Property(x => x.Id).IsRequired();
@@ -33,6 +28,5 @@ internal sealed class ApplicationConfiguration : IEntityTypeConfiguration<Applic
             r.Property(x => x.Url).IsRequired();
             r.Property(x => x.Provider).IsRequired().HasConversion<string>();
         });
-
     }
 }

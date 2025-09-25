@@ -1,8 +1,10 @@
+using Conductor.Core.Application.Domain;
 using Conductor.Core.Deployment.Domain;
 using Conductor.Core.Environment.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using ApplicationId = Conductor.Core.Application.Domain.ApplicationId;
+using Environment = Conductor.Core.Environment.Domain.Environment;
 
 namespace Conductor.Persistence.Configurations;
 
@@ -11,6 +13,9 @@ internal sealed class DeploymentConfiguration : IEntityTypeConfiguration<Deploym
     public void Configure(EntityTypeBuilder<Deployment> builder)
     {
         builder.HasKey(d => d.Id);
+
+        builder.HasIndex(d => new { d.ApplicationId, d.EnvironmentId, d.CommitId, d.Status })
+            .IsUnique();
 
         builder.Property(d => d.Id)
             .HasConversion(
@@ -35,6 +40,16 @@ internal sealed class DeploymentConfiguration : IEntityTypeConfiguration<Deploym
                 id => id.Value,
                 value => new CommitId(value)
             );
+
+        builder.HasOne<Application>()
+            .WithMany()
+            .HasForeignKey(d => d.ApplicationId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasOne<Environment>()
+            .WithMany()
+            .HasForeignKey(d => d.EnvironmentId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.Property(d => d.Status).HasConversion<string>();
         builder.Property(d => d.CreatedAt).IsRequired().HasDefaultValueSql("now()");

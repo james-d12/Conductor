@@ -4,13 +4,6 @@ using ApplicationId = Conductor.Core.Application.Domain.ApplicationId;
 
 namespace Conductor.Core.Deployment.Domain;
 
-public readonly record struct DeploymentId(Guid Value)
-{
-    public DeploymentId() : this(Guid.NewGuid())
-    {
-    }
-}
-
 /// <summary>
 /// Represents a deployed application to a specific environment.
 /// </summary>
@@ -20,9 +13,9 @@ public sealed record Deployment
     public required ApplicationId ApplicationId { get; init; }
     public required EnvironmentId EnvironmentId { get; init; }
     public required CommitId CommitId { get; init; }
-    public required DeploymentStatus Status { get; set; }
-    public required DateTime CreatedAt { get; set; }
-    public required DateTime UpdatedAt { get; set; }
+    public required DeploymentStatus Status { get; init; }
+    public required DateTime CreatedAt { get; init; }
+    public required DateTime UpdatedAt { get; init; }
 
     private Deployment()
     {

@@ -30,6 +30,7 @@ internal sealed class ResourceTemplateConfiguration : IEntityTypeConfiguration<R
             v.WithOwner().HasForeignKey("TemplateId");
             v.HasKey("TemplateId", "Version");
 
+            v.HasIndex(x => new { x.TemplateId, x.Version }).IsUnique();
             v.Property(x => x.Version).IsRequired();
             v.Property(x => x.Notes).IsRequired();
             v.Property(x => x.State).IsRequired().HasConversion<int>();
