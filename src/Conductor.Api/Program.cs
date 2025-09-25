@@ -4,6 +4,12 @@ using Conductor.Persistence;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
+builder.Host.UseDefaultServiceProvider(options =>
+{
+    options.ValidateScopes = true;
+    options.ValidateOnBuild = true;
+});
+
 builder.Services
     .AddOpenApi()
     .AddEndpointsApiExplorer()
