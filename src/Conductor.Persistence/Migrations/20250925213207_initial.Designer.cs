@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Conductor.Persistence.Migrations
 {
     [DbContext(typeof(ConductorDbContext))]
-    [Migration("20250925213126_resourcemigration2")]
-    partial class resourcemigration2
+    [Migration("20250925213207_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
