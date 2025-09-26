@@ -138,7 +138,7 @@ var resource2 = new Resource
     UpdatedAt = DateTime.Now
 };
 
-var dependencies = new ResourceResourceDependencyGraph();
+var dependencies = new ResourceDependencyGraph();
 
 
 var apiDependency = new ResourceDependency(paymentApi.Name);

@@ -1,6 +1,6 @@
 namespace Conductor.Domain.ResourceDependency;
 
-public sealed class ResourceResourceDependencyGraph : IResourceDependencyGraph
+public sealed class ResourceDependencyGraph : IResourceDependencyGraph
 {
     private readonly Dictionary<ResourceDependencyId, ResourceDependencyNode> _nodes = new();
 
