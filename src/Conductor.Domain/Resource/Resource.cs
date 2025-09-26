@@ -7,6 +7,7 @@ namespace Conductor.Domain.Resource;
 public sealed record Resource
 {
     public required ResourceId Id { get; init; }
+    public required string Name { get; init; }
     public required ResourceTemplateId ResourceTemplateId { get; init; }
     public required ApplicationId ApplicationId { get; init; }
     public required EnvironmentId EnvironmentId { get; init; }

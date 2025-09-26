@@ -1,5 +1,7 @@
 ﻿using Conductor.Domain.Application.Domain;
 using Conductor.Domain.Deployment.Domain;
+using Conductor.Domain.Resource;
+using Conductor.Domain.ResourceDependency;
 using Conductor.Domain.ResourceTemplate;
 using Conductor.Domain.ResourceTemplate.Domain;
 using Conductor.Domain.ResourceTemplate.Requests;
@@ -113,6 +115,49 @@ var commit = new Commit
 };
 
 var deployment = Deployment.Create(paymentApi.Id, devEnvironment.Id, commit.Id);
+
+var resource = new Resource
+{
+    Id = new ResourceId(),
+    Name = "mypaymentstorage",
+    ResourceTemplateId = azureStorageAccount.Id,
+    ApplicationId = paymentApi.Id,
+    EnvironmentId = devEnvironment.Id,
+    CreatedAt = DateTime.Now,
+    UpdatedAt = DateTime.Now
+};
+
+var resource2 = new Resource
+{
+    Id = new ResourceId(),
+    Name = "myotherpaymentstorage",
+    ResourceTemplateId = azureStorageAccount.Id,
+    ApplicationId = paymentApi.Id,
+    EnvironmentId = devEnvironment.Id,
+    CreatedAt = DateTime.Now,
+    UpdatedAt = DateTime.Now
+};
+
+var dependencies = new ResourceResourceDependencyGraph();
+
+
+var apiDependency = new ResourceDependency(paymentApi.Name);
+var resource1Dependency = new ResourceDependency(resource.Name);
+var resource2Dependency = new ResourceDependency(resource2.Name);
+
+dependencies.AddResource(apiDependency);
+dependencies.AddResource(resource1Dependency);
+dependencies.AddResource(resource2Dependency);
+
+dependencies.AddDependency(resource2Dependency.Id, resource1Dependency.Id);
+dependencies.AddDependency(resource1Dependency.Id, apiDependency.Id);
+
+var order = dependencies.ResolveOrder();
+
+foreach (var item in order)
+{
+    Console.WriteLine(item.Identifier);
+}
 
 var resourceProvisioner = host.Services.GetRequiredService<IResourceProvisioner>();
 await resourceProvisioner.StartAsync(paymentApi, deployment, CancellationToken.None);
