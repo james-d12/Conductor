@@ -23,7 +23,6 @@ internal sealed class ApplicationConfiguration : IEntityTypeConfiguration<Applic
 
         builder.OwnsOne(a => a.Repository, r =>
         {
-            r.Property(x => x.Id).IsRequired();
             r.Property(x => x.Name).IsRequired();
             r.Property(x => x.Url).IsRequired();
             r.Property(x => x.Provider).IsRequired().HasConversion<string>();

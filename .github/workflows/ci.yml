@@ -55,3 +55,7 @@ jobs:
 
       - name: Build Docker
         run: docker compose build
+        
+      - name: Check No Pending Model Changes
+        run: dotnet ef migrations has-pending-model-changes
+        working-directory: ./src/Conductor.Persistence

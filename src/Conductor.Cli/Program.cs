@@ -98,7 +98,6 @@ await resourceTemplateRepository.CreateAsync(argoCdTemplate);
 
 var paymentApi = Application.Create("payment-api", new Repository
 {
-    Id = Guid.NewGuid(),
     Name = "payment api repository",
     Url = new Uri("https://github.com/james-d12/Conductor-Example.git"),
     Provider = RepositoryProvider.GitHub

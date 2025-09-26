@@ -38,9 +38,8 @@ public sealed record Application
         {
             Id = new ApplicationId(),
             Name = request.Name,
-            Repository = new Repository()
+            Repository = new Repository
             {
-                Id = Guid.NewGuid(),
                 Name = request.Repository.Name,
                 Url = request.Repository.Url,
                 Provider = request.Repository.Provider
