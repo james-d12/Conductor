@@ -1,5 +1,3 @@
-using ApplicationId = Conductor.Domain.Application.Domain.ApplicationId;
-
 namespace Conductor.Domain.Application;
 
 using ApplicationId = Domain.ApplicationId;
