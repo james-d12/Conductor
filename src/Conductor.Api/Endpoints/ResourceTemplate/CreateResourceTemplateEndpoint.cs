@@ -1,6 +1,6 @@
 using Conductor.Api.Common;
-using Conductor.Core.ResourceTemplate;
-using Conductor.Core.ResourceTemplate.Requests;
+using Conductor.Domain.ResourceTemplate;
+using Conductor.Domain.ResourceTemplate.Requests;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,7 +21,7 @@ public sealed class CreateResourceTemplateEndpoint : IEndpoint
         IResourceTemplateRepository repository,
         CancellationToken cancellationToken)
     {
-        var resourceTemplate = Core.ResourceTemplate.Domain.ResourceTemplate.Create(request);
+        var resourceTemplate = Domain.ResourceTemplate.Domain.ResourceTemplate.Create(request);
         var resourceTemplateResponse = await repository.CreateAsync(resourceTemplate, cancellationToken);
 
         if (resourceTemplateResponse is null)

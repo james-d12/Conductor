@@ -1,10 +1,10 @@
-using Conductor.Core.Application.Domain;
-using Conductor.Core.Deployment.Domain;
-using Conductor.Core.Environment.Domain;
+using Conductor.Domain.Application.Domain;
+using Conductor.Domain.Deployment.Domain;
+using Conductor.Domain.Environment.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using ApplicationId = Conductor.Core.Application.Domain.ApplicationId;
-using Environment = Conductor.Core.Environment.Domain.Environment;
+using ApplicationId = Conductor.Domain.Application.Domain.ApplicationId;
+using Environment = Conductor.Domain.Environment.Domain.Environment;
 
 namespace Conductor.Persistence.Configurations;
 

@@ -1,5 +1,5 @@
 using Conductor.Api.Common;
-using Conductor.Core.Application;
+using Conductor.Domain.Application;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 

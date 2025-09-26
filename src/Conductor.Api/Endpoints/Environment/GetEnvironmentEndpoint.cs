@@ -1,6 +1,6 @@
 using Conductor.Api.Common;
-using Conductor.Core.Environment;
-using Conductor.Core.Environment.Domain;
+using Conductor.Domain.Environment;
+using Conductor.Domain.Environment.Domain;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 

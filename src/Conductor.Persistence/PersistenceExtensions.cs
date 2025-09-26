@@ -1,7 +1,7 @@
-using Conductor.Core.Application;
-using Conductor.Core.Deployment;
-using Conductor.Core.Environment;
-using Conductor.Core.ResourceTemplate;
+using Conductor.Domain.Application;
+using Conductor.Domain.Deployment;
+using Conductor.Domain.Environment;
+using Conductor.Domain.ResourceTemplate;
 using Conductor.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;

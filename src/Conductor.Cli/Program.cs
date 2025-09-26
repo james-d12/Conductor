@@ -1,15 +1,15 @@
-﻿using Conductor.Core.Application.Domain;
-using Conductor.Core.Deployment.Domain;
-using Conductor.Core.ResourceTemplate;
-using Conductor.Core.ResourceTemplate.Domain;
-using Conductor.Core.ResourceTemplate.Requests;
+﻿using Conductor.Domain.Application.Domain;
+using Conductor.Domain.Deployment.Domain;
+using Conductor.Domain.ResourceTemplate;
+using Conductor.Domain.ResourceTemplate.Domain;
+using Conductor.Domain.ResourceTemplate.Requests;
 using Conductor.Infrastructure;
 using Conductor.Infrastructure.Resources;
 using Conductor.Persistence;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Environment = Conductor.Core.Environment.Domain.Environment;
+using Environment = Conductor.Domain.Environment.Domain.Environment;
 
 HostApplicationBuilder builder = Host.CreateApplicationBuilder();
 

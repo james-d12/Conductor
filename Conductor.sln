@@ -16,7 +16,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Conductor.Api", "src\Conduc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Conductor.Cli", "src\Conductor.Cli\Conductor.Cli.csproj", "{0E8A91D2-E999-4D7C-9984-2B04118A9604}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Conductor.Core", "src\Conductor.Core\Conductor.Core.csproj", "{231859A8-49BF-42C2-BFBC-E8E980506FF8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Conductor.Domain", "src\Conductor.Domain\Conductor.Domain.csproj", "{231859A8-49BF-42C2-BFBC-E8E980506FF8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Conductor.Infrastructure", "src\Conductor.Infrastructure\Conductor.Infrastructure.csproj", "{0284C6DC-C050-4EE2-996E-504E47E2F0DA}"
 EndProject

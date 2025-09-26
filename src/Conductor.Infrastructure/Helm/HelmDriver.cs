@@ -1,4 +1,4 @@
-using Conductor.Core.ResourceTemplate.Domain;
+using Conductor.Domain.ResourceTemplate.Domain;
 using Conductor.Infrastructure.Helm.Models;
 using Microsoft.Extensions.Logging;
 

@@ -1,7 +1,7 @@
-using Conductor.Core.Environment;
-using Conductor.Core.Environment.Domain;
+using Conductor.Domain.Environment;
+using Conductor.Domain.Environment.Domain;
 using Microsoft.EntityFrameworkCore;
-using Environment = Conductor.Core.Environment.Domain.Environment;
+using Environment = Conductor.Domain.Environment.Domain.Environment;
 
 namespace Conductor.Persistence.Repositories;
 

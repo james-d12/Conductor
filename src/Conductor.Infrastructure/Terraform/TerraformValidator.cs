@@ -1,5 +1,5 @@
 using System.Text.Json;
-using Conductor.Core.ResourceTemplate.Domain;
+using Conductor.Domain.ResourceTemplate.Domain;
 using Conductor.Infrastructure.CommandLine;
 using Conductor.Infrastructure.Terraform.Models;
 using Microsoft.Extensions.Logging;

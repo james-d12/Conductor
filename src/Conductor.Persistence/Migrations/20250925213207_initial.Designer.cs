@@ -20,7 +20,7 @@ namespace Conductor.Persistence.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.0-rc.1.25451.107");
 
-            modelBuilder.Entity("Conductor.Core.Application.Domain.Application", b =>
+            modelBuilder.Entity("Conductor.Domain.Application.Domain.Application", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("TEXT");
@@ -44,7 +44,7 @@ namespace Conductor.Persistence.Migrations
                     b.ToTable("Applications");
                 });
 
-            modelBuilder.Entity("Conductor.Core.Deployment.Domain.Deployment", b =>
+            modelBuilder.Entity("Conductor.Domain.Deployment.Domain.Deployment", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("TEXT");
@@ -83,7 +83,7 @@ namespace Conductor.Persistence.Migrations
                     b.ToTable("Deployments");
                 });
 
-            modelBuilder.Entity("Conductor.Core.Environment.Domain.Environment", b =>
+            modelBuilder.Entity("Conductor.Domain.Environment.Domain.Environment", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("TEXT");
@@ -114,7 +114,7 @@ namespace Conductor.Persistence.Migrations
                     b.ToTable("Environments");
                 });
 
-            modelBuilder.Entity("Conductor.Core.Resource.Resource", b =>
+            modelBuilder.Entity("Conductor.Domain.Resource.Resource", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("TEXT");
@@ -145,7 +145,7 @@ namespace Conductor.Persistence.Migrations
                     b.ToTable("Resource");
                 });
 
-            modelBuilder.Entity("Conductor.Core.ResourceTemplate.Domain.ResourceTemplate", b =>
+            modelBuilder.Entity("Conductor.Domain.ResourceTemplate.Domain.ResourceTemplate", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("TEXT");
@@ -184,9 +184,9 @@ namespace Conductor.Persistence.Migrations
                     b.ToTable("ResourceTemplates");
                 });
 
-            modelBuilder.Entity("Conductor.Core.Application.Domain.Application", b =>
+            modelBuilder.Entity("Conductor.Domain.Application.Domain.Application", b =>
                 {
-                    b.OwnsOne("Conductor.Core.Application.Domain.Repository", "Repository", b1 =>
+                    b.OwnsOne("Conductor.Domain.Application.Domain.Repository", "Repository", b1 =>
                         {
                             b1.Property<Guid>("ApplicationId")
                                 .HasColumnType("TEXT");
@@ -218,24 +218,24 @@ namespace Conductor.Persistence.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Conductor.Core.Deployment.Domain.Deployment", b =>
+            modelBuilder.Entity("Conductor.Domain.Deployment.Domain.Deployment", b =>
                 {
-                    b.HasOne("Conductor.Core.Application.Domain.Application", null)
+                    b.HasOne("Conductor.Domain.Application.Domain.Application", null)
                         .WithMany()
                         .HasForeignKey("ApplicationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Conductor.Core.Environment.Domain.Environment", null)
+                    b.HasOne("Conductor.Domain.Environment.Domain.Environment", null)
                         .WithMany()
                         .HasForeignKey("EnvironmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Conductor.Core.ResourceTemplate.Domain.ResourceTemplate", b =>
+            modelBuilder.Entity("Conductor.Domain.ResourceTemplate.Domain.ResourceTemplate", b =>
                 {
-                    b.OwnsMany("Conductor.Core.ResourceTemplate.Domain.ResourceTemplateVersion", "Versions", b1 =>
+                    b.OwnsMany("Conductor.Domain.ResourceTemplate.Domain.ResourceTemplateVersion", "Versions", b1 =>
                         {
                             b1.Property<Guid>("TemplateId")
                                 .HasColumnType("TEXT");
@@ -265,7 +265,7 @@ namespace Conductor.Persistence.Migrations
                             b1.WithOwner()
                                 .HasForeignKey("TemplateId");
 
-                            b1.OwnsOne("Conductor.Core.ResourceTemplate.Domain.ResourceTemplateVersionSource", "Source", b2 =>
+                            b1.OwnsOne("Conductor.Domain.ResourceTemplate.Domain.ResourceTemplateVersionSource", "Source", b2 =>
                                 {
                                     b2.Property<Guid>("ResourceTemplateVersionTemplateId")
                                         .HasColumnType("TEXT");

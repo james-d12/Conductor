@@ -1,6 +1,6 @@
 using Conductor.Api.Common;
-using Conductor.Core.Environment;
-using Conductor.Core.Environment.Requests;
+using Conductor.Domain.Environment;
+using Conductor.Domain.Environment.Requests;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,7 +21,7 @@ public sealed class CreateEnvironmentEndpoint : IEndpoint
         IEnvironmentRepository repository,
         CancellationToken cancellationToken)
     {
-        var environment = Core.Environment.Domain.Environment.Create(request);
+        var environment = Domain.Environment.Domain.Environment.Create(request);
         var environmentResponse = await repository.CreateAsync(environment, cancellationToken);
 
         if (environmentResponse is null)

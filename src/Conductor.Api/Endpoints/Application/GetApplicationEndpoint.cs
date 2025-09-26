@@ -1,8 +1,8 @@
 using Conductor.Api.Common;
-using Conductor.Core.Application;
+using Conductor.Domain.Application;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using ApplicationId = Conductor.Core.Application.Domain.ApplicationId;
+using ApplicationId = Conductor.Domain.Application.Domain.ApplicationId;
 
 namespace Conductor.Api.Endpoints.Application;
 

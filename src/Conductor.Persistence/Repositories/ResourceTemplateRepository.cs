@@ -1,5 +1,5 @@
-using Conductor.Core.ResourceTemplate;
-using Conductor.Core.ResourceTemplate.Domain;
+using Conductor.Domain.ResourceTemplate;
+using Conductor.Domain.ResourceTemplate.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace Conductor.Persistence.Repositories;
