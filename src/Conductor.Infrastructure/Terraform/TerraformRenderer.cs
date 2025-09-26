@@ -15,7 +15,7 @@ public sealed class TerraformRenderer : ITerraformRenderer
     {
         var sb = new StringBuilder();
 
-        foreach (var (terraformPlanInput, terraformValidationResult) in terraformValidationResults)
+        foreach ((TerraformPlanInput terraformPlanInput, TerraformValidationResult.ValidResult terraformValidationResult) in terraformValidationResults)
         {
             var key = terraformPlanInput.Key.Replace(" ", "_").Trim().ToLowerInvariant();
             var templateName = terraformPlanInput.Template.Name.Replace(" ", "_").ToLowerInvariant();
@@ -43,7 +43,7 @@ public sealed class TerraformRenderer : ITerraformRenderer
         sb.AppendLine("terraform {");
         sb.AppendLine("    required_providers {");
 
-        foreach (var provider in providers)
+        foreach (TerraformProvider provider in providers)
         {
             sb.AppendLine($"      {provider.Name} = {{");
             sb.AppendLine($"         source = \"{provider.Source}\"");
@@ -54,7 +54,7 @@ public sealed class TerraformRenderer : ITerraformRenderer
         sb.AppendLine("     }");
         sb.AppendLine("}");
 
-        foreach (var provider in providers)
+        foreach (TerraformProvider provider in providers)
         {
             sb.AppendLine($"provider \"{provider.Name}\" {{");
             sb.AppendLine("   features {}");

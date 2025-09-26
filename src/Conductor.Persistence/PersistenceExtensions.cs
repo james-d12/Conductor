@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Conductor.Persistence;
 
-public static class ConfigureServices
+public static class PersistenceExtensions
 {
     public static IServiceCollection AddPersistenceServices(this IServiceCollection services)
     {
@@ -25,6 +25,7 @@ public static class ConfigureServices
     {
         using IServiceScope scope = services.BuildServiceProvider().CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<ConductorDbContext>();
+        await dbContext.Database.EnsureDeletedAsync();
         await dbContext.Database.MigrateAsync();
     }
 }

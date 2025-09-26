@@ -115,5 +115,4 @@ var commit = new Commit
 var deployment = Deployment.Create(paymentApi.Id, devEnvironment.Id, commit.Id);
 
 var resourceProvisioner = host.Services.GetRequiredService<IResourceProvisioner>();
-
 await resourceProvisioner.StartAsync(paymentApi, deployment, CancellationToken.None);

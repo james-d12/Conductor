@@ -26,5 +26,3 @@ services:
         - action: sync+restart
           path: .src/Conductor.Cli
           target: .src/Conductor.Cli
-    depends_on:
-      - api

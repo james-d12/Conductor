@@ -5,7 +5,8 @@ namespace Conductor.Infrastructure.Terraform;
 
 public interface ITerraformProjectBuilder
 {
-    Task<string> BuildProject(Dictionary<TerraformPlanInput, TerraformValidationResult.ValidResult> validatedPlans,
+    Task<TerraformProjectBuilderResult> BuildProject(
+        Dictionary<TerraformPlanInput, TerraformValidationResult.ValidResult> validatedPlans,
         string projectFolderName);
 }
 
@@ -20,11 +21,13 @@ public sealed class TerraformProjectBuilder : ITerraformProjectBuilder
         _renderer = renderer;
     }
 
-    public async Task<string> BuildProject(
+    public async Task<TerraformProjectBuilderResult> BuildProject(
         Dictionary<TerraformPlanInput, TerraformValidationResult.ValidResult> validatedPlans, string projectFolderName)
     {
         var stateDirectory = Path.Combine(Path.GetTempPath(), "conductor", "terraform", "state", projectFolderName);
+        var plansDirectory = Path.Combine(stateDirectory, "plans");
         Directory.CreateDirectory(stateDirectory);
+        Directory.CreateDirectory(plansDirectory);
 
         var terraformValidationResults = validatedPlans.Values.ToList();
 
@@ -55,6 +58,6 @@ public sealed class TerraformProjectBuilder : ITerraformProjectBuilder
         await File.WriteAllTextAsync(providersTfOutputPath, providersTf);
         _logger.LogInformation("Created providers.tf to: {FilePath}", providersTfOutputPath);
 
-        return stateDirectory;
+        return new TerraformProjectBuilderResult(stateDirectory, plansDirectory);
     }
 }

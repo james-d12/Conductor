@@ -6,5 +6,6 @@ public enum TerraformPlanResultState
     InitFailed,
     ValidateFailed,
     PlanFailed,
+    NoChanges,
     Success
 }

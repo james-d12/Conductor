@@ -8,8 +8,8 @@ public interface ITerraformCommandLine
     Task<CommandLineResult> RunInitAsync(string executeDirectory);
     Task<CommandLineResult> RunValidateAsync(string executeDirectory);
     Task<CommandLineResult> RunPlanDestroyAsync(string executeDirectory);
-    Task<CommandLineResult> RunPlanAsync(string executeDirectory);
-    Task<CommandLineResult> RunApplyAsync(string executeDirectory);
+    Task<CommandLineResult> RunPlanAsync(string executeDirectory, string planFileOutput);
+    Task<CommandLineResult> RunApplyAsync(string executeDirectory, string planFile);
     Task<CommandLineResult> RunDestroyAsync(string executeDirectory);
 }
 
@@ -35,19 +35,19 @@ public sealed class TerraformCommandLine : ITerraformCommandLine
 
     public async Task<CommandLineResult> RunPlanDestroyAsync(string executeDirectory) =>
         await new CommandLineBuilder("terraform")
-            .WithArguments("plan -input=false -destroy -out=plan-destroy.tfplan")
+            .WithArguments("plan -detailed-exitcode -input=false -destroy -out=plan-destroy.tfplan")
             .WithWorkingDirectory(executeDirectory)
             .ExecuteAsync();
 
-    public async Task<CommandLineResult> RunPlanAsync(string executeDirectory) =>
+    public async Task<CommandLineResult> RunPlanAsync(string executeDirectory, string planFileOutput) =>
         await new CommandLineBuilder("terraform")
-            .WithArguments("plan -input=false -out=plan.tfplan")
+            .WithArguments($"plan -detailed-exitcode -input=false -out={planFileOutput}")
             .WithWorkingDirectory(executeDirectory)
             .ExecuteAsync();
 
-    public async Task<CommandLineResult> RunApplyAsync(string executeDirectory) =>
+    public async Task<CommandLineResult> RunApplyAsync(string executeDirectory, string planFile) =>
         await new CommandLineBuilder("terraform")
-            .WithArguments("apply -auto-approve plan.tfplan")
+            .WithArguments($"apply -auto-approve {planFile}")
             .WithWorkingDirectory(executeDirectory)
             .ExecuteStreamAsync();
 

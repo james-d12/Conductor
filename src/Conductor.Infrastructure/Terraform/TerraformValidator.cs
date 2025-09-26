@@ -38,7 +38,7 @@ public sealed class TerraformValidator : ITerraformValidator
 
     private async Task<TerraformValidationResult> ValidatePlanAsync(TerraformPlanInput terraformPlanInput)
     {
-        var template = terraformPlanInput.Template;
+        ResourceTemplate template = terraformPlanInput.Template;
         var inputs = terraformPlanInput.Inputs;
 
         _logger.LogInformation("Validating Template: {Template} using the Terraform Driver.", template.Name);
@@ -120,7 +120,7 @@ public sealed class TerraformValidator : ITerraformValidator
 
     private async Task<TerraformConfig?> ParseTerraformModuleAsync(string moduleDirectory)
     {
-        var runTerraformJsonOutput = await _terraformCommandLine.RunTerraformJsonOutput(moduleDirectory);
+        CommandLineResult runTerraformJsonOutput = await _terraformCommandLine.RunTerraformJsonOutput(moduleDirectory);
 
         if (runTerraformJsonOutput.ExitCode != 0)
         {
