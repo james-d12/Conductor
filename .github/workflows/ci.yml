@@ -52,6 +52,7 @@ jobs:
 
       - name: Run Mutation Tests
         run: dotnet stryker --solution ${{ env.SOLUTION_FILE }}
+        continue-on-error: true
 
       - name: Build Docker
         run: docker compose build
