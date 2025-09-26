@@ -38,7 +38,7 @@ internal sealed class ResourceConfiguration : IEntityTypeConfiguration<Resource>
                 id => id.Value,
                 value => new ResourceTemplateId(value)
             ).IsRequired();
-        
+
         builder.PrimitiveCollection(b => b.Name).IsRequired();
         builder.Property(b => b.CreatedAt).IsRequired().HasDefaultValueSql("now()");
         builder.Property(b => b.UpdatedAt).IsRequired().HasDefaultValueSql("now()");
