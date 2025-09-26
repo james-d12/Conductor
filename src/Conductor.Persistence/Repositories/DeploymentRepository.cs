@@ -1,5 +1,4 @@
 using Conductor.Domain.Deployment;
-using Conductor.Domain.Deployment.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace Conductor.Persistence.Repositories;

@@ -1,4 +1,4 @@
-using Conductor.Domain.ResourceTemplate.Domain;
+using Conductor.Domain.ResourceTemplate;
 
 namespace Conductor.Infrastructure.Terraform.Models;
 

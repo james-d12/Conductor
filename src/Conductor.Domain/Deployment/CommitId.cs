@@ -1,3 +1,3 @@
-namespace Conductor.Domain.Deployment.Domain;
+namespace Conductor.Domain.Deployment;
 
 public readonly record struct CommitId(string Value);

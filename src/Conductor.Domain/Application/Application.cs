@@ -1,6 +1,4 @@
-using Conductor.Domain.Application.Requests;
-
-namespace Conductor.Domain.Application.Domain;
+namespace Conductor.Domain.Application;
 
 /// <summary>
 /// Represents an Application that encompasses the Git Repository,

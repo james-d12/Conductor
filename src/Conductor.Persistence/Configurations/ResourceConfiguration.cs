@@ -1,9 +1,9 @@
-using Conductor.Domain.Environment.Domain;
+using Conductor.Domain.Environment;
 using Conductor.Domain.Resource;
-using Conductor.Domain.ResourceTemplate.Domain;
+using Conductor.Domain.ResourceTemplate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using ApplicationId = Conductor.Domain.Application.Domain.ApplicationId;
+using ApplicationId = Conductor.Domain.Application.ApplicationId;
 
 namespace Conductor.Persistence.Configurations;
 

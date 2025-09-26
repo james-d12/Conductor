@@ -1,4 +1,4 @@
-namespace Conductor.Domain.Environment.Domain;
+namespace Conductor.Domain.Environment;
 
 public readonly record struct EnvironmentId(Guid Value)
 {

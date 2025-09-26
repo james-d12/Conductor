@@ -1,6 +1,4 @@
-using Conductor.Domain.Environment.Requests;
-
-namespace Conductor.Domain.Environment.Domain;
+namespace Conductor.Domain.Environment;
 
 /// <summary>
 /// Represents a deployment environment. E.g. a Kubernetes Cluster, an ArgoCD Environment, etc.

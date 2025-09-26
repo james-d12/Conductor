@@ -1,4 +1,4 @@
-namespace Conductor.Domain.Application.Domain;
+namespace Conductor.Domain.Application;
 
 public enum RepositoryProvider
 {

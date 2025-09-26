@@ -1,4 +1,4 @@
-namespace Conductor.Domain.ResourceTemplate.Domain;
+namespace Conductor.Domain.ResourceTemplate;
 
 public readonly record struct ResourceTemplateId(Guid Value)
 {

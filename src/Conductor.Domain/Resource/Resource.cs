@@ -1,6 +1,6 @@
-using Conductor.Domain.Environment.Domain;
-using Conductor.Domain.ResourceTemplate.Domain;
-using ApplicationId = Conductor.Domain.Application.Domain.ApplicationId;
+using Conductor.Domain.Environment;
+using Conductor.Domain.ResourceTemplate;
+using ApplicationId = Conductor.Domain.Application.ApplicationId;
 
 namespace Conductor.Domain.Resource;
 

@@ -1,4 +1,4 @@
-using Conductor.Domain.ResourceTemplate.Domain;
+using Conductor.Domain.ResourceTemplate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

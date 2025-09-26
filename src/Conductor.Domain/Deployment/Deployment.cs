@@ -1,8 +1,7 @@
-using Conductor.Domain.Deployment.Requests;
-using Conductor.Domain.Environment.Domain;
-using ApplicationId = Conductor.Domain.Application.Domain.ApplicationId;
+using Conductor.Domain.Environment;
+using ApplicationId = Conductor.Domain.Application.ApplicationId;
 
-namespace Conductor.Domain.Deployment.Domain;
+namespace Conductor.Domain.Deployment;
 
 /// <summary>
 /// Represents a deployed application to a specific environment.

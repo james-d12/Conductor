@@ -1,6 +1,4 @@
-using Conductor.Domain.ResourceTemplate.Requests;
-
-namespace Conductor.Domain.ResourceTemplate.Domain;
+namespace Conductor.Domain.ResourceTemplate;
 
 public sealed record ResourceTemplateVersion
 {
