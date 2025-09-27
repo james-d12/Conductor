@@ -33,8 +33,8 @@ jobs:
           key: ${{ runner.os }}-${{ env.cache-name }}
 
       - name: Install Stryker.NET
-        run: dotnet tool install -g dotnet-stryker
-        
+        run: dotnet tool install -g dotnet-stryker --version 10.0.0-rc.1.25451.107      
+      
       - name: Install EF Tools
         run: dotnet tool install -g dotnet-ef
 
