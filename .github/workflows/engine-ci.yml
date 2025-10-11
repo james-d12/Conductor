@@ -15,9 +15,6 @@ jobs:
   build:
     name: "Build and Check Engine"
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./engine
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -37,32 +34,41 @@ jobs:
 
       - name: Install Stryker.NET
         run: dotnet tool install -g dotnet-stryker
+        working-directory: ./engine
 
       - name: Install EF Tools
         run: dotnet tool install -g dotnet-ef --version 10.0.0-rc.1.25451.107
+        working-directory: ./engine
 
       - name: Restore dependencies
         run: dotnet restore ${{ env.SOLUTION_FILE }}
+        working-directory: ./engine
 
       - name: Build API
         run: dotnet build ${{ env.SOLUTION_FILE }} --configuration Release --no-restore
+        working-directory: ./engine
 
       - name: Check No Pending Model Changes
         run: dotnet ef migrations has-pending-model-changes
-        working-directory: ./src/Conductor.Persistence
+        working-directory: ./engine/src/Conductor.Persistence
 
       - name: Check For Vulnerabilities
         run: dotnet list ${{ env.SOLUTION_FILE }} package --vulnerable
+        working-directory: ./engine
 
       - name: Format Check
         run: dotnet format ${{ env.SOLUTION_FILE }} --verify-no-changes --verbosity diagnostic
+        working-directory: ./engine
 
       - name: Run Tests
         run: dotnet test ${{ env.SOLUTION_FILE }} --configuration Release --no-build --collect:"XPlat Code Coverage"
+        working-directory: ./engine
 
       - name: Run Mutation Tests
         run: dotnet stryker --solution ${{ env.SOLUTION_FILE }}
+        working-directory: ./engine
         continue-on-error: true
 
       - name: Build Docker
         run: docker compose build
+        working-directory: ./engine
