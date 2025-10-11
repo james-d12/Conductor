@@ -1,0 +1,68 @@
+name: Build & Validate
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+env:
+  SOLUTION_FILE: Conductor.sln
+
+jobs:
+  build:
+    name: "Build and Check Engine"
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./engine
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        env:
+          cache-name: nuget-package-cache
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-${{ env.cache-name }}
+
+      - name: Install Stryker.NET
+        run: dotnet tool install -g dotnet-stryker
+
+      - name: Install EF Tools
+        run: dotnet tool install -g dotnet-ef --version 10.0.0-rc.1.25451.107
+
+      - name: Restore dependencies
+        run: dotnet restore ${{ env.SOLUTION_FILE }}
+
+      - name: Build API
+        run: dotnet build ${{ env.SOLUTION_FILE }} --configuration Release --no-restore
+
+      - name: Check No Pending Model Changes
+        run: dotnet ef migrations has-pending-model-changes
+        working-directory: ./src/Conductor.Persistence
+
+      - name: Check For Vulnerabilities
+        run: dotnet list ${{ env.SOLUTION_FILE }} package --vulnerable
+
+      - name: Format Check
+        run: dotnet format ${{ env.SOLUTION_FILE }} --verify-no-changes --verbosity diagnostic
+
+      - name: Run Tests
+        run: dotnet test ${{ env.SOLUTION_FILE }} --configuration Release --no-build --collect:"XPlat Code Coverage"
+
+      - name: Run Mutation Tests
+        run: dotnet stryker --solution ${{ env.SOLUTION_FILE }}
+        continue-on-error: true
+
+      - name: Build Docker
+        run: docker compose build

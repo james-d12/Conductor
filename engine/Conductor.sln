@@ -7,10 +7,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		stryker-config.json = stryker-config.json
 		.editorconfig = .editorconfig
 		global.json = global.json
-		..\LICENSE.md = ..\LICENSE.md
-		..\.gitignore = ..\.gitignore
 		README.md = README.md
-		..\.github\workflows\engine.yml = ..\.github\workflows\engine.yml
+		..\.github\workflows\engine-ci.yml = ..\.github\workflows\engine-ci.yml
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Conductor.Api", "src\Conductor.Api\Conductor.Api.csproj", "{9FFFB719-DA35-4120-9BEB-6DA78CF28F59}"
@@ -22,6 +20,13 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Conductor.Infrastructure", "src\Conductor.Infrastructure\Conductor.Infrastructure.csproj", "{0284C6DC-C050-4EE2-996E-504E47E2F0DA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Conductor.Persistence", "src\Conductor.Persistence\Conductor.Persistence.csproj", "{594E491C-478B-4B07-B330-72FACC0C3C52}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Root Level Items", "Root Level Items", "{CD10D103-807C-419E-A749-98DF1D8DF0C2}"
+	ProjectSection(SolutionItems) = preProject
+		..\README.md = ..\README.md
+		..\LICENSE.md = ..\LICENSE.md
+		..\.gitignore = ..\.gitignore
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
