@@ -49,7 +49,7 @@ public sealed class TerraformValidator : ITerraformValidator
             return TerraformValidationResult.TemplateInvalid(message);
         }
 
-        ResourceTemplateVersion? latestVersion = template.LatestVersion;
+        ResourceTemplateVersion? latestVersion = template.GetLatestVersion();
         if (latestVersion is null)
         {
             var message = $"No Version could be found for {template.Name} found.";

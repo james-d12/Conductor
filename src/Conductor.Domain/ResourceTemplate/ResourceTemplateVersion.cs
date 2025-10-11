@@ -9,6 +9,10 @@ public sealed record ResourceTemplateVersion
     public required ResourceTemplateVersionState State { get; init; }
     public required DateTime CreatedAt { get; init; }
 
+    private ResourceTemplateVersion()
+    {
+    }
+
     internal static ResourceTemplateVersion Create(CreateResourceTemplateVersionRequest request)
     {
         return new ResourceTemplateVersion

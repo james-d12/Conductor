@@ -13,9 +13,6 @@ public sealed record ResourceTemplate
     private readonly List<ResourceTemplateVersion> _versions = [];
     public IReadOnlyList<ResourceTemplateVersion> Versions => _versions.AsReadOnly();
 
-    public ResourceTemplateVersion? LatestVersion =>
-        _versions.LastOrDefault(v => v.State == ResourceTemplateVersionState.Active);
-
     private ResourceTemplate()
     {
     }
@@ -80,5 +77,10 @@ public sealed record ResourceTemplate
 
         _versions.Add(newVersion);
         UpdatedAt = DateTime.UtcNow;
+    }
+
+    public ResourceTemplateVersion? GetLatestVersion()
+    {
+        return _versions.LastOrDefault(v => v.State == ResourceTemplateVersionState.Active);
     }
 }
