@@ -9,12 +9,15 @@ on:
       - master
 
 env:
-  SOLUTION_FILE: Conductor.sln
+  SOLUTION_FILE: Conductor.Engine.sln
 
 jobs:
   build:
     name: "Engine Build and Check"
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./Conductor.Engine
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -46,7 +49,7 @@ jobs:
 
       - name: Check No Pending Model Changes
         run: dotnet ef migrations has-pending-model-changes
-        working-directory: ./src/Conductor.Persistence
+        working-directory: ./src/Conductor.Engine.Persistence
 
       - name: Check For Vulnerabilities
         run: dotnet list ${{ env.SOLUTION_FILE }} package --vulnerable
