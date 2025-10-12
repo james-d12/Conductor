@@ -1,17 +1,23 @@
 version: 2
 updates:
   - package-ecosystem: "nuget"
-    groups:
-      production-dependencies:
-        dependency-type: "production"
     directory: "/Conductor.Engine"
     schedule:
       interval: "daily"
-
-  - package-ecosystem: "npm"
+    commit-message:
+      prefix: "chore"
+      include: "scope" # adds "(deps)" style scope
     groups:
       production-dependencies:
         dependency-type: "production"
+
+  - package-ecosystem: "npm"
     directory: "/Conductor.Web"
     schedule:
       interval: "daily"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    groups:
+      production-dependencies:
+        dependency-type: "production"
