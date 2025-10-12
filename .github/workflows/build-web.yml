@@ -19,7 +19,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: '0'
+          fetch-depth: 0
 
       - name: Detect changes
         id: changes
@@ -38,25 +38,38 @@ jobs:
           exit 0
         working-directory: ./
 
-      - uses: denoland/setup-deno@v2
-        if: steps.changes.outputs.changed == 'true'
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
         with:
-          deno-version: v2.x
-          cache: true
+          node-version: 22
 
-      - name: Install Dependencies
-        if: steps.changes.outputs.changed == 'true'
-        run: "deno install"
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        id: pnpm-install
+        with:
+          version: 9
+          run_install: false
 
-      - name: Format Check
-        if: steps.changes.outputs.changed == 'true'
-        run: "deno fmt --check"
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        run: echo "pnpm_cache_dir=$(pnpm store path)" >> $GITHUB_OUTPUT
 
-      - name: Lint Check
-        if: steps.changes.outputs.changed == 'true'
-        run: "deno lint"
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
 
-      - name: Build
-        if: steps.changes.outputs.changed == 'true'
-        run: "deno task build"
-      
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build project
+        run: pnpm build
+
+      - name: Audit Packages
+        run: pnpm audit
