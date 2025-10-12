@@ -4,9 +4,15 @@ on:
   push:
     branches:
       - master
+    paths:
+      - 'Conductor.Web/**'
+      - '.github/workflows/build-web.yaml'
   pull_request:
     branches:
       - master
+    paths:
+      - 'Conductor.Web/**'
+      - '.github/workflows/build-web.yaml'
 
 jobs:
   build:
@@ -20,23 +26,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
-      - name: Detect changes
-        id: changes
-        run: |
-          if git diff --quiet HEAD^ HEAD -- Conductor.Web .github/workflows/build-web.yaml; then
-            echo "changed=false" >> $GITHUB_OUTPUT
-          else
-            echo "changed=true" >> $GITHUB_OUTPUT
-          fi
-        working-directory: ./
-
-      - name: Skip if no changes
-        if: steps.changes.outputs.changed == 'false'
-        run: |
-          echo "No changes detected for Conductor.Web, skipping..."
-          exit 0
-        working-directory: ./
 
       - name: Checkout
         uses: actions/checkout@v4
