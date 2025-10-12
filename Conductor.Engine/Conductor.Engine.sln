@@ -23,7 +23,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Root Items", "Root Items", "{FB355323-B892-4830-8189-C6CE8E732FD7}"
 	ProjectSection(SolutionItems) = preProject
 		..\.github\workflows\build-engine.yml = ..\.github\workflows\build-engine.yml
-		..\.github\workflows\build-web.yml = ..\.github\workflows\build-web.yml
 	EndProjectSection
 EndProject
 Global
