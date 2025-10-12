@@ -27,7 +27,7 @@ jobs:
       - name: Detect changes
         id: changes
         run: |
-          if git diff --quiet HEAD^ HEAD -- Conductor.Engine; then
+          if git diff --quiet HEAD^ HEAD -- Conductor.Engine .github/workflows/build-engine.yaml; then
             echo "changed=false" >> $GITHUB_OUTPUT
           else
             echo "changed=true" >> $GITHUB_OUTPUT
@@ -73,7 +73,7 @@ jobs:
       - name: Check No Pending Model Changes
         if: steps.changes.outputs.changed == 'true'
         run: dotnet ef migrations has-pending-model-changes
-        working-directory: ./src/Conductor.Engine.Persistence
+        working-directory: src/Conductor.Engine.Persistence
 
       - name: Check For Vulnerabilities
         if: steps.changes.outputs.changed == 'true'
