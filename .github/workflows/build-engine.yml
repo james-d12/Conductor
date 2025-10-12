@@ -32,12 +32,14 @@ jobs:
           else
             echo "changed=true" >> $GITHUB_OUTPUT
           fi
+        working-directory: ./
 
       - name: Skip if no changes
         if: steps.changes.outputs.changed == 'false'
         run: |
           echo "No changes detected for Conductor.Engine, skipping..."
           exit 0
+        working-directory: ./
 
       - name: Setup .NET
         if: steps.changes.outputs.changed == 'true'

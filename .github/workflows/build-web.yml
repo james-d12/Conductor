@@ -29,12 +29,14 @@ jobs:
           else
             echo "changed=true" >> $GITHUB_OUTPUT
           fi
+        working-directory: ./
 
       - name: Skip if no changes
         if: steps.changes.outputs.changed == 'false'
         run: |
           echo "No changes detected for Conductor.Web, skipping..."
           exit 0
+        working-directory: ./
 
       - uses: denoland/setup-deno@v2
         if: steps.changes.outputs.changed == 'true'
