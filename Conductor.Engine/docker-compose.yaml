@@ -25,4 +25,4 @@ services:
       watch:
         - action: sync+restart
           path: .src/Conductor.Engine.Cli
-          target: .src/Conductor.Engine.Cli 
+          target: .src/Conductor.Engine.Cli
