@@ -12,6 +12,24 @@ jobs:
   build:
     name: "Web Build and Check"
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./Conductor.Web
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+          cache: true
+
+      - name: Format Check
+        run: "deno fmt --check"
+
+      - name: Lint Check
+        run: "deno lint"
+
+      - name: Build
+        run: "deno task build"
+      
