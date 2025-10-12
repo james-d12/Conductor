@@ -1,0 +1,62 @@
+name: Web - Build & Validate
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    name: "Web Build and Check"
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./Conductor.Web
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: '0'
+
+      - name: Detect changes
+        id: changes
+        run: |
+          if git diff --quiet HEAD^ HEAD -- Conductor.Web .github/workflows/build-web.yaml; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+        working-directory: ./
+
+      - name: Skip if no changes
+        if: steps.changes.outputs.changed == 'false'
+        run: |
+          echo "No changes detected for Conductor.Web, skipping..."
+          exit 0
+        working-directory: ./
+
+      - uses: denoland/setup-deno@v2
+        if: steps.changes.outputs.changed == 'true'
+        with:
+          deno-version: v2.x
+          cache: true
+
+      - name: Install Dependencies
+        if: steps.changes.outputs.changed == 'true'
+        run: "deno install"
+
+      - name: Format Check
+        if: steps.changes.outputs.changed == 'true'
+        run: "deno fmt --check"
+
+      - name: Lint Check
+        if: steps.changes.outputs.changed == 'true'
+        run: "deno lint"
+
+      - name: Build
+        if: steps.changes.outputs.changed == 'true'
+        run: "deno task build"
+      
