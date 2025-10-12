@@ -1,5 +1,6 @@
 ﻿using Conductor.Engine.Domain.Application;
 using Conductor.Engine.Domain.Deployment;
+using Conductor.Engine.Domain.Organisation;
 using Conductor.Engine.Domain.Resource;
 using Conductor.Engine.Domain.ResourceDependency;
 using Conductor.Engine.Domain.ResourceTemplate;
@@ -96,14 +97,15 @@ await resourceTemplateRepository.CreateAsync(azureVirtualNetwork);
 await resourceTemplateRepository.CreateAsync(azureContainerRegistry);
 await resourceTemplateRepository.CreateAsync(argoCdTemplate);
 
+var organisation = Organisation.Create("my-organisation");
 var paymentApi = Application.Create("payment-api", new Repository
 {
     Name = "payment api repository",
     Url = new Uri("https://github.com/james-d12/Conductor-Example.git"),
     Provider = RepositoryProvider.GitHub
-});
+}, organisation.Id);
 
-var devEnvironment = Environment.Create("dev", "The Development Environment");
+var devEnvironment = Environment.Create("dev", "The Development Environment", organisation.Id);
 
 var commit = Commit.Create("7b926d5c23d0e806c62d4c86e25fc73564efb8a1", "test message");
 

@@ -1,4 +1,5 @@
 using Conductor.Engine.Domain.Environment;
+using Conductor.Engine.Domain.Organisation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Environment = Conductor.Engine.Domain.Environment.Environment;
@@ -22,5 +23,11 @@ internal sealed class EnvironmentConfiguration : IEntityTypeConfiguration<Enviro
                 id => id.Value,
                 value => new EnvironmentId(value)
             );
+
+        builder.HasOne<Organisation>()
+            .WithMany()
+            .HasForeignKey(a => a.OrganisationId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

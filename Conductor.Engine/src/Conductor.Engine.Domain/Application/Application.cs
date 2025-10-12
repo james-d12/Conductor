@@ -1,3 +1,5 @@
+using Conductor.Engine.Domain.Organisation;
+
 namespace Conductor.Engine.Domain.Application;
 
 /// <summary>
@@ -7,6 +9,7 @@ namespace Conductor.Engine.Domain.Application;
 public sealed record Application
 {
     public required ApplicationId Id { get; init; }
+    public required OrganisationId OrganisationId { get; init; }
     public required string Name { get; init; }
     public required Repository Repository { get; init; }
     public required DateTime CreatedAt { get; init; }
@@ -16,13 +19,14 @@ public sealed record Application
     {
     }
 
-    public static Application Create(string name, Repository repository)
+    public static Application Create(string name, Repository repository, OrganisationId organisationId)
     {
         ArgumentException.ThrowIfNullOrEmpty(name);
 
         return new Application
         {
             Id = new ApplicationId(),
+            OrganisationId = organisationId,
             Name = name,
             Repository = repository,
             CreatedAt = DateTime.Now,
@@ -37,6 +41,7 @@ public sealed record Application
         return new Application
         {
             Id = new ApplicationId(),
+            OrganisationId = request.OrganisationId,
             Name = request.Name,
             Repository = new Repository
             {

@@ -2,13 +2,13 @@ using Conductor.Engine.Domain.Application;
 using Conductor.Engine.Domain.Organisation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using ApplicationId = Conductor.Engine.Domain.Application.ApplicationId;
+using Environment = Conductor.Engine.Domain.Environment.Environment;
 
 namespace Conductor.Engine.Persistence.Configurations;
 
-internal sealed class ApplicationConfiguration : IEntityTypeConfiguration<Application>
+internal sealed class OrganisationConfiguration : IEntityTypeConfiguration<Organisation>
 {
-    public void Configure(EntityTypeBuilder<Application> builder)
+    public void Configure(EntityTypeBuilder<Organisation> builder)
     {
         builder.HasKey(a => a.Id);
 
@@ -19,20 +19,19 @@ internal sealed class ApplicationConfiguration : IEntityTypeConfiguration<Applic
         builder.Property(a => a.Id)
             .HasConversion(
                 id => id.Value,
-                value => new ApplicationId(value)
+                value => new OrganisationId(value)
             );
 
-        builder.HasOne<Organisation>()
-            .WithMany()
+        builder.HasMany<Application>()
+            .WithOne()
             .HasForeignKey(a => a.OrganisationId)
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.OwnsOne(a => a.Repository, r =>
-        {
-            r.Property(x => x.Name).IsRequired();
-            r.Property(x => x.Url).IsRequired();
-            r.Property(x => x.Provider).IsRequired().HasConversion<string>();
-        });
+        builder.HasMany<Environment>()
+            .WithOne()
+            .HasForeignKey(e => e.OrganisationId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

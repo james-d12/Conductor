@@ -1,4 +1,4 @@
 #!/usr/bin/sh
 
-cd src/Conductor.Persistence
+cd src/Conductor.Engine.Persistence
 dotnet ef migrations add $1

@@ -1,3 +1,5 @@
+using Conductor.Engine.Domain.Organisation;
+
 namespace Conductor.Engine.Domain.Environment;
 
 /// <summary>
@@ -7,6 +9,7 @@ namespace Conductor.Engine.Domain.Environment;
 public sealed record Environment
 {
     public required EnvironmentId Id { get; init; }
+    public required OrganisationId OrganisationId { get; init; }
     public required string Name { get; init; }
     public required string Description { get; init; }
     public required DateTime CreatedAt { get; init; }
@@ -16,7 +19,7 @@ public sealed record Environment
     {
     }
 
-    public static Environment Create(string name, string description)
+    public static Environment Create(string name, string description, OrganisationId organisationId)
     {
         ArgumentNullException.ThrowIfNull(name);
         ArgumentNullException.ThrowIfNull(description);
@@ -24,6 +27,7 @@ public sealed record Environment
         return new Environment
         {
             Id = new EnvironmentId(),
+            OrganisationId = organisationId,
             Name = name,
             Description = description,
             CreatedAt = DateTime.Now,
@@ -33,6 +37,6 @@ public sealed record Environment
 
     public static Environment Create(CreateEnvironmentRequest request)
     {
-        return Create(request.Name, request.Description);
+        return Create(request.Name, request.Description, request.OrganisationId);
     }
 }
