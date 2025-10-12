@@ -44,6 +44,10 @@ jobs:
           deno-version: v2.x
           cache: true
 
+      - name: Install Dependencies
+        if: steps.changes.outputs.changed == 'true'
+        run: "deno install"
+
       - name: Format Check
         if: steps.changes.outputs.changed == 'true'
         run: "deno fmt --check"
