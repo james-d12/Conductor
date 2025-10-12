@@ -21,13 +21,32 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: '0'
+
+      - name: Detect changes
+        id: changes
+        run: |
+          if git diff --quiet HEAD^ HEAD -- Conductor.Engine; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Skip if no changes
+        if: steps.changes.outputs.changed == 'false'
+        run: |
+          echo "No changes detected for Conductor.Engine, skipping..."
+          exit 0
 
       - name: Setup .NET
+        if: steps.changes.outputs.changed == 'true'
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '10.0.x'
 
       - name: Cache NuGet packages
+        if: steps.changes.outputs.changed == 'true'
         uses: actions/cache@v4
         env:
           cache-name: nuget-package-cache
@@ -36,33 +55,43 @@ jobs:
           key: ${{ runner.os }}-${{ env.cache-name }}
 
       - name: Install Stryker.NET
+        if: steps.changes.outputs.changed == 'true'
         run: dotnet tool install -g dotnet-stryker
 
       - name: Install EF Tools
+        if: steps.changes.outputs.changed == 'true'
         run: dotnet tool install -g dotnet-ef --version 10.0.0-rc.1.25451.107
 
       - name: Restore dependencies
+        if: steps.changes.outputs.changed == 'true'
         run: dotnet restore ${{ env.SOLUTION_FILE }}
 
       - name: Build API
+        if: steps.changes.outputs.changed == 'true'
         run: dotnet build ${{ env.SOLUTION_FILE }} --configuration Release --no-restore
 
       - name: Check No Pending Model Changes
+        if: steps.changes.outputs.changed == 'true'
         run: dotnet ef migrations has-pending-model-changes
         working-directory: ./src/Conductor.Engine.Persistence
 
       - name: Check For Vulnerabilities
+        if: steps.changes.outputs.changed == 'true'
         run: dotnet list ${{ env.SOLUTION_FILE }} package --vulnerable
 
       - name: Format Check
+        if: steps.changes.outputs.changed == 'true'
         run: dotnet format ${{ env.SOLUTION_FILE }} --verify-no-changes --verbosity diagnostic
 
       - name: Run Tests
+        if: steps.changes.outputs.changed == 'true'
         run: dotnet test ${{ env.SOLUTION_FILE }} --configuration Release --no-build --collect:"XPlat Code Coverage"
 
       - name: Run Mutation Tests
+        if: steps.changes.outputs.changed == 'true'
         run: dotnet stryker --solution ${{ env.SOLUTION_FILE }}
         continue-on-error: true
 
       - name: Build Docker
+        if: steps.changes.outputs.changed == 'true'
         run: docker compose build

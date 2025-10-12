@@ -18,18 +18,39 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: '0'
+
+      - name: Detect changes
+        id: changes
+        run: |
+          if git diff --quiet HEAD^ HEAD -- Conductor.Web; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Skip if no changes
+        if: steps.changes.outputs.changed == 'false'
+        run: |
+          echo "No changes detected for Conductor.Web, skipping..."
+          exit 0
 
       - uses: denoland/setup-deno@v2
+        if: steps.changes.outputs.changed == 'true'
         with:
           deno-version: v2.x
           cache: true
 
       - name: Format Check
+        if: steps.changes.outputs.changed == 'true'
         run: "deno fmt --check"
 
       - name: Lint Check
+        if: steps.changes.outputs.changed == 'true'
         run: "deno lint"
 
       - name: Build
+        if: steps.changes.outputs.changed == 'true'
         run: "deno task build"
       
