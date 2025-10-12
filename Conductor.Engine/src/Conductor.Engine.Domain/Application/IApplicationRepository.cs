@@ -1,7 +1,5 @@
 namespace Conductor.Engine.Domain.Application;
 
-using ApplicationId = ApplicationId;
-
 public interface IApplicationRepository
 {
     Task<Application?> CreateAsync(Application application,
