@@ -25,6 +25,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Root Items", "Root Items", 
 		..\.github\workflows\build-engine.yml = ..\.github\workflows\build-engine.yml
 		..\LICENSE.md = ..\LICENSE.md
 		..\README.md = ..\README.md
+		..\.github\workflows\build-web.yml = ..\.github\workflows\build-web.yml
+		..\.github\workflows\codeql.yml = ..\.github\workflows\codeql.yml
+		..\.github\dependabot.yml = ..\.github\dependabot.yml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{F08AFB2A-5E8E-4C91-9674-480DF987A640}"

@@ -1,5 +1,7 @@
 name: Engine - Build & Validate
-
+permissions:
+  contents: read
+  
 on:
   push:
     branches:

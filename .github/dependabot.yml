@@ -4,6 +4,14 @@ updates:
     groups:
       production-dependencies:
         dependency-type: "production"
-    directory: "/"
+    directory: "/Conductor.Engine"
+    schedule:
+      interval: "daily"
+
+  - package-ecosystem: "npm"
+    groups:
+      production-dependencies:
+        dependency-type: "production"
+    directory: "/Conductor.Web"
     schedule:
       interval: "daily"
