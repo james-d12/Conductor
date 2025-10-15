@@ -1,4 +1,4 @@
-name: conductor-engine
+name: conductor
 services:
   api:
     build:
@@ -28,8 +28,8 @@ services:
           target: .src/Conductor.Engine.Cli
 
   web:
-    env_file:
-      - src/Conductor.Portal.Web/.env
+    #env_file:
+    #  - src/Conductor.Portal.Web/.env
     depends_on:
       - api
     build:

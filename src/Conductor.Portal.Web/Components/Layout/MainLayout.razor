@@ -1,0 +1,33 @@
+﻿@inherits LayoutComponentBase
+
+<MudThemeProvider Theme="@_theme" IsDarkMode="_isDarkMode"/>
+<MudPopoverProvider/>
+<MudDialogProvider/>
+<MudSnackbarProvider/>
+
+<MudLayout>
+    <MudAppBar Elevation="2" Color="Color.Primary">
+        <MudIcon Icon="favicon.png"></MudIcon>
+        <MudText Typo="Typo.h5" Class="ml-3">Conductor Portal</MudText>
+        <MudSpacer/>
+        <MudTooltip Text="Toggle Theme" ShowOnClick="false" ShowOnFocus="false" Delay="400">
+            <MudIconButton Icon="@(DarkLightModeButtonIcon)" Color="Color.Inherit" Class="header-icon-button"
+                           OnClick="@DarkModeToggle"/>
+        </MudTooltip>
+
+    </MudAppBar>
+    <MudDrawer Open="false" OpenMiniOnHover="false" ClipMode="DrawerClipMode.Always" Variant="@DrawerVariant.Mini"
+               Elevation="2" Color="Color.Primary">
+        <NavMenu/>
+    </MudDrawer>
+    <MudMainContent>
+        @Body
+    </MudMainContent>
+</MudLayout>
+
+
+<div id="blazor-error-ui">
+    An unhandled error has occurred.
+    <a href="" class="reload">Reload</a>
+    <a class="dismiss">🗙</a>
+</div>

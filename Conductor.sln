@@ -32,6 +32,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{F08A
 		scripts\setup.sh = scripts\setup.sh
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Conductor.Portal.Web", "src\Conductor.Portal.Web\Conductor.Portal.Web.csproj", "{10FCA1B7-F733-4501-92B2-98881C51F73B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -58,6 +60,10 @@ Global
 		{594E491C-478B-4B07-B330-72FACC0C3C52}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{594E491C-478B-4B07-B330-72FACC0C3C52}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{594E491C-478B-4B07-B330-72FACC0C3C52}.Release|Any CPU.Build.0 = Release|Any CPU
+		{10FCA1B7-F733-4501-92B2-98881C51F73B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10FCA1B7-F733-4501-92B2-98881C51F73B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10FCA1B7-F733-4501-92B2-98881C51F73B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10FCA1B7-F733-4501-92B2-98881C51F73B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection

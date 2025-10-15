@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+    
+    <ItemGroup>
+        <PackageReference Include="MudBlazor" Version="8.13.0" />
+    </ItemGroup>
+    
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Components\Shared\Branch.razor" />
+      <_ContentIncludedByDefault Remove="Components\Shared\StatisticsCard.razor" />
+    </ItemGroup>
+
+</Project>

@@ -1,11 +1,11 @@
 # =====================
 # Build Stage
 # =====================
-FROM mcr.microsoft.com/dotnet/sdk:9.0.306-noble AS build
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 
 WORKDIR /app
 
-# Copy project files
+# Copy project files1
 COPY ./src ./
 COPY Directory.Build.props ./
 
@@ -18,7 +18,7 @@ RUN dotnet publish Conductor.Engine.Api.csproj -c Release --no-restore -o /app/o
 # =====================
 # Runtime Stage
 # =====================
-FROM mcr.microsoft.com/dotnet/aspnet:9.0.306-noble AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
 
 # =====================
 # Create non-root user

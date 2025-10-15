@@ -1,0 +1,121 @@
+﻿.paypoint-navmenu {
+    padding: 1rem 0;
+}
+
+.paypoint-navmenu .mud-nav-link {
+    color: #d7d7d7 !important;
+    background: none !important;
+    border: none !important;
+    border-radius: 4px !important;
+    height: 3rem !important;
+    display: flex !important;
+    align-items: center !important;
+    width: 100% !important;
+    margin-bottom: 0.5rem !important;
+    padding: 0 1rem !important;
+    transition: all 0.3s ease !important;
+}
+
+.paypoint-navmenu .mud-nav-link:hover {
+    background-color: #fed120 !important;
+    color: var(--mud-palette-primary) !important;
+}
+
+.paypoint-navmenu .mud-nav-link.active {
+    background-color: #fed120 !important;
+    border-left: 3px solid #fed120 !important;
+    color: var(--mud-palette-primary) !important;
+}
+
+/* Enhanced data grid styles */
+.mud-data-grid .mud-table-row:hover {
+    background-color: var(--mud-palette-action-hover) !important;
+}
+
+/* Dense table rows - More specific targeting */
+.mud-data-grid .mud-table-cell,
+.mud-table .mud-table-cell,
+.mud-data-grid-cell {
+    padding: 4px 8px !important;
+    line-height: 1.2 !important;
+    min-height: 36px !important;
+    height: 36px !important;
+}
+
+.mud-data-grid .mud-table-head .mud-table-cell,
+.mud-table-head .mud-table-cell {
+    padding: 6px 8px !important;
+    font-weight: 600;
+    height: 40px !important;
+    min-height: 40px !important;
+}
+
+/* Dense hierarchy column */
+.mud-data-grid .mud-table-cell .mud-expand-cell,
+.mud-data-grid .mud-expand-cell {
+    padding: 1px 1px 1px 8px !important;
+    margin: 0 !important;
+}
+
+/* Dense button in expand column - only within data grid */
+.mud-data-grid .mud-icon-button {
+    width: 24px !important;
+    height: 24px !important;
+    padding: 2px !important;
+}
+
+/* Dense chips and icons - only within data grid */
+.mud-data-grid .mud-chip {
+    height: 20px !important;
+    font-size: 0.75rem !important;
+    margin: 2px !important;
+}
+
+.mud-data-grid .mud-chip .mud-chip-content {
+    padding: 0 6px !important;
+}
+
+/* Dense progress bars - only within data grid */
+.mud-data-grid .mud-progress-linear {
+    height: 10px !important;
+    margin: 3px 0 !important;
+}
+
+/* Dense stack spacing */
+.mud-stack-row {
+    gap: 4px !important;
+}
+
+/* Dense text elements */
+.mud-data-grid .mud-typography,
+.mud-table .mud-typography {
+    line-height: 1.2 !important;
+    margin: 0 !important;
+}
+
+/* Remove extra spacing from MudText components */
+.mud-typography-body1,
+.mud-typography-body2,
+.mud-typography-caption {
+    margin-bottom: 0 !important;
+    margin-top: 0 !important;
+}
+
+/* Statistics cards hover effect */
+.statistics-card:hover {
+    transform: translateY(-4px);
+    transition: transform 0.2s ease-in-out;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+}
+
+/* Header icon buttons with same hover effects as nav menu */
+.header-icon-button {
+    color: #d7d7d7 !important;
+    border-radius: 4px !important;
+    transition: all 0.3s ease !important;
+}
+
+.header-icon-button:hover {
+    background-color: #fed120 !important;
+    color: var(--mud-palette-primary) !important;
+}
