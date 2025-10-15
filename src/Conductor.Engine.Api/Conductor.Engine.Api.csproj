@@ -4,14 +4,14 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.0-rc.1.25451.107" />
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.6" />
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.10"/>
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.6"/>
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Conductor.Engine.Domain\Conductor.Engine.Domain.csproj" />
-        <ProjectReference Include="..\Conductor.Engine.Infrastructure\Conductor.Engine.Infrastructure.csproj" />
-        <ProjectReference Include="..\Conductor.Engine.Persistence\Conductor.Engine.Persistence.csproj" />
+        <ProjectReference Include="..\Conductor.Engine.Domain\Conductor.Engine.Domain.csproj"/>
+        <ProjectReference Include="..\Conductor.Engine.Infrastructure\Conductor.Engine.Infrastructure.csproj"/>
+        <ProjectReference Include="..\Conductor.Engine.Persistence\Conductor.Engine.Persistence.csproj"/>
     </ItemGroup>
 
 </Project>

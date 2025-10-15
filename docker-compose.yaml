@@ -25,4 +25,18 @@ services:
       watch:
         - action: sync+restart
           path: .src/Conductor.Engine.Cli
-          target: .src/Conductor.Engine.Cli 
+          target: .src/Conductor.Engine.Cli
+
+  web:
+    env_file:
+      - src/Conductor.Portal.Web/.env
+    depends_on:
+      - api
+    build:
+      context: .
+      dockerfile: src/Conductor.Portal.Web/Dockerfile
+    develop:
+      watch:
+        - action: sync+restart
+          path: .src/Conductor.Portal.Web
+          target: .src/Conductor.Portal.Web 
