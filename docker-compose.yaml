@@ -1,0 +1,44 @@
+name: conductor
+services:
+  api:
+    build:
+      context: .
+      dockerfile: src/Conductor.Engine.Api/Dockerfile
+    volumes:
+      - /home/james/Documents/Conductor:/tmp/conductor
+    ports:
+      - "8081:8080"
+    develop:
+      watch:
+        - action: sync+restart
+          path: .src/Conductor.Engine.Api
+          target: .src/Conductor.Engine.Api
+  cli:
+    env_file:
+      - src/Conductor.Engine.Cli/.env
+    build:
+      context: .
+      dockerfile: src/Conductor.Engine.Cli/Dockerfile
+    volumes:
+      - /home/james/Documents/Conductor:/tmp/conductor
+    develop:
+      watch:
+        - action: sync+restart
+          path: .src/Conductor.Engine.Cli
+          target: .src/Conductor.Engine.Cli
+
+  web:
+    #env_file:
+    #  - src/Conductor.Portal.Web/.env
+    depends_on:
+      - api
+    build:
+      context: .
+      dockerfile: src/Conductor.Portal.Web/Dockerfile
+    ports:
+      - "8080:8080"
+    develop:
+      watch:
+        - action: sync+restart
+          path: .src/Conductor.Portal.Web
+          target: .src/Conductor.Portal.Web 

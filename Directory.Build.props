@@ -1,0 +1,22 @@
+<Project>
+    <PropertyGroup>
+        <IsPackable>false</IsPackable>
+        <IsPublishable>false</IsPublishable>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <LangVersion>latest</LangVersion>
+        <Features>strict</Features>
+        <WarningLevel>4</WarningLevel>
+        <Nullable>enable</Nullable>
+        <AnalysisMode>Default</AnalysisMode>
+        <NuGetAuditMode>all</NuGetAuditMode>
+        <NuGetAudit>true</NuGetAudit>
+        <NuGetAuditLevel>low</NuGetAuditLevel>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+        <EnableRoslynAnalyzers>true</EnableRoslynAnalyzers>
+        <CodeAnalysisTreatWarningsAsErrors>true</CodeAnalysisTreatWarningsAsErrors>
+        <RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
+        <RunAnalyzersDuringBuildOnly>true</RunAnalyzersDuringBuildOnly>
+    </PropertyGroup>
+</Project>

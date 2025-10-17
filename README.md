@@ -1,14 +1,19 @@
 # Conductor
 
-A prototype stage idea for a Platform Orchestrator and accompanying Portals. This repository is currently a mono-repo
-containing both backend (engine) and frontend (web, cli) together.
+Conductor is a prototype Platform Orchestrator
 
-## Conductor Engine
+This is a C# monorepo that has the backend and frontend. The backend is the API along written in C#, and the frontend
+is a Blazor Web App. The backend all the Domain Rules, Persistence and API handling. It is the heart of Conductor and is
+what is called by all frontends (like Conductor.Web).
 
-The Conductor Engine is the Internal Developer Platform containing the Platform Orchestrator. You can find the
-README [here](./Conductor.Engine/README.md)
+## Getting Started
 
-## Conductor Web
+You need to have [Docker](https://www.docker.com/)
+and [.NET 10 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/10.0) installed.
 
-The Conductor Web is the frontend portal for this project. It is the Internal Developer Portal. You can find the README
-[here](./Conductor.Web/README.md)
+1. You will need to clone the repository from the master branch.
+2. Next you will need to open the Conductor.sln in an IDE (E.G. JetBrains Rider, Visual Studio, or Visual Studio
+   Code)
+3. Now, run the ```setup.sh``` script inside the ```./scripts``` folder. This will install the required global dotnet
+   tools like efcore.
+4. Next you can run the docker compose to spin up the API / CLI application.
