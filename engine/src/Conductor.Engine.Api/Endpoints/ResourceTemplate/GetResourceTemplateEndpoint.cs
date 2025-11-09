@@ -11,7 +11,7 @@ public sealed class GetResourceTemplateEndpoint : IEndpoint
         .MapGet("/{id:guid}", HandleAsync)
         .WithSummary("Gets an existing resource template by id.");
 
-    public sealed record GetResourceTemplateResponse(string Name);
+    public sealed record GetResourceTemplateResponse(Guid Id, string Name, string Type, string Description);
 
     private static async Task<Results<Ok<GetResourceTemplateResponse>, NotFound, InternalServerError>> HandleAsync(
         [FromQuery]
@@ -32,7 +32,14 @@ public sealed class GetResourceTemplateEndpoint : IEndpoint
                 return TypedResults.NotFound();
             }
 
-            return TypedResults.Ok(new GetResourceTemplateResponse(resourceTemplateResponse.Name));
+            var response = new GetResourceTemplateResponse(
+                Id: resourceTemplateResponse.Id.Value,
+                Name: resourceTemplateResponse.Name,
+                Type: resourceTemplateResponse.Type,
+                Description: resourceTemplateResponse.Description
+            );
+
+            return TypedResults.Ok(response);
         }
         catch (Exception exception)
         {
