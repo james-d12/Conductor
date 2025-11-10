@@ -125,7 +125,7 @@ jobs:
 
       - name: Check No Pending Model Changes
         run: dotnet ef migrations has-pending-model-changes
-        working-directory: ./src/Conductor.Engine.Persistence
+        working-directory: engine/src/Conductor.Engine.Persistence
 
       - name: Check For Vulnerabilities
         run: dotnet list ${{ env.SOLUTION_FILE }} package --vulnerable
