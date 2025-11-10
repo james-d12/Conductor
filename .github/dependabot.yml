@@ -1,18 +1,7 @@
 version: 2
 updates:
   - package-ecosystem: "nuget"
-    directory: "/Conductor.Engine"
-    schedule:
-      interval: "daily"
-    commit-message:
-      prefix: "chore"
-      include: "scope" # adds "(deps)" style scope
-    groups:
-      production-dependencies:
-        dependency-type: "production"
-
-  - package-ecosystem: "npm"
-    directory: "/Conductor.Web"
+    directory: "/engine/src"
     schedule:
       interval: "daily"
     commit-message:
@@ -21,3 +10,30 @@ updates:
     groups:
       production-dependencies:
         dependency-type: "production"
+
+  - package-ecosystem: "npm"
+    directory: "/client/Conductor.Client.Web"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    groups:
+      production-dependencies:
+        dependency-type: "production"
+  
+  - package-ecosystem: "cargo"
+    directory: "/client/Conductor.Client.Cli"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    groups:
+      production-dependencies:
+        dependency-type: "production"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
