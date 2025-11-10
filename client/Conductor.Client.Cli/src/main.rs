@@ -1,5 +1,4 @@
 use clap::Command;
-use clap::builder::Str;
 use reqwest::Error;
 use serde::Deserialize;
 
@@ -93,7 +92,7 @@ async fn main() {
 
     match matches.subcommand() {
         Some(("resource-template", sub_matches)) => match sub_matches.subcommand() {
-            Some(("get", sub_matches)) => {
+            Some(("get", _)) => {
                 println!("Ran the resource template get sub command");
                 let rts = get_resource_templates().await.unwrap();
 
@@ -103,13 +102,13 @@ async fn main() {
             }
             _ => unreachable!(),
         },
-        Some(("application", sub_matches)) => {
+        Some(("application", _)) => {
             println!("Ran the application sub command");
         }
-        Some(("environment", sub_matches)) => {
+        Some(("environment", _)) => {
             println!("Ran the environment sub command");
         }
-        Some(("organisation", sub_matches)) => {
+        Some(("organisation", _)) => {
             println!("Ran the organisation sub command");
         }
         _ => unreachable!(),
