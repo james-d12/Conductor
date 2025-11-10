@@ -2,8 +2,8 @@ name: conductor
 services:
   api:
     build:
-      context: .
-      dockerfile: engine/src/Conductor.Engine.Api/Dockerfile
+      context: engine/
+      dockerfile: src/Conductor.Engine.Api/Dockerfile
     volumes:
       - /home/james/Documents/Conductor:/tmp/conductor
     ports:
@@ -14,15 +14,24 @@ services:
           path: .engine/src/Conductor.Engine.Api
           target: .engine/src/Conductor.Engine.Api
   cli:
-    env_file:
-      - engine/src/Conductor.Engine.Cli/.env
+    depends_on:
+      - api
     build:
-      context: .
-      dockerfile: engine/src/Conductor.Engine.Cli/Dockerfile
-    volumes:
-      - /home/james/Documents/Conductor:/tmp/conductor
+      context: client/Conductor.Client.Cli
+      dockerfile: Dockerfile
     develop:
       watch:
         - action: sync+restart
-          path: .engine/src/Conductor.Engine.Cli
-          target: .engine/src/Conductor.Engine.Cli
+          path: .client/Conductor.Client.Cli
+          target: .client/Conductor.Client.Cli
+  web:
+    depends_on:
+      - api
+    build:
+      context: client/Conductor.Client.Web
+      dockerfile: Dockerfile
+    develop:
+      watch:
+        - action: sync+restart
+          path: .client/Conductor.Client.Web
+          target: .client/Conductor.Client.Web

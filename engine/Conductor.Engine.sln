@@ -9,7 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Conductor.Engine.Api", "src\Conductor.Engine.Api\Conductor.Engine.Api.csproj", "{9FFFB719-DA35-4120-9BEB-6DA78CF28F59}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Conductor.Engine.Cli", "src\Conductor.Engine.Cli\Conductor.Engine.Cli.csproj", "{0E8A91D2-E999-4D7C-9984-2B04118A9604}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Conductor.Engine.Playground", "src\Conductor.Engine.Playground\Conductor.Engine.Playground.csproj", "{0E8A91D2-E999-4D7C-9984-2B04118A9604}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Conductor.Engine.Domain", "src\Conductor.Engine.Domain\Conductor.Engine.Domain.csproj", "{231859A8-49BF-42C2-BFBC-E8E980506FF8}"
 EndProject

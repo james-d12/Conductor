@@ -1,3 +1,8 @@
 /[Bb]in
 /[Oo]bj
+/[Nn]ode_modules
+/[Tt]arget
+/.idea
+/.vscode
+/.git
 README.md
