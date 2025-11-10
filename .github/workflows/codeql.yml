@@ -26,6 +26,7 @@ jobs:
             build-mode: none
           - language: javascript-typescript
             build-mode: none
+          - language: rust
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

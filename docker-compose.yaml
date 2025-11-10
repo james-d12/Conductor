@@ -2,7 +2,7 @@ name: conductor
 services:
   api:
     build:
-      context: .
+      context: engine/
       dockerfile: src/Conductor.Engine.Api/Dockerfile
     volumes:
       - /home/james/Documents/Conductor:/tmp/conductor
@@ -11,34 +11,27 @@ services:
     develop:
       watch:
         - action: sync+restart
-          path: .src/Conductor.Engine.Api
-          target: .src/Conductor.Engine.Api
+          path: .engine/src/Conductor.Engine.Api
+          target: .engine/src/Conductor.Engine.Api
   cli:
-    env_file:
-      - src/Conductor.Engine.Cli/.env
-    build:
-      context: .
-      dockerfile: src/Conductor.Engine.Cli/Dockerfile
-    volumes:
-      - /home/james/Documents/Conductor:/tmp/conductor
-    develop:
-      watch:
-        - action: sync+restart
-          path: .src/Conductor.Engine.Cli
-          target: .src/Conductor.Engine.Cli
-
-  web:
-    #env_file:
-    #  - src/Conductor.Portal.Web/.env
     depends_on:
       - api
     build:
-      context: .
-      dockerfile: src/Conductor.Portal.Web/Dockerfile
-    ports:
-      - "8080:8080"
+      context: client/Conductor.Client.Cli
+      dockerfile: Dockerfile
     develop:
       watch:
         - action: sync+restart
-          path: .src/Conductor.Portal.Web
-          target: .src/Conductor.Portal.Web 
+          path: .client/Conductor.Client.Cli
+          target: .client/Conductor.Client.Cli
+  web:
+    depends_on:
+      - api
+    build:
+      context: client/Conductor.Client.Web
+      dockerfile: Dockerfile
+    develop:
+      watch:
+        - action: sync+restart
+          path: .client/Conductor.Client.Web
+          target: .client/Conductor.Client.Web
