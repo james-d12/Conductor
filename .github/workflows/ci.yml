@@ -10,8 +10,6 @@ on:
     branches:
       - master
 
-env:
-  SOLUTION_FILE: Conductor.sln
 
 jobs:
   build-web:
@@ -89,6 +87,8 @@ jobs:
   build-engine:
     name: "Build Engine"
     runs-on: ubuntu-latest
+    env:
+      SOLUTION_FILE: Conductor.Engine.sln
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
