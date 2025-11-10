@@ -87,6 +87,9 @@ jobs:
   build-engine:
     name: "Build Engine"
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./engine
     env:
       SOLUTION_FILE: Conductor.Engine.sln
     steps:
