@@ -14,7 +14,7 @@ builder.Host.UseDefaultServiceProvider(options =>
 builder.Services
     .AddOpenApi()
     .AddEndpointsApiExplorer()
-    .AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo { Title = "Conductor API", Version = "v1" }); })
+    .AddSwaggerGen()
     .AddPersistenceServices()
     .AddInfrastructureServices();
 

@@ -1,7 +1,9 @@
 mod command;
+mod config;
 mod resource_template;
 
 use crate::command::cli;
+use crate::config::{handle_config_setup, handle_config_info};
 use crate::resource_template::{
     CreateResourceTemplateRequest, create_resource_template, get_resource_templates,
 };
@@ -11,6 +13,21 @@ async fn main() {
     let matches = cli().get_matches();
 
     match matches.subcommand() {
+        Some(("config", sub_matches)) => match sub_matches.subcommand() {
+            Some(("setup", _)) => {
+                handle_config_setup().unwrap_or_else(|e| {
+                    eprintln!("Config setup failed: {}", e);
+                    std::process::exit(1);
+                });
+            }
+            Some(("info", _)) => {
+                handle_config_info().unwrap_or_else(|e| {
+                    eprintln!("Config info failed: {}", e);
+                    std::process::exit(1);
+                });
+            }
+            _ => unreachable!(),
+        }
         Some(("resource-template", sub_matches)) => match sub_matches.subcommand() {
             Some(("get", _)) => {
                 println!("Ran the resource template get sub command");

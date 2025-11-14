@@ -1,6 +1,7 @@
 use clap::Command;
 use reqwest::{Error, StatusCode};
 use serde::{Deserialize, Serialize};
+use crate::config::get_api_url;
 
 #[derive(Debug, Deserialize, PartialEq)]
 pub struct ResourceTemplate {
@@ -39,7 +40,9 @@ pub fn get_resource_template_command() -> Command {
 }
 
 pub async fn get_resource_templates() -> Result<Vec<ResourceTemplate>, Error> {
-    let body = reqwest::get("http://localhost:5222/resource-templates")
+    let api_url = get_api_url().expect("Failed to load API URL. Please run 'cdr config' first.");
+    let url = format!("{}/resource-templates", api_url);
+    let body = reqwest::get(&url)
         .await?
         .text()
         .await?;
@@ -48,11 +51,13 @@ pub async fn get_resource_templates() -> Result<Vec<ResourceTemplate>, Error> {
 }
 
 pub async fn create_resource_template(request: CreateResourceTemplateRequest) -> Result<(), Error> {
+    let api_url = get_api_url().expect("Failed to load API URL. Please run 'cdr config' first.");
+    let url = format!("{}/resource-templates", api_url);
     let client = reqwest::Client::new();
     let response = client
-        .post("http://localhost:5222/resource-templates")
+        .post(&url)
         .json(&request)
-        .send()
+        .send() 
         .await?;
 
     let status = response.status();
