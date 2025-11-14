@@ -1,104 +1,58 @@
-use clap::Command;
-use reqwest::Error;
-use serde::Deserialize;
+mod command;
+mod config;
+mod resource_template;
 
-#[derive(Debug, Deserialize, PartialEq)]
-pub struct ResourceTemplate {
-    pub id: String,
-    pub name: String,
-    #[serde(rename = "type")]
-    pub resource_template_type: String,
-    pub description: String,
-}
-
-#[derive(Debug, Deserialize)]
-struct ResourceTemplatesResponse {
-    #[serde(rename = "resourceTemplates")]
-    pub resource_templates: Vec<ResourceTemplate>,
-}
-
-fn get_resource_template_command() -> Command {
-    Command::new("resource-template")
-        .about("Manage Resource Templates")
-        .alias("rt")
-        .subcommand_required(true)
-        .arg_required_else_help(true)
-        .allow_external_subcommands(true)
-        .subcommand(Command::new("get").about("Gets Resource Templates"))
-        .subcommand(Command::new("delete").about("Delete a Resource Template"))
-        .subcommand(Command::new("create").about("Creates a new Resource Template"))
-}
-
-fn get_application_command() -> Command {
-    Command::new("application")
-        .about("Manage Applications")
-        .alias("app")
-        .subcommand_required(true)
-        .arg_required_else_help(true)
-        .allow_external_subcommands(true)
-        .subcommand(Command::new("get").about("Gets Applications"))
-        .subcommand(Command::new("delete").about("Delete an Application"))
-        .subcommand(Command::new("create").about("Creates a new Application"))
-}
-
-fn get_environment_command() -> Command {
-    Command::new("environment")
-        .about("Manage Environments")
-        .alias("env")
-        .subcommand_required(true)
-        .arg_required_else_help(true)
-        .allow_external_subcommands(true)
-        .subcommand(Command::new("get").about("Gets Environments"))
-        .subcommand(Command::new("delete").about("Delete an Environment"))
-        .subcommand(Command::new("create").about("Creates a new Environment"))
-}
-
-fn get_organisation_command() -> Command {
-    Command::new("organisation")
-        .about("Manage Organisations")
-        .alias("org")
-        .subcommand_required(true)
-        .arg_required_else_help(true)
-        .allow_external_subcommands(true)
-        .subcommand(Command::new("get").about("Gets Organisations"))
-        .subcommand(Command::new("delete").about("Delete an Organisation"))
-        .subcommand(Command::new("create").about("Creates a new Organisation"))
-}
-
-fn cli() -> Command {
-    Command::new("cdr")
-        .about("Manage Conductor through the Cli")
-        .subcommand_required(true)
-        .arg_required_else_help(true)
-        .allow_external_subcommands(true)
-        .subcommand(get_resource_template_command())
-        .subcommand(get_application_command())
-        .subcommand(get_environment_command())
-        .subcommand(get_organisation_command())
-}
-
-async fn get_resource_templates() -> Result<Vec<ResourceTemplate>, Error> {
-    let body = reqwest::get("http://localhost:5222/resource-templates")
-        .await?
-        .text()
-        .await?;
-    let resource_templates: ResourceTemplatesResponse = serde_json::from_str(&body).unwrap();
-    Ok(resource_templates.resource_templates)
-}
+use crate::command::cli;
+use crate::config::{handle_config_info, handle_config_setup};
+use crate::resource_template::{get_resource_templates, handle_create_resource_template};
 
 #[tokio::main]
 async fn main() {
     let matches = cli().get_matches();
 
     match matches.subcommand() {
+        Some(("config", sub_matches)) => match sub_matches.subcommand() {
+            Some(("setup", _)) => {
+                handle_config_setup().unwrap_or_else(|e| {
+                    eprintln!("Config setup failed: {}", e);
+                    std::process::exit(1);
+                });
+            }
+            Some(("info", _)) => {
+                handle_config_info().unwrap_or_else(|e| {
+                    eprintln!("Config info failed: {}", e);
+                    std::process::exit(1);
+                });
+            }
+            _ => unreachable!(),
+        },
         Some(("resource-template", sub_matches)) => match sub_matches.subcommand() {
             Some(("get", _)) => {
                 println!("Ran the resource template get sub command");
                 let rts = get_resource_templates().await.unwrap();
 
                 for rt in rts {
-                    println!("Name: {0}", rt.name)
+                    println!("Id: {0}", rt.id);
+                    println!("Name: {0}", rt.name);
+                    println!("Type: {0}", rt.resource_template_type);
+                    println!("Description: {0}", rt.description);
+                    println!("---------------------------------------");
                 }
+            }
+            Some(("create", sub_matches)) => {
+                let name = sub_matches.get_one::<String>("name").map(|s| s.as_str());
+                let rt_type = sub_matches.get_one::<String>("type").map(|s| s.as_str());
+                let description = sub_matches
+                    .get_one::<String>("description")
+                    .map(|s| s.as_str());
+                let provider = sub_matches.get_one::<u8>("provider").copied();
+
+                handle_create_resource_template(name, rt_type, description, provider)
+                    .await
+                    .unwrap_or_else(|e| {
+                        eprintln!("Failed to create resource template: {}", e);
+                        std::process::exit(1);
+                    });
             }
             _ => unreachable!(),
         },
