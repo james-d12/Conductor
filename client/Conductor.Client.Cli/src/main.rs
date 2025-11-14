@@ -3,10 +3,8 @@ mod config;
 mod resource_template;
 
 use crate::command::cli;
-use crate::config::{handle_config_setup, handle_config_info};
-use crate::resource_template::{
-    CreateResourceTemplateRequest, create_resource_template, get_resource_templates,
-};
+use crate::config::{handle_config_info, handle_config_setup};
+use crate::resource_template::{get_resource_templates, handle_create_resource_template};
 
 #[tokio::main]
 async fn main() {
@@ -27,25 +25,34 @@ async fn main() {
                 });
             }
             _ => unreachable!(),
-        }
+        },
         Some(("resource-template", sub_matches)) => match sub_matches.subcommand() {
             Some(("get", _)) => {
                 println!("Ran the resource template get sub command");
                 let rts = get_resource_templates().await.unwrap();
 
                 for rt in rts {
-                    println!("Name: {0}", rt.name)
+                    println!("Id: {0}", rt.id);
+                    println!("Name: {0}", rt.name);
+                    println!("Type: {0}", rt.resource_template_type);
+                    println!("Description: {0}", rt.description);
+                    println!("---------------------------------------");
                 }
             }
-            Some(("create", _)) => {
-                println!("Ran the resource template create sub command");
-                let request = CreateResourceTemplateRequest {
-                    name: "Test Template".to_string(),
-                    resource_template_type: "test.template".to_string(),
-                    description: "A test template".to_string(),
-                    provider: 0,
-                };
-                create_resource_template(request).await.unwrap();
+            Some(("create", sub_matches)) => {
+                let name = sub_matches.get_one::<String>("name").map(|s| s.as_str());
+                let rt_type = sub_matches.get_one::<String>("type").map(|s| s.as_str());
+                let description = sub_matches
+                    .get_one::<String>("description")
+                    .map(|s| s.as_str());
+                let provider = sub_matches.get_one::<u8>("provider").copied();
+
+                handle_create_resource_template(name, rt_type, description, provider)
+                    .await
+                    .unwrap_or_else(|e| {
+                        eprintln!("Failed to create resource template: {}", e);
+                        std::process::exit(1);
+                    });
             }
             _ => unreachable!(),
         },
