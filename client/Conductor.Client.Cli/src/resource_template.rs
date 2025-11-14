@@ -1,8 +1,8 @@
+use crate::config::get_api_url;
 use clap::{Arg, Command};
 use reqwest::{Error, StatusCode};
 use serde::{Deserialize, Serialize};
 use std::io::{self, Write};
-use crate::config::get_api_url;
 
 #[derive(Debug, Deserialize, PartialEq)]
 pub struct ResourceTemplate {
@@ -44,37 +44,34 @@ pub fn get_resource_template_command() -> Command {
                     Arg::new("name")
                         .long("name")
                         .help("Name of the resource template")
-                        .value_name("NAME")
+                        .value_name("NAME"),
                 )
                 .arg(
                     Arg::new("type")
                         .long("type")
                         .help("Type of the resource template")
-                        .value_name("TYPE")
+                        .value_name("TYPE"),
                 )
                 .arg(
                     Arg::new("description")
                         .long("description")
                         .help("Description of the resource template")
-                        .value_name("DESCRIPTION")
+                        .value_name("DESCRIPTION"),
                 )
                 .arg(
                     Arg::new("provider")
                         .long("provider")
                         .help("Provider ID (0-255)")
                         .value_name("PROVIDER")
-                        .value_parser(clap::value_parser!(u8))
-                )
+                        .value_parser(clap::value_parser!(u8)),
+                ),
         )
 }
 
 pub async fn get_resource_templates() -> Result<Vec<ResourceTemplate>, Error> {
     let api_url = get_api_url().expect("Failed to load API URL. Please run 'cdr config' first.");
     let url = format!("{}/resource-templates", api_url);
-    let body = reqwest::get(&url)
-        .await?
-        .text()
-        .await?;
+    let body = reqwest::get(&url).await?.text().await?;
     let resource_templates: GetResourceTemplatesResponse = serde_json::from_str(&body).unwrap();
     Ok(resource_templates.resource_templates)
 }
@@ -83,11 +80,7 @@ pub async fn create_resource_template(request: CreateResourceTemplateRequest) ->
     let api_url = get_api_url().expect("Failed to load API URL. Please run 'cdr config' first.");
     let url = format!("{}/resource-templates", api_url);
     let client = reqwest::Client::new();
-    let response = client
-        .post(&url)
-        .json(&request)
-        .send() 
-        .await?;
+    let response = client.post(&url).json(&request).send().await?;
 
     let status = response.status();
 
@@ -117,7 +110,12 @@ fn prompt_for_u8(prompt: &str) -> io::Result<u8> {
     }
 }
 
-pub async fn handle_create_resource_template(name: Option<&str>, rt_type: Option<&str>, description: Option<&str>, provider: Option<u8>) -> Result<(), Box<dyn std::error::Error>> {
+pub async fn handle_create_resource_template(
+    name: Option<&str>,
+    rt_type: Option<&str>,
+    description: Option<&str>,
+    provider: Option<u8>,
+) -> Result<(), Box<dyn std::error::Error>> {
     // If all arguments are provided, use them directly
     if let (Some(n), Some(t), Some(d), Some(p)) = (name, rt_type, description, provider) {
         let request = CreateResourceTemplateRequest {
@@ -126,7 +124,9 @@ pub async fn handle_create_resource_template(name: Option<&str>, rt_type: Option
             description: d.to_string(),
             provider: p,
         };
-        return create_resource_template(request).await.map_err(|e| e.into());
+        return create_resource_template(request)
+            .await
+            .map_err(|e| e.into());
     }
 
     // Otherwise, prompt the user for each value
@@ -161,5 +161,7 @@ pub async fn handle_create_resource_template(name: Option<&str>, rt_type: Option
         provider,
     };
 
-    create_resource_template(request).await.map_err(|e| e.into())
+    create_resource_template(request)
+        .await
+        .map_err(|e| e.into())
 }
