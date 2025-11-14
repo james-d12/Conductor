@@ -1,7 +1,6 @@
 using Conductor.Engine.Api.Endpoints;
 using Conductor.Engine.Infrastructure;
 using Conductor.Engine.Persistence;
-using Microsoft.OpenApi.Models;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
