@@ -29,8 +29,4 @@
         </None>
     </ItemGroup>
 
-    <ItemGroup>
-      <PackageReference Include="Spectre.Console.Cli" Version="0.53.0" />
-    </ItemGroup>
-
 </Project>
