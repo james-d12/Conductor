@@ -1,6 +1,7 @@
 using Conductor.Engine.Api.Endpoints;
 using Conductor.Engine.Infrastructure;
 using Conductor.Engine.Persistence;
+using Microsoft.OpenApi.Models;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -13,7 +14,7 @@ builder.Host.UseDefaultServiceProvider(options =>
 builder.Services
     .AddOpenApi()
     .AddEndpointsApiExplorer()
-    .AddSwaggerGen()
+    .AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo { Title = "Conductor API", Version = "v1" }); })
     .AddPersistenceServices()
     .AddInfrastructureServices();
 
