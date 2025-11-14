@@ -1,3 +1,3 @@
 #!/usr/bin/sh
 
-dotnet tool install --global dotnet-ef --version 9.0.10
+dotnet tool install --global dotnet-ef --version 10.0.0
