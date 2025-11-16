@@ -1,6 +1,5 @@
 using Conductor.Engine.Domain.Application;
 using Conductor.Engine.Domain.Organisation;
-using Conductor.Engine.Domain.User;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Environment = Conductor.Engine.Domain.Environment.Environment;
@@ -23,7 +22,11 @@ internal sealed class OrganisationConfiguration : IEntityTypeConfiguration<Organ
                 value => new OrganisationId(value)
             );
 
-        builder.HasMany<User>().WithMany();
+        builder
+            .HasMany<OrganisationUser>()
+            .WithOne()
+            .HasForeignKey(u => u.OrganisationId)
+            .IsRequired();
 
         builder.HasMany<Application>()
             .WithOne()

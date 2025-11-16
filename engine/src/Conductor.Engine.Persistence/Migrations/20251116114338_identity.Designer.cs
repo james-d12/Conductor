@@ -3,6 +3,7 @@ using System;
 using Conductor.Engine.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Conductor.Engine.Persistence.Migrations
 {
     [DbContext(typeof(ConductorDbContext))]
-    partial class ConductorDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251116114338_identity")]
+    partial class identity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.0");
@@ -145,21 +148,6 @@ namespace Conductor.Engine.Persistence.Migrations
                     b.ToTable("Organisation");
                 });
 
-            modelBuilder.Entity("Conductor.Engine.Domain.Organisation.OrganisationUser", b =>
-                {
-                    b.Property<string>("IdentityUserId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("OrganisationId")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("IdentityUserId");
-
-                    b.HasIndex("OrganisationId");
-
-                    b.ToTable("OrganisationUsers", (string)null);
-                });
-
             modelBuilder.Entity("Conductor.Engine.Domain.Resource.Resource", b =>
                 {
                     b.Property<Guid>("Id")
@@ -232,6 +220,28 @@ namespace Conductor.Engine.Persistence.Migrations
                         .IsUnique();
 
                     b.ToTable("ResourceTemplates");
+                });
+
+            modelBuilder.Entity("Conductor.Engine.Domain.User.User", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -426,6 +436,36 @@ namespace Conductor.Engine.Persistence.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("OrganisationUser", b =>
+                {
+                    b.Property<Guid>("OrganisationId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("OrganisationId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("OrganisationUser");
+                });
+
+            modelBuilder.Entity("OrganisationUser1", b =>
+                {
+                    b.Property<Guid>("Organisation1Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("User1Id")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Organisation1Id", "User1Id");
+
+                    b.HasIndex("User1Id");
+
+                    b.ToTable("OrganisationUser1");
+                });
+
             modelBuilder.Entity("Conductor.Engine.Domain.Application.Application", b =>
                 {
                     b.HasOne("Conductor.Engine.Domain.Organisation.Organisation", null)
@@ -480,21 +520,6 @@ namespace Conductor.Engine.Persistence.Migrations
 
             modelBuilder.Entity("Conductor.Engine.Domain.Environment.Environment", b =>
                 {
-                    b.HasOne("Conductor.Engine.Domain.Organisation.Organisation", null)
-                        .WithMany()
-                        .HasForeignKey("OrganisationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Conductor.Engine.Domain.Organisation.OrganisationUser", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
-                        .WithMany()
-                        .HasForeignKey("IdentityUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Conductor.Engine.Domain.Organisation.Organisation", null)
                         .WithMany()
                         .HasForeignKey("OrganisationId")
@@ -616,6 +641,36 @@ namespace Conductor.Engine.Persistence.Migrations
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("OrganisationUser", b =>
+                {
+                    b.HasOne("Conductor.Engine.Domain.Organisation.Organisation", null)
+                        .WithMany()
+                        .HasForeignKey("OrganisationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Conductor.Engine.Domain.User.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("OrganisationUser1", b =>
+                {
+                    b.HasOne("Conductor.Engine.Domain.Organisation.Organisation", null)
+                        .WithMany()
+                        .HasForeignKey("Organisation1Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Conductor.Engine.Domain.User.User", null)
+                        .WithMany()
+                        .HasForeignKey("User1Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

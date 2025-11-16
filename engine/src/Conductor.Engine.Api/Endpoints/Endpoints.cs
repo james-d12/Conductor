@@ -3,6 +3,7 @@ using Conductor.Engine.Api.Endpoints.Application;
 using Conductor.Engine.Api.Endpoints.Deployment;
 using Conductor.Engine.Api.Endpoints.Environment;
 using Conductor.Engine.Api.Endpoints.ResourceTemplate;
+using Conductor.Engine.Api.Endpoints.User;
 
 namespace Conductor.Engine.Api.Endpoints;
 
@@ -14,6 +15,7 @@ public static class Endpoints
         endpoints.MapEnvironmentEndpoints();
         endpoints.MapDeploymentEndpoints();
         endpoints.MapResourceTemplateEndpoints();
+        endpoints.MapUserEndpoints();
     }
 
     private static void MapApplicationEndpoints(this IEndpointRouteBuilder app)
@@ -57,6 +59,16 @@ public static class Endpoints
             .MapEndpoint<CreateResourceTemplateWithVersionEndpoint>()
             .MapEndpoint<GetResourceTemplateEndpoint>()
             .MapEndpoint<GetAllResourceTemplatesEndpoint>();
+    }
+
+    private static void MapUserEndpoints(this IEndpointRouteBuilder app)
+    {
+        var endpoints = app.MapGroup("/users")
+            .WithTags("User");
+
+        endpoints.MapPublicGroup()
+            .MapEndpoint<RegisterUserEndpoint>()
+            .MapEndpoint<LoginUserEndpoint>();
     }
 
     private static RouteGroupBuilder MapPublicGroup(this IEndpointRouteBuilder app, string? prefix = null)

@@ -1,4 +1,5 @@
 use crate::config::get_config_command;
+use crate::login::get_login_command;
 use crate::resource_template::get_resource_template_command;
 use clap::Command;
 
@@ -44,6 +45,7 @@ pub fn cli() -> Command {
         .subcommand_required(true)
         .arg_required_else_help(true)
         .allow_external_subcommands(true)
+        .subcommand(get_login_command())
         .subcommand(get_config_command())
         .subcommand(get_resource_template_command())
         .subcommand(get_application_command())

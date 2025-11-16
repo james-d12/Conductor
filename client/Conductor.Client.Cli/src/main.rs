@@ -1,9 +1,11 @@
 mod command;
 mod config;
+mod login;
 mod resource_template;
 
 use crate::command::cli;
 use crate::config::{handle_config_info, handle_config_setup};
+use crate::login::handle_login;
 use crate::resource_template::{get_resource_templates, handle_create_resource_template};
 
 #[tokio::main]
@@ -11,6 +13,17 @@ async fn main() {
     let matches = cli().get_matches();
 
     match matches.subcommand() {
+        Some(("login", sub_matches)) => {
+            let email = sub_matches.get_one::<String>("email").map(|s| s.as_str());
+            let password = sub_matches
+                .get_one::<String>("password")
+                .map(|s| s.as_str());
+
+            handle_login(email, password).await.unwrap_or_else(|e| {
+                eprintln!("Login failed: {}", e);
+                std::process::exit(1);
+            });
+        }
         Some(("config", sub_matches)) => match sub_matches.subcommand() {
             Some(("setup", _)) => {
                 handle_config_setup().unwrap_or_else(|e| {

@@ -1,12 +1,13 @@
 using Conductor.Engine.Domain.Application;
 using Conductor.Engine.Domain.Deployment;
 using Conductor.Engine.Domain.ResourceTemplate;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Environment = Conductor.Engine.Domain.Environment.Environment;
 
 namespace Conductor.Engine.Persistence;
 
-public sealed class ConductorDbContext : DbContext
+public sealed class ConductorDbContext : IdentityDbContext
 {
     public required DbSet<ResourceTemplate> ResourceTemplates { get; init; }
     public required DbSet<Application> Applications { get; init; }
@@ -27,6 +28,7 @@ public sealed class ConductorDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ConductorDbContext).Assembly);
     }
 }
