@@ -143,10 +143,6 @@ jobs:
           mkdir -p "${{ runner.temp }}/scanner"
           dotnet tool update dotnet-sonarscanner --tool-path "${{ runner.temp }}/scanner"
 
-      - name: Check No Pending Model Changes
-        run: dotnet ef migrations has-pending-model-changes
-        working-directory: engine/src/Conductor.Engine.Persistence
-
       - name: Restore dependencies
         run: dotnet restore ${{ env.SOLUTION_FILE }}
 
@@ -157,6 +153,10 @@ jobs:
           "${{ runner.temp }}/scanner/dotnet-sonarscanner" begin /k:"conductor" /o:"personal-james" /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
           dotnet build ${{ env.SOLUTION_FILE }} --configuration Release --no-restore
           "${{ runner.temp }}/scanner/dotnet-sonarscanner" end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+
+      - name: Check No Pending Model Changes
+        run: dotnet ef migrations has-pending-model-changes
+        working-directory: engine/src/Conductor.Engine.Persistence
 
       - name: Check For Vulnerabilities
         run: dotnet list ${{ env.SOLUTION_FILE }} package --vulnerable
