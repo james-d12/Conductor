@@ -11,6 +11,7 @@ It is currently a multi language monorepo, consisting of 3 main components:
 # Getting Started
 
 ## Requirements
+
 - [Docker](https://www.docker.com/)
 - [Rust](https://rust-lang.org/tools/install/)
 - [Dotnet-10](https://dotnet.microsoft.com/en-us/download/dotnet/10.0)
@@ -18,6 +19,7 @@ It is currently a multi language monorepo, consisting of 3 main components:
 - [Pnpm](https://pnpm.io/installation)
 
 ## Engine
+
 You need to have [Docker](https://www.docker.com/)
 and [.NET 10 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/10.0) installed.
 
@@ -26,3 +28,7 @@ and [.NET 10 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/10.0) insta
 3. Now, run the ```setup.sh``` script inside the ```./scripts``` folder. This will install the required global dotnet
    tools like efcore.
 4. Next you can run the docker compose to spin up the API locally.
+
+# License
+
+Conductor is licensed under the [GPLV3 License](./LICENSE.md).
