@@ -1,19 +1,34 @@
 # Conductor
 
-Conductor is a prototype Platform Orchestrator
+Conductor is a prototype self hosted Internal Developer Platform. It aims to be entirely self-hosted, and to provide a cohesive abstraction around managing applications and infrastructure.  
 
-This is a C# monorepo that has the backend and frontend. The backend is the API along written in C#, and the frontend
-is a Blazor Web App. The backend all the Domain Rules, Persistence and API handling. It is the heart of Conductor and is
-what is called by all frontends (like Conductor.Web).
+It is currently a multi language monorepo, consisting of 3 main components: 
 
-## Getting Started
+- Engine: This is the heart of Conductor, it has all of the business logic, api, and persistence code.
+- CLI: This is a rust CLI tool that allows you to interact with Conductor's API through an easy to use CLI.
+- Web: Thisd is a Typescript based Web Portal that allows you to interact with Conductor's API.
+
+# Getting Started
+
+## Requirements
+
+- [Docker](https://www.docker.com/)
+- [Rust](https://rust-lang.org/tools/install/)
+- [Dotnet-10](https://dotnet.microsoft.com/en-us/download/dotnet/10.0)
+- [Nodejs](https://nodejs.org/en)
+- [Pnpm](https://pnpm.io/installation)
+
+## Engine
 
 You need to have [Docker](https://www.docker.com/)
 and [.NET 10 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/10.0) installed.
 
 1. You will need to clone the repository from the master branch.
-2. Next you will need to open the Conductor.sln in an IDE (E.G. JetBrains Rider, Visual Studio, or Visual Studio
-   Code)
+2. Next you will need to go the ```engine``` sub-folder.
 3. Now, run the ```setup.sh``` script inside the ```./scripts``` folder. This will install the required global dotnet
    tools like efcore.
-4. Next you can run the docker compose to spin up the API / CLI application.
+4. Next you can run the docker compose to spin up the API locally.
+
+# License
+
+Conductor is licensed under the [GPLV3 License](./LICENSE.md).

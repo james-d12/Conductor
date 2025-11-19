@@ -28,13 +28,18 @@ internal sealed class ResourceTemplateConfiguration : IEntityTypeConfiguration<R
         builder.OwnsMany(r => r.Versions, v =>
         {
             v.WithOwner().HasForeignKey("TemplateId");
-            v.HasKey("TemplateId", "Version");
-
+            v.HasKey(rtv => rtv.Id);
             v.HasIndex(x => new { x.TemplateId, x.Version }).IsUnique();
             v.Property(x => x.Version).IsRequired();
             v.Property(x => x.Notes).IsRequired();
             v.Property(x => x.State).IsRequired().HasConversion<int>();
             v.Property(x => x.CreatedAt).IsRequired().HasDefaultValueSql("now()");
+
+            v.Property(r => r.Id)
+                .HasConversion(
+                    id => id.Value,
+                    value => new ResourceTemplateVersionId(value)
+                );
 
             v.OwnsOne(r => r.Source, s =>
             {
