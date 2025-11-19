@@ -111,7 +111,7 @@ jobs:
       - name: Cache SonarQube Cloud packages
         uses: actions/cache@v4
         with:
-          path: ~\sonar\cache
+          path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
 
@@ -119,7 +119,7 @@ jobs:
         id: cache-sonar-scanner
         uses: actions/cache@v4
         with:
-          path: ${{ runner.temp }}\scanner
+          path: ${{ runner.temp }}/scanner
           key: ${{ runner.os }}-sonar-scanner
           restore-keys: ${{ runner.os }}-sonar-scanner
 
@@ -139,10 +139,9 @@ jobs:
 
       - name: Install SonarQube Cloud scanner
         if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
-        shell: powershell
         run: |
-          New-Item -Path ${{ runner.temp }}\scanner -ItemType Directory
-          dotnet tool update dotnet-sonarscanner --tool-path ${{ runner.temp }}\scanner
+          mkdir -p "${{ runner.temp }}/scanner"
+          dotnet tool update dotnet-sonarscanner --tool-path "${{ runner.temp }}/scanner"
 
       - name: Check No Pending Model Changes
         run: dotnet ef migrations has-pending-model-changes
@@ -154,11 +153,10 @@ jobs:
       - name: Build and analyze
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        shell: powershell
         run: |
-          ${{ runner.temp }}\scanner\dotnet-sonarscanner begin /k:"conductor" /o:"personal-james" /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+          "${{ runner.temp }}/scanner/dotnet-sonarscanner" begin /k:"conductor" /o:"personal-james" /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
           dotnet build ${{ env.SOLUTION_FILE }} --configuration Release --no-restore
-          ${{ runner.temp }}\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+          "${{ runner.temp }}/scanner/dotnet-sonarscanner" end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
 
       - name: Check For Vulnerabilities
         run: dotnet list ${{ env.SOLUTION_FILE }} package --vulnerable
