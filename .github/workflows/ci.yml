@@ -23,7 +23,7 @@ jobs:
         working-directory: ./portals/Orchitect.Portal.Web
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: '0'
 
@@ -79,7 +79,7 @@ jobs:
         working-directory: ./portals/Orchitect.Portal.Cli
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
         with:
           fetch-depth: '0'
 
@@ -111,7 +111,7 @@ jobs:
       SOLUTION_FILE: Orchitect.sln
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
         with:
           fetch-depth: '0'
 
@@ -203,7 +203,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: '0'
 
